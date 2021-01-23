@@ -44,7 +44,8 @@ static inline int handle_event(void *ctx, void *data, unsigned long size) {
   return 0;
 }
 
-struct state *new_state(void *ctx, event_handler *handler, unsigned int filtered_uid) {
+struct state *new_state(void *ctx, event_handler *handler,
+                        unsigned int filtered_uid) {
   libbpf_set_print(print_libbpf_log);
   struct state *s = (struct state *)malloc(sizeof(struct state));
   if (!s) {
@@ -65,14 +66,15 @@ struct state *new_state(void *ctx, event_handler *handler, unsigned int filtered
   s->obj->rodata->filtered_user = filtered_uid;
 
   if (probe_bpf__load(s->obj)) {
-		goto cleanup_bpf;
+    goto cleanup_bpf;
   }
 
   int ringbuffer_fd = bpf_map__fd(s->obj->maps.events);
-	if (ringbuffer_fd < 0) {
-		goto cleanup_bpf;
-	}
-  s->rb = ring_buffer__new(ringbuffer_fd, handle_event, (void *)s->handler, NULL);
+  if (ringbuffer_fd < 0) {
+    goto cleanup_bpf;
+  }
+  s->rb =
+      ring_buffer__new(ringbuffer_fd, handle_event, (void *)s->handler, NULL);
   if (!s->rb) {
     goto cleanup_bpf;
   }
@@ -103,8 +105,8 @@ void destroy_state(struct state *s) {
       ring_buffer__free(s->rb);
     }
     if (s->hook != NULL) {
-			bpf_link__destroy(s->hook);
-		}
+      bpf_link__destroy(s->hook);
+    }
     if (s->obj != NULL) {
       probe_bpf__destroy(s->obj);
     }

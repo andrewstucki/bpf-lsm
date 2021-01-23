@@ -5,7 +5,7 @@ use std::os::raw::c_int;
 use std::panic;
 
 pub mod ffi {
-    use std::os::raw::{c_int, c_void, c_char, c_uint};
+    use std::os::raw::{c_char, c_int, c_uint, c_void};
 
     #[repr(C)]
     #[derive(Debug, Copy, Clone)]
@@ -16,13 +16,17 @@ pub mod ffi {
         pub gid: u32,
         pub uid: u32,
         pub state: u8,
-        pub program: [c_char;256],
-        pub filename: [c_char;256],
+        pub program: [c_char; 256],
+        pub filename: [c_char; 256],
     }
     pub type event_handler = extern "C" fn(ctx: *mut c_void, e: event);
     pub enum state {}
     extern "C" {
-        pub fn new_state(ctx: *mut c_void, handler: event_handler, filtered_uid: c_uint) -> *mut state;
+        pub fn new_state(
+            ctx: *mut c_void,
+            handler: event_handler,
+            filtered_uid: c_uint,
+        ) -> *mut state;
         pub fn poll_state(_self: *mut state, timeout: c_int);
         pub fn destroy_state(_self: *mut state);
     }
@@ -112,7 +116,7 @@ pub struct Probe<'a> {
 use std::ffi::CStr;
 impl<'a> Probe<'a> {
     pub fn filter(uid: u32) -> Self {
-        Self{
+        Self {
             ctx: None,
             _handler: None,
             filtered_uid: uid,
@@ -124,19 +128,21 @@ impl<'a> Probe<'a> {
         F: 'a + Fn(Event) + panic::RefUnwindSafe,
     {
         let mut wrapper = move |e: ffi::event| {
-            let result = panic::catch_unwind(|| {
-                unsafe {
-                    handler(Event {
-                        tid: e.tid,
-                        pid: e.pid,
-                        ppid: e.ppid,
-                        gid: e.gid,
-                        uid: e.uid,
-                        state: e.state.into(),
-                        filename: CStr::from_ptr(e.filename.as_ptr()).to_string_lossy().into_owned(),
-                        program: CStr::from_ptr(e.program.as_ptr()).to_string_lossy().into_owned(),
-                    });
-                }
+            let result = panic::catch_unwind(|| unsafe {
+                handler(Event {
+                    tid: e.tid,
+                    pid: e.pid,
+                    ppid: e.ppid,
+                    gid: e.gid,
+                    uid: e.uid,
+                    state: e.state.into(),
+                    filename: CStr::from_ptr(e.filename.as_ptr())
+                        .to_string_lossy()
+                        .into_owned(),
+                    program: CStr::from_ptr(e.program.as_ptr())
+                        .to_string_lossy()
+                        .into_owned(),
+                });
             });
             // do something with the panic
             result.unwrap();
@@ -153,17 +159,17 @@ impl<'a> Probe<'a> {
 
     pub fn poll(&self, timeout: i32) {
         match self.ctx {
-            Some(ctx) => unsafe { ffi::poll_state(ctx, timeout as c_int) }
-            _ => return
-        }        
+            Some(ctx) => unsafe { ffi::poll_state(ctx, timeout as c_int) },
+            _ => return,
+        }
     }
 }
 
 impl<'a> Drop for Probe<'a> {
     fn drop(&mut self) {
         match self.ctx {
-            Some(ctx) => unsafe { ffi::destroy_state(ctx) }
-            _ => return
+            Some(ctx) => unsafe { ffi::destroy_state(ctx) },
+            _ => return,
         }
     }
 }

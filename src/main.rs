@@ -1,7 +1,7 @@
-use std::env;
-use std::convert::TryFrom;
-use seahorse::{App, Context, Flag, FlagType};
 use probe_sys::{Event, Probe};
+use seahorse::{App, Context, Flag, FlagType};
+use std::convert::TryFrom;
+use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -14,7 +14,7 @@ fn main() {
                 .description("Deny execs from the given uid")
                 .alias("f"),
         );
-        
+
     app.run(args)
 }
 
@@ -30,11 +30,9 @@ fn run(c: &Context) {
     match Probe::filter(filtered_uid).run(|e: Event| {
         println!("{:?}", e);
     }) {
-        Ok(probe) => {
-            loop {
-                probe.poll(10000);
-            }
-        }
+        Ok(probe) => loop {
+            probe.poll(10000);
+        },
         Err(error) => {
             println!("{}", error);
         }
