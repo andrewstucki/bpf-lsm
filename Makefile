@@ -9,6 +9,14 @@ clean:
 	@echo "Cleaning"
 	@rm -rf probe-sys/src/.output target probe
 
+bootstrap-vm:
+	@echo "Bringing up fresh VM and installing BPF Kernel"
+	@vagrant up --provider virtualbox
+	@echo "Stopping VM"
+	@vagrant halt
+	@echo "Bringing VM back up with new kernel"
+	@vagrant up
+
 toolchain-llvm:
 	cd toolchain/llvm && \
 	docker build . -t andrewstucki/llvm10rc3-musl-toolchain

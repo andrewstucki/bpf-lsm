@@ -24,8 +24,7 @@ struct state {
 
 int print_libbpf_log(enum libbpf_print_level lvl, const char *fmt,
                      va_list args) {
-  // return vfprintf(stderr, fmt, args);
-  return 0;
+  return vfprintf(stderr, fmt, args);
 }
 
 static inline int handle_event(void *ctx, void *data, unsigned long size) {
