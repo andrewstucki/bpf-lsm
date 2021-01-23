@@ -1,0 +1,14 @@
+[package]
+name = "probe"
+version = "0.0.1"
+authors = ["Andrew Stucki <andrew.stucki@gmail.com>"]
+license = "GPL"
+edition = "2018"
+description = "Example BPF LSM in C/Rust"
+
+[dependencies]
+probe-sys = { path = "./probe-sys" }
+seahorse = "1.1"
+
+[workspace]
+members = [ "probe-sys" ]

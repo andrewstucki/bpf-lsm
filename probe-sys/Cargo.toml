@@ -1,0 +1,10 @@
+[package]
+name = "probe-sys"
+version = "0.0.1"
+authors = ["Andrew Stucki <andrew.stucki@gmail.com>"]
+license = "GPL"
+edition = "2018"
+build = "build.rs"
+
+[lib]
+crate-type = ["rlib"]
