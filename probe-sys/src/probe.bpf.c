@@ -25,8 +25,9 @@ int BPF_PROG(lsm_hook, struct linux_binprm *bprm) {
 
   struct event *e =
       bpf_ringbuf_reserve(&events, sizeof(struct event), RINGBUFFER_FLAGS);
-  if (!e)
+  if (!e) {
     goto done;
+  }
 
   unsigned long pid_tgid = bpf_get_current_pid_tgid();
   unsigned long uid_gid = bpf_get_current_uid_gid();

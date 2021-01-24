@@ -58,12 +58,8 @@ struct state *new_state(void *ctx, event_handler *handler,
     goto cleanup_bpf;
   }
 
-  int ringbuffer_fd = bpf_map__fd(s->obj->maps.events);
-  if (ringbuffer_fd < 0) {
-    goto cleanup_bpf;
-  }
-  s->rb =
-      ring_buffer__new(ringbuffer_fd, handle_event, (void *)s->handler, NULL);
+  s->rb = ring_buffer__new(bpf_map__fd(s->obj->maps.events), handle_event,
+                           (void *)s->handler, NULL);
   if (!s->rb) {
     goto cleanup_bpf;
   }
