@@ -28,19 +28,8 @@ int print_libbpf_log(enum libbpf_print_level lvl, const char *fmt,
 }
 
 static inline int handle_event(void *ctx, void *data, unsigned long size) {
-  struct _event *e = data;
   struct handle_event_wrapper *handle = ctx;
-  struct event ev = {
-      .tid = e->tid,
-      .pid = e->pid,
-      .ppid = e->ppid,
-      .gid = e->gid,
-      .uid = e->uid,
-      .state = e->state,
-  };
-  memcpy(ev.filename, e->filename, sizeof(ev.filename));
-  memcpy(ev.program, e->program, sizeof(ev.program));
-  handle->handler(handle->ctx, ev);
+  handle->handler(handle->ctx, *(struct event *)data);
   return 0;
 }
 

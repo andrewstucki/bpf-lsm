@@ -1,15 +1,17 @@
 #ifndef ___PROBE_H
 #define ___PROBE_H
 
+#ifndef EPERM
 #define EPERM 1
+#endif
 
-struct _event {
-  __u32 pid;
-  __u32 ppid;
-  __u32 tid;
-  __u32 gid;
-  __u32 uid;
-  __u8 state;
+struct event {
+  unsigned int tid;
+  unsigned int pid;
+  unsigned int ppid;
+  unsigned int gid;
+  unsigned int uid;
+  unsigned char state;
   char program[256];
   char filename[256];
 };
