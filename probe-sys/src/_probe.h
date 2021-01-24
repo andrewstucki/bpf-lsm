@@ -5,6 +5,9 @@
 #define EPERM 1
 #endif
 
+#define STATE_ALLOWED 0
+#define STATE_DENIED 1
+
 struct event {
   unsigned int tid;
   unsigned int pid;

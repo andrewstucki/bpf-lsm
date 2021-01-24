@@ -4,9 +4,6 @@
 #include <stdint.h>
 #include "_probe.h"
 
-#define STATE_ALLOWED 0
-#define STATE_DENIED 1
-
 typedef void event_handler(void *ctx, struct event e);
 
 struct state;

@@ -32,7 +32,7 @@ int BPF_PROG(lsm_hook, struct linux_binprm *bprm) {
   unsigned long pid_tgid = bpf_get_current_pid_tgid();
   unsigned long uid_gid = bpf_get_current_uid_gid();
 
-  e->state = 0;
+  e->state = STATE_ALLOWED;
   e->pid = pid_tgid;
   e->tid = pid_tgid >> 32;
   e->gid = uid_gid >> 32;
@@ -46,8 +46,8 @@ int BPF_PROG(lsm_hook, struct linux_binprm *bprm) {
   bpf_probe_read_kernel_str(&e->filename, sizeof(e->filename), bprm->filename);
 
   if (e->uid == filtered_user) {
-    e->state = 1;
-    ret_val = -1;
+    e->state = STATE_DENIED;
+    ret_val = -EPERM;
   }
 
   bpf_ringbuf_submit(e, RINGBUFFER_FLAGS);
