@@ -1,6 +1,9 @@
 #ifndef ___PROBE_H
 #define ___PROBE_H
 
+// everything that is used in the bpf program
+// should be in this header file
+
 #ifndef EPERM
 #define EPERM 1
 #endif

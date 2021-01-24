@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include "_probe.h"
 
+// this header contains forward declarations
+// for the userspace side of things
+
 typedef void event_handler(void *ctx, struct event e);
 
 struct state;
