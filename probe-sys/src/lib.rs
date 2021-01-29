@@ -4,10 +4,18 @@
 
 extern crate protobuf;
 
+use log::{debug, error};
+use std::error;
 use std::fmt;
+use std::fmt::Debug;
 use std::os::raw::c_int;
 use std::panic;
-pub mod struct_pb;
+
+use protobuf::json::{print_to_string, PrintError};
+use protobuf::{Message, ProtobufError};
+
+mod struct_pb;
+pub use struct_pb::*;
 
 pub mod ffi {
     use std::os::raw::{c_char, c_int, c_uint, c_void};
@@ -121,17 +129,6 @@ impl fmt::Display for Error {
     }
 }
 
-#[derive(Default, Debug, Clone)]
-pub struct Event {
-    pub tid: u32,
-    pub pid: u32,
-    pub ppid: u32,
-    pub gid: u32,
-    pub uid: u32,
-    pub filename: String,
-    pub program: String,
-}
-
 use std::ffi::CStr;
 use std::os::raw::c_char;
 fn transform_string(val: Vec<c_char>) -> String {
@@ -152,9 +149,52 @@ pub struct Probe<'a> {
     debug: bool,
 }
 
-impl From<ffi::bprm_check_security_event_process_target_t>
-    for struct_pb::BprmCheckSecurityEventProcessTarget
-{
+#[derive(Debug)]
+pub enum SerializationError {
+    Json(PrintError),
+    Bytes(ProtobufError),
+}
+
+impl fmt::Display for SerializationError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Json(_e) => write!(f, "json serialization failed"),
+            Self::Bytes(e) => std::fmt::Display::fmt(&e, f),
+        }
+    }
+}
+
+impl error::Error for SerializationError {
+    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
+        match self {
+            Self::Json(_e) => None,
+            Self::Bytes(e) => Some(e),
+        }
+    }
+}
+
+pub type SerializableResult<T> = Result<T, SerializationError>;
+pub trait SerializableEvent {
+    fn to_json(&self) -> SerializableResult<String>;
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
+}
+
+impl SerializableEvent for BprmCheckSecurityEventEvent {
+    fn to_json(&self) -> SerializableResult<String> {
+        match print_to_string(self) {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Json(e)),
+        }
+    }
+
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
+        match self.write_to_bytes() {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Bytes(e)),
+        }
+    }
+}
+impl From<ffi::bprm_check_security_event_process_target_t> for BprmCheckSecurityEventProcessTarget {
     fn from(e: ffi::bprm_check_security_event_process_target_t) -> Self {
         let mut event = Self::default();
         event.set_executable(transform_string(e.executable.into()));
@@ -163,7 +203,22 @@ impl From<ffi::bprm_check_security_event_process_target_t>
     }
 }
 
-impl From<ffi::bprm_check_security_event_process_t> for struct_pb::BprmCheckSecurityEventProcess {
+impl SerializableEvent for BprmCheckSecurityEventProcessTarget {
+    fn to_json(&self) -> SerializableResult<String> {
+        match print_to_string(self) {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Json(e)),
+        }
+    }
+
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
+        match self.write_to_bytes() {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Bytes(e)),
+        }
+    }
+}
+impl From<ffi::bprm_check_security_event_process_t> for BprmCheckSecurityEventProcess {
     fn from(e: ffi::bprm_check_security_event_process_t) -> Self {
         let mut event = Self::default();
         event.set_pid(e.pid);
@@ -176,9 +231,22 @@ impl From<ffi::bprm_check_security_event_process_t> for struct_pb::BprmCheckSecu
     }
 }
 
-impl From<ffi::bprm_check_security_event_user_group_t>
-    for struct_pb::BprmCheckSecurityEventUserGroup
-{
+impl SerializableEvent for BprmCheckSecurityEventProcess {
+    fn to_json(&self) -> SerializableResult<String> {
+        match print_to_string(self) {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Json(e)),
+        }
+    }
+
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
+        match self.write_to_bytes() {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Bytes(e)),
+        }
+    }
+}
+impl From<ffi::bprm_check_security_event_user_group_t> for BprmCheckSecurityEventUserGroup {
     fn from(e: ffi::bprm_check_security_event_user_group_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
@@ -187,7 +255,22 @@ impl From<ffi::bprm_check_security_event_user_group_t>
     }
 }
 
-impl From<ffi::bprm_check_security_event_user_t> for struct_pb::BprmCheckSecurityEventUser {
+impl SerializableEvent for BprmCheckSecurityEventUserGroup {
+    fn to_json(&self) -> SerializableResult<String> {
+        match print_to_string(self) {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Json(e)),
+        }
+    }
+
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
+        match self.write_to_bytes() {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Bytes(e)),
+        }
+    }
+}
+impl From<ffi::bprm_check_security_event_user_t> for BprmCheckSecurityEventUser {
     fn from(e: ffi::bprm_check_security_event_user_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
@@ -197,7 +280,22 @@ impl From<ffi::bprm_check_security_event_user_t> for struct_pb::BprmCheckSecurit
     }
 }
 
-impl From<ffi::bprm_check_security_event_t> for struct_pb::BprmCheckSecurityEvent {
+impl SerializableEvent for BprmCheckSecurityEventUser {
+    fn to_json(&self) -> SerializableResult<String> {
+        match print_to_string(self) {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Json(e)),
+        }
+    }
+
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
+        match self.write_to_bytes() {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Bytes(e)),
+        }
+    }
+}
+impl From<ffi::bprm_check_security_event_t> for BprmCheckSecurityEvent {
     fn from(e: ffi::bprm_check_security_event_t) -> Self {
         let mut event = Self::default();
         event.set_timestamp(e.__timestamp);
@@ -207,8 +305,24 @@ impl From<ffi::bprm_check_security_event_t> for struct_pb::BprmCheckSecurityEven
     }
 }
 
+impl SerializableEvent for BprmCheckSecurityEvent {
+    fn to_json(&self) -> SerializableResult<String> {
+        match print_to_string(self) {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Json(e)),
+        }
+    }
+
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
+        match self.write_to_bytes() {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Bytes(e)),
+        }
+    }
+}
+
 pub trait ProbeHandler {
-    fn handle_bprm_check_security(&self, e: struct_pb::BprmCheckSecurityEvent);
+    fn handle_bprm_check_security(&self, e: &mut BprmCheckSecurityEvent);
 }
 
 impl<'a> Probe<'a> {
@@ -237,9 +351,10 @@ impl<'a> Probe<'a> {
         F: 'a + ProbeHandler + panic::RefUnwindSafe,
     {
         let mut bprm_check_security_wrapper = move |e: ffi::bprm_check_security_event_t| {
-            let result = panic::catch_unwind(|| handler.handle_bprm_check_security(e.into()));
-            // do something with the panic
-            result.unwrap();
+            let result = panic::catch_unwind(|| handler.handle_bprm_check_security(&mut e.into()));
+            if result.is_err() {
+                debug!("panic while handling event");
+            }
         };
         let (bprm_check_security_closure, bprm_check_security_callback) =
             unsafe { ffi::unpack_bprm_check_security_closure(&mut bprm_check_security_wrapper) };

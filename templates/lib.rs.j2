@@ -7,7 +7,15 @@ extern crate protobuf;
 use std::fmt;
 use std::os::raw::c_int;
 use std::panic;
-pub mod struct_pb;
+use std::error;
+use std::fmt::Debug;
+use log::{debug, error};
+
+use protobuf::json::{PrintError, print_to_string};
+use protobuf::{ProtobufError, Message};
+
+mod struct_pb;
+pub use struct_pb::*;
 
 pub mod ffi {
     use std::os::raw::{c_char, c_int, c_uint, c_void};
@@ -98,17 +106,6 @@ impl fmt::Display for Error {
     }
 }
 
-#[derive(Default, Debug, Clone)]
-pub struct Event {
-    pub tid: u32,
-    pub pid: u32,
-    pub ppid: u32,
-    pub gid: u32,
-    pub uid: u32,
-    pub filename: String,
-    pub program: String,
-}
-
 use std::ffi::CStr;
 use std::os::raw::c_char;
 fn transform_string(val: Vec<c_char>) -> String {
@@ -131,10 +128,41 @@ pub struct Probe<'a> {
     debug: bool,
 }
 
+#[derive(Debug)]
+pub enum SerializationError {
+    Json(PrintError),
+    Bytes(ProtobufError),
+}
+
+impl fmt::Display for SerializationError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+          Self::Json(_e) => write!(f, "json serialization failed"),
+          Self::Bytes(e) => std::fmt::Display::fmt(&e, f),
+        }
+    }
+}
+
+impl error::Error for SerializationError {
+    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
+        match self {
+          Self::Json(_e) => None,
+          Self::Bytes(e) => Some(e),
+        }
+    }
+}
+
+
+pub type SerializableResult<T> = Result<T, SerializationError>;
+pub trait SerializableEvent {
+    fn to_json(&self) -> SerializableResult<String>;
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
+}
+
 {% for module in modules -%}
 {% for structure in module.structures -%}
 {%- if not structure.enrichment -%}
-impl From<ffi::{{structure.name}}> for struct_pb::{{structure.final}} {
+impl From<ffi::{{structure.name}}> for {{structure.final}} {
     fn from(e: ffi::{{structure.name}}) -> Self {
         let mut event = Self::default();
         {%- for field in structure.fields -%}
@@ -152,13 +180,29 @@ impl From<ffi::{{structure.name}}> for struct_pb::{{structure.final}} {
     }
 }
 {% endif %}
+
+impl SerializableEvent for {{structure.final}} {
+    fn to_json(&self) -> SerializableResult<String> {
+        match print_to_string(self) {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Json(e)),
+        }
+    }
+
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
+        match self.write_to_bytes() {
+          Ok(result) => Ok(result),
+          Err(e) => Err(SerializationError::Bytes(e)),
+        }
+    }
+}
 {% endfor %}
 {% endfor %}
 
 pub trait ProbeHandler {
   {% for module in modules -%}
   {% set entry_point = module.structures | last %}
-  fn handle_{{module.name}}(&self, e: struct_pb::{{entry_point.final}});
+  fn handle_{{module.name}}(&self, e: &mut {{entry_point.final}});
   {% endfor %}
 }
 
@@ -192,10 +236,11 @@ impl<'a> Probe<'a> {
         {% set entry_point = module.structures | last %}
         let mut {{module.name}}_wrapper = move |e: ffi::{{entry_point.name}}| {
             let result = panic::catch_unwind(|| {
-                handler.handle_{{module.name}}(e.into())
+              handler.handle_{{module.name}}(&mut e.into())
             });
-            // do something with the panic
-            result.unwrap();
+            if result.is_err() {
+              debug!("panic while handling event");
+            }
         };
         let ({{module.name}}_closure, {{module.name}}_callback) = unsafe { ffi::unpack_{{module.name}}_closure(&mut {{module.name}}_wrapper) };
         {% endfor %}

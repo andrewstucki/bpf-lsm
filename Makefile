@@ -5,6 +5,10 @@ build:
 	@echo "Compiling release binary"
 	@$(CONTAINER) /bin/sh -c "RUSTFLAGS=-Ctarget-feature=+crt-static cargo build --release && cp target/release/probe . && strip probe"
 
+debug:
+	@echo "Compiling debug binary"
+	@$(CONTAINER) /bin/sh -c "RUSTFLAGS=-Ctarget-feature=+crt-static cargo build && cp target/debug/probe ."
+
 clean:
 	@echo "Cleaning"
 	@rm -rf probe-sys/src/.output target probe

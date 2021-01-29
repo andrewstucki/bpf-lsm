@@ -54,7 +54,7 @@ impl BprmCheckSecurityEventEvent {
         ::std::default::Default::default()
     }
 
-    // required string id = 1;
+    // optional string id = 1;
 
     pub fn get_id(&self) -> &str {
         match self.id.as_ref() {
@@ -90,7 +90,7 @@ impl BprmCheckSecurityEventEvent {
         self.id.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string code = 2;
+    // optional string code = 2;
 
     pub fn get_code(&self) -> &str {
         match self.code.as_ref() {
@@ -126,7 +126,7 @@ impl BprmCheckSecurityEventEvent {
         self.code.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string kind = 3;
+    // optional string kind = 3;
 
     pub fn get_kind(&self) -> &str {
         match self.kind.as_ref() {
@@ -162,7 +162,7 @@ impl BprmCheckSecurityEventEvent {
         self.kind.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string category = 4;
+    // optional string category = 4;
 
     pub fn get_category(&self) -> &str {
         match self.category.as_ref() {
@@ -198,7 +198,7 @@ impl BprmCheckSecurityEventEvent {
         self.category.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string action = 5;
+    // optional string action = 5;
 
     pub fn get_action(&self) -> &str {
         match self.action.as_ref() {
@@ -234,7 +234,7 @@ impl BprmCheckSecurityEventEvent {
         self.action.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string field_type = 6;
+    // optional string field_type = 6;
 
     pub fn get_field_type(&self) -> &str {
         match self.field_type.as_ref() {
@@ -270,7 +270,7 @@ impl BprmCheckSecurityEventEvent {
         self.field_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string module = 7;
+    // optional string module = 7;
 
     pub fn get_module(&self) -> &str {
         match self.module.as_ref() {
@@ -306,7 +306,7 @@ impl BprmCheckSecurityEventEvent {
         self.module.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string provider = 8;
+    // optional string provider = 8;
 
     pub fn get_provider(&self) -> &str {
         match self.provider.as_ref() {
@@ -342,7 +342,7 @@ impl BprmCheckSecurityEventEvent {
         self.provider.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required uint64 sequence = 9;
+    // optional uint64 sequence = 9;
 
     pub fn get_sequence(&self) -> u64 {
         self.sequence.unwrap_or(0)
@@ -361,7 +361,7 @@ impl BprmCheckSecurityEventEvent {
         self.sequence = ::std::option::Option::Some(v);
     }
 
-    // required uint64 ingested = 10;
+    // optional uint64 ingested = 10;
 
     pub fn get_ingested(&self) -> u64 {
         self.ingested.unwrap_or(0)
@@ -452,36 +452,6 @@ impl BprmCheckSecurityEventEvent {
 
 impl ::protobuf::Message for BprmCheckSecurityEventEvent {
     fn is_initialized(&self) -> bool {
-        if self.id.is_none() {
-            return false;
-        }
-        if self.code.is_none() {
-            return false;
-        }
-        if self.kind.is_none() {
-            return false;
-        }
-        if self.category.is_none() {
-            return false;
-        }
-        if self.action.is_none() {
-            return false;
-        }
-        if self.field_type.is_none() {
-            return false;
-        }
-        if self.module.is_none() {
-            return false;
-        }
-        if self.provider.is_none() {
-            return false;
-        }
-        if self.sequence.is_none() {
-            return false;
-        }
-        if self.ingested.is_none() {
-            return false;
-        }
         true
     }
 
@@ -717,7 +687,7 @@ impl BprmCheckSecurityEventProcessTarget {
         ::std::default::Default::default()
     }
 
-    // required string executable = 1;
+    // optional string executable = 1;
 
     pub fn get_executable(&self) -> &str {
         match self.executable.as_ref() {
@@ -753,7 +723,7 @@ impl BprmCheckSecurityEventProcessTarget {
         self.executable.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required uint64 args_count = 2;
+    // optional uint64 args_count = 2;
 
     pub fn get_args_count(&self) -> u64 {
         self.args_count.unwrap_or(0)
@@ -796,12 +766,6 @@ impl BprmCheckSecurityEventProcessTarget {
 
 impl ::protobuf::Message for BprmCheckSecurityEventProcessTarget {
     fn is_initialized(&self) -> bool {
-        if self.executable.is_none() {
-            return false;
-        }
-        if self.args_count.is_none() {
-            return false;
-        }
         true
     }
 
@@ -929,7 +893,7 @@ impl BprmCheckSecurityEventProcess {
         ::std::default::Default::default()
     }
 
-    // required uint32 pid = 1;
+    // optional uint32 pid = 1;
 
     pub fn get_pid(&self) -> u32 {
         self.pid.unwrap_or(0)
@@ -948,7 +912,7 @@ impl BprmCheckSecurityEventProcess {
         self.pid = ::std::option::Option::Some(v);
     }
 
-    // required string entity_id = 2;
+    // optional string entity_id = 2;
 
     pub fn get_entity_id(&self) -> &str {
         match self.entity_id.as_ref() {
@@ -984,7 +948,7 @@ impl BprmCheckSecurityEventProcess {
         self.entity_id.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string name = 3;
+    // optional string name = 3;
 
     pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
@@ -1020,7 +984,7 @@ impl BprmCheckSecurityEventProcess {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required uint32 ppid = 4;
+    // optional uint32 ppid = 4;
 
     pub fn get_ppid(&self) -> u32 {
         self.ppid.unwrap_or(0)
@@ -1039,7 +1003,7 @@ impl BprmCheckSecurityEventProcess {
         self.ppid = ::std::option::Option::Some(v);
     }
 
-    // required uint64 thread_id = 5;
+    // optional uint64 thread_id = 5;
 
     pub fn get_thread_id(&self) -> u64 {
         self.thread_id.unwrap_or(0)
@@ -1105,24 +1069,6 @@ impl BprmCheckSecurityEventProcess {
 
 impl ::protobuf::Message for BprmCheckSecurityEventProcess {
     fn is_initialized(&self) -> bool {
-        if self.pid.is_none() {
-            return false;
-        }
-        if self.entity_id.is_none() {
-            return false;
-        }
-        if self.name.is_none() {
-            return false;
-        }
-        if self.ppid.is_none() {
-            return false;
-        }
-        if self.thread_id.is_none() {
-            return false;
-        }
-        if self.target.is_none() {
-            return false;
-        }
         for v in &self.target {
             if !v.is_initialized() {
                 return false;
@@ -1305,7 +1251,7 @@ impl BprmCheckSecurityEventUserGroup {
         ::std::default::Default::default()
     }
 
-    // required string id = 1;
+    // optional string id = 1;
 
     pub fn get_id(&self) -> &str {
         match self.id.as_ref() {
@@ -1341,7 +1287,7 @@ impl BprmCheckSecurityEventUserGroup {
         self.id.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string name = 2;
+    // optional string name = 2;
 
     pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
@@ -1401,12 +1347,6 @@ impl BprmCheckSecurityEventUserGroup {
 
 impl ::protobuf::Message for BprmCheckSecurityEventUserGroup {
     fn is_initialized(&self) -> bool {
-        if self.id.is_none() {
-            return false;
-        }
-        if self.name.is_none() {
-            return false;
-        }
         true
     }
 
@@ -1531,7 +1471,7 @@ impl BprmCheckSecurityEventUser {
         ::std::default::Default::default()
     }
 
-    // required string id = 1;
+    // optional string id = 1;
 
     pub fn get_id(&self) -> &str {
         match self.id.as_ref() {
@@ -1567,7 +1507,7 @@ impl BprmCheckSecurityEventUser {
         self.id.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // required string name = 2;
+    // optional string name = 2;
 
     pub fn get_name(&self) -> &str {
         match self.name.as_ref() {
@@ -1632,15 +1572,6 @@ impl BprmCheckSecurityEventUser {
 
 impl ::protobuf::Message for BprmCheckSecurityEventUser {
     fn is_initialized(&self) -> bool {
-        if self.id.is_none() {
-            return false;
-        }
-        if self.name.is_none() {
-            return false;
-        }
-        if self.group.is_none() {
-            return false;
-        }
         for v in &self.group {
             if !v.is_initialized() {
                 return false;
@@ -1783,7 +1714,7 @@ impl BprmCheckSecurityEvent {
         ::std::default::Default::default()
     }
 
-    // required uint64 timestamp = 1;
+    // optional uint64 timestamp = 1;
 
     pub fn get_timestamp(&self) -> u64 {
         self.timestamp.unwrap_or(0)
@@ -1835,18 +1766,6 @@ impl BprmCheckSecurityEvent {
 
 impl ::protobuf::Message for BprmCheckSecurityEvent {
     fn is_initialized(&self) -> bool {
-        if self.timestamp.is_none() {
-            return false;
-        }
-        if self.event.is_none() {
-            return false;
-        }
-        if self.process.is_none() {
-            return false;
-        }
-        if self.user.is_none() {
-            return false;
-        }
         for v in &self.event {
             if !v.is_initialized() {
                 return false;
@@ -1988,32 +1907,32 @@ impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEvent {
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x0cstruct.proto\x12\x0eprobe.protobuf\"\xa5\x02\n\x1bBprmCheckSecurit\
-    yEventEvent\x12\x10\n\x02id\x18\x01\x20\x02(\tR\x02idB\0\x12\x14\n\x04co\
-    de\x18\x02\x20\x02(\tR\x04codeB\0\x12\x14\n\x04kind\x18\x03\x20\x02(\tR\
-    \x04kindB\0\x12\x1c\n\x08category\x18\x04\x20\x02(\tR\x08categoryB\0\x12\
-    \x18\n\x06action\x18\x05\x20\x02(\tR\x06actionB\0\x12\x1a\n\nfield_type\
-    \x18\x06\x20\x02(\tR\x04typeB\0\x12\x18\n\x06module\x18\x07\x20\x02(\tR\
-    \x06moduleB\0\x12\x1c\n\x08provider\x18\x08\x20\x02(\tR\x08providerB\0\
-    \x12\x1c\n\x08sequence\x18\t\x20\x02(\x04R\x08sequenceB\0\x12\x1c\n\x08i\
-    ngested\x18\n\x20\x02(\x04R\x08ingestedB\0:\0\"k\n#BprmCheckSecurityEven\
-    tProcessTarget\x12\x20\n\nexecutable\x18\x01\x20\x02(\tR\nexecutableB\0\
-    \x12\x20\n\nargs_count\x18\x02\x20\x02(\x04R\nargs_countB\0:\0\"\xf0\x01\
-    \n\x1dBprmCheckSecurityEventProcess\x12\x12\n\x03pid\x18\x01\x20\x02(\rR\
-    \x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x02(\tR\tentity_idB\0\x12\
-    \x14\n\x04name\x18\x03\x20\x02(\tR\x04nameB\0\x12\x14\n\x04ppid\x18\x04\
-    \x20\x02(\rR\x04ppidB\0\x12\x1e\n\tthread_id\x18\x05\x20\x02(\x04R\tthre\
-    ad.idB\0\x12M\n\x06target\x18\x06\x20\x02(\x0b23.probe.protobuf.BprmChec\
+    yEventEvent\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04co\
+    de\x18\x02\x20\x01(\tR\x04codeB\0\x12\x14\n\x04kind\x18\x03\x20\x01(\tR\
+    \x04kindB\0\x12\x1c\n\x08category\x18\x04\x20\x01(\tR\x08categoryB\0\x12\
+    \x18\n\x06action\x18\x05\x20\x01(\tR\x06actionB\0\x12\x1a\n\nfield_type\
+    \x18\x06\x20\x01(\tR\x04typeB\0\x12\x18\n\x06module\x18\x07\x20\x01(\tR\
+    \x06moduleB\0\x12\x1c\n\x08provider\x18\x08\x20\x01(\tR\x08providerB\0\
+    \x12\x1c\n\x08sequence\x18\t\x20\x01(\x04R\x08sequenceB\0\x12\x1c\n\x08i\
+    ngested\x18\n\x20\x01(\x04R\x08ingestedB\0:\0\"k\n#BprmCheckSecurityEven\
+    tProcessTarget\x12\x20\n\nexecutable\x18\x01\x20\x01(\tR\nexecutableB\0\
+    \x12\x20\n\nargs_count\x18\x02\x20\x01(\x04R\nargs_countB\0:\0\"\xf0\x01\
+    \n\x1dBprmCheckSecurityEventProcess\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\
+    \x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tentity_idB\0\x12\
+    \x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x14\n\x04ppid\x18\x04\
+    \x20\x01(\rR\x04ppidB\0\x12\x1e\n\tthread_id\x18\x05\x20\x01(\x04R\tthre\
+    ad.idB\0\x12M\n\x06target\x18\x06\x20\x01(\x0b23.probe.protobuf.BprmChec\
     kSecurityEventProcessTargetR\x06targetB\0:\0\"K\n\x1fBprmCheckSecurityEv\
-    entUserGroup\x12\x10\n\x02id\x18\x01\x20\x02(\tR\x02idB\0\x12\x14\n\x04n\
-    ame\x18\x02\x20\x02(\tR\x04nameB\0:\0\"\x8f\x01\n\x1aBprmCheckSecurityEv\
-    entUser\x12\x10\n\x02id\x18\x01\x20\x02(\tR\x02idB\0\x12\x14\n\x04name\
-    \x18\x02\x20\x02(\tR\x04nameB\0\x12G\n\x05group\x18\x03\x20\x02(\x0b2/.p\
+    entUserGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04n\
+    ame\x18\x02\x20\x01(\tR\x04nameB\0:\0\"\x8f\x01\n\x1aBprmCheckSecurityEv\
+    entUser\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\
+    \x18\x02\x20\x01(\tR\x04nameB\0\x12G\n\x05group\x18\x03\x20\x01(\x0b2/.p\
     robe.protobuf.BprmCheckSecurityEventUserGroupR\x05groupB\0:\0\"\x8d\x02\
-    \n\x16BprmCheckSecurityEvent\x12\x1f\n\ttimestamp\x18\x01\x20\x02(\x04R\
-    \n@timestampB\0\x12C\n\x05event\x18\x02\x20\x02(\x0b2+.probe.protobuf.Bp\
-    rmCheckSecurityEventEventR\x05eventB\0\x12I\n\x07process\x18\x03\x20\x02\
+    \n\x16BprmCheckSecurityEvent\x12\x1f\n\ttimestamp\x18\x01\x20\x01(\x04R\
+    \n@timestampB\0\x12C\n\x05event\x18\x02\x20\x01(\x0b2+.probe.protobuf.Bp\
+    rmCheckSecurityEventEventR\x05eventB\0\x12I\n\x07process\x18\x03\x20\x01\
     (\x0b2-.probe.protobuf.BprmCheckSecurityEventProcessR\x07processB\0\x12@\
-    \n\x04user\x18\x04\x20\x02(\x0b2*.probe.protobuf.BprmCheckSecurityEventU\
+    \n\x04user\x18\x04\x20\x01(\x0b2*.probe.protobuf.BprmCheckSecurityEventU\
     serR\x04userB\0:\0B\x02H\x01b\x06proto2\
 ";
 

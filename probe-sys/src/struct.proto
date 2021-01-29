@@ -8,74 +8,74 @@ option optimize_for = SPEED;
 
 message BprmCheckSecurityEventEvent {
   
-  required string id = 1 [json_name="id"];
+  optional string id = 1 [json_name="id"];
   
-  required string code = 2 [json_name="code"];
+  optional string code = 2 [json_name="code"];
   
-  required string kind = 3 [json_name="kind"];
+  optional string kind = 3 [json_name="kind"];
   
-  required string category = 4 [json_name="category"];
+  optional string category = 4 [json_name="category"];
   
-  required string action = 5 [json_name="action"];
+  optional string action = 5 [json_name="action"];
   
-  required string field_type = 6 [json_name="type"];
+  optional string field_type = 6 [json_name="type"];
   
-  required string module = 7 [json_name="module"];
+  optional string module = 7 [json_name="module"];
   
-  required string provider = 8 [json_name="provider"];
+  optional string provider = 8 [json_name="provider"];
   
-  required uint64 sequence = 9 [json_name="sequence"];
+  optional uint64 sequence = 9 [json_name="sequence"];
   
-  required uint64 ingested = 10 [json_name="ingested"];
+  optional uint64 ingested = 10 [json_name="ingested"];
   
 }
 message BprmCheckSecurityEventProcessTarget {
   
-  required string executable = 1 [json_name="executable"];
+  optional string executable = 1 [json_name="executable"];
   
-  required uint64 args_count = 2 [json_name="args_count"];
+  optional uint64 args_count = 2 [json_name="args_count"];
   
 }
 message BprmCheckSecurityEventProcess {
   
-  required uint32 pid = 1 [json_name="pid"];
+  optional uint32 pid = 1 [json_name="pid"];
   
-  required string entity_id = 2 [json_name="entity_id"];
+  optional string entity_id = 2 [json_name="entity_id"];
   
-  required string name = 3 [json_name="name"];
+  optional string name = 3 [json_name="name"];
   
-  required uint32 ppid = 4 [json_name="ppid"];
+  optional uint32 ppid = 4 [json_name="ppid"];
   
-  required uint64 thread_id = 5 [json_name="thread.id"];
+  optional uint64 thread_id = 5 [json_name="thread.id"];
   
-  required BprmCheckSecurityEventProcessTarget target = 6 [json_name="target"];
+  optional BprmCheckSecurityEventProcessTarget target = 6 [json_name="target"];
   
 }
 message BprmCheckSecurityEventUserGroup {
   
-  required string id = 1 [json_name="id"];
+  optional string id = 1 [json_name="id"];
   
-  required string name = 2 [json_name="name"];
+  optional string name = 2 [json_name="name"];
   
 }
 message BprmCheckSecurityEventUser {
   
-  required string id = 1 [json_name="id"];
+  optional string id = 1 [json_name="id"];
   
-  required string name = 2 [json_name="name"];
+  optional string name = 2 [json_name="name"];
   
-  required BprmCheckSecurityEventUserGroup group = 3 [json_name="group"];
+  optional BprmCheckSecurityEventUserGroup group = 3 [json_name="group"];
   
 }
 message BprmCheckSecurityEvent {
   
-  required uint64 timestamp = 1 [json_name="@timestamp"];
+  optional uint64 timestamp = 1 [json_name="@timestamp"];
   
-  required BprmCheckSecurityEventEvent event = 2 [json_name="event"];
+  optional BprmCheckSecurityEventEvent event = 2 [json_name="event"];
   
-  required BprmCheckSecurityEventProcess process = 3 [json_name="process"];
+  optional BprmCheckSecurityEventProcess process = 3 [json_name="process"];
   
-  required BprmCheckSecurityEventUser user = 4 [json_name="user"];
+  optional BprmCheckSecurityEventUser user = 4 [json_name="user"];
   
 }
 
