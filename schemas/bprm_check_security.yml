@@ -1,0 +1,114 @@
+---
+- name: "@timestamp"
+  type: date
+  description: Date/time when the event originated.
+- name: event
+  enrichment: true
+  description: Fields breaking down the event details.
+  type: group
+  fields:
+    - name: id
+      type: keyword
+      description: Unique ID to describe the event.
+    - name: code
+      type: keyword
+      description: Identification code for this event.
+    - name: kind
+      type: keyword
+      description: The kind of the event. The highest categorization field in the hierarchy.
+    - name: category
+      type: keyword
+      description: Event category. The second categorization field in the hierarchy.
+    - name: action
+      type: keyword
+      description: The action captured by the event.
+    - name: type
+      type: keyword
+      description: Event type. The third categorization field in the hierarchy.
+    - name: module
+      type: keyword
+      description: Name of the module this data is coming from.
+    - name: provider
+      type: keyword
+      description: Source of the event
+    - name: sequence
+      type: long
+      description: Sequence number of the event.
+    - name: ingested
+      type: date
+      description: Timestamp when an event arrived in the central data store.
+- name: process
+  description: These fields contain information about a process.
+  type: group
+  fields:
+    - name: pid
+      format: string
+      type: long
+      description: Process id.
+      override:
+        c: unsigned int
+        rust: u32
+        proto: uint32
+        final: u32
+    - name: entity_id
+      type: keyword
+      description: Unique identifier for the process.
+    - name: name
+      type: wildcard
+      description: Process name.
+    - name: ppid
+      format: string
+      type: long
+      description: Parent process' pid.
+      override:
+        c: unsigned int
+        rust: u32
+        proto: uint32
+        final: u32
+    - name: thread.id
+      format: string
+      type: long
+      description: Thread ID.
+    # Non-ECS
+    - name: target
+      description: These fields contain information about a process being executed.
+      type: group
+      fields:
+        - name: executable
+          type: wildcard
+          description: Absolute path to the process executable.
+        - name: args_count
+          type: long
+          description: Length of the process.args array.
+- name: user
+  description: Fields to describe the user relevant to the event.
+  type: group
+  fields:
+    - name: id
+      type: keyword
+      description: Unique identifier of the user.
+      override:
+        c: unsigned int
+        rust: u32
+        final: String
+        proto: string
+        transform: int_to_string
+    - name: name
+      type: wildcard
+      description: Short name or login of the user.
+    - name: group
+      type: group
+      description: User's group relevant to the event.
+      fields:
+        - name: id
+          type: keyword
+          description: Unique identifier for the group on the system/platform.
+          override:
+            c: unsigned int
+            rust: u32
+            final: String
+            proto: string
+            transform: int_to_string
+        - name: name
+          type: keyword
+          description: Name of the group.

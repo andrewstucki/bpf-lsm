@@ -5,3 +5,4 @@ target
 probe
 rpms
 .cargo
+venv

@@ -5,55 +5,34 @@
 #include <bpf/bpf_tracing.h>
 #include <bpf/bpf_helpers.h>
 
-#include "_probe.h"
+#include "probe.bpf.h"
 // clang-format on
-
-#define RINGBUFFER_FLAGS 0
-
-struct {
-  __uint(type, BPF_MAP_TYPE_RINGBUF);
-  __uint(max_entries, 256 * 1024);
-} events SEC(".maps");
 
 const volatile unsigned int filtered_user = 0xffffffff;
 
 //  Security hooks for program execution operations.
 
-SEC("lsm/bprm_check_security")
-int BPF_PROG(lsm_hook, struct linux_binprm *bprm) {
-  int ret_val = 0;
-
-  struct event *e =
-      bpf_ringbuf_reserve(&events, sizeof(struct event), RINGBUFFER_FLAGS);
-  if (!e) {
-    goto done;
-  }
+LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
+  initialize_event();
 
   unsigned long pid_tgid = bpf_get_current_pid_tgid();
   unsigned long uid_gid = bpf_get_current_uid_gid();
-
-  e->state = STATE_ALLOWED;
-  e->pid = pid_tgid;
-  e->tid = pid_tgid >> 32;
-  e->gid = uid_gid >> 32;
-  e->uid = uid_gid;
-
   struct task_struct *current_task =
       (struct task_struct *)bpf_get_current_task();
-  e->ppid = BPF_CORE_READ(current_task, real_parent, pid);
 
-  bpf_get_current_comm(&e->program, sizeof(e->program));
-  bpf_probe_read_kernel_str(&e->filename, sizeof(e->filename), bprm->filename);
+  event->process.pid = pid_tgid;
+  event->process.thread__id = pid_tgid >> 32;
+  event->process.ppid = BPF_CORE_READ(current_task, real_parent, pid);
+  bpf_get_current_comm(&event->process.name, sizeof(event->process.name));
+  bpf_probe_read_kernel_str(&event->process.target.executable, sizeof(event->process.target.executable), bprm->filename);
 
-  if (e->uid == filtered_user) {
-    e->state = STATE_DENIED;
-    ret_val = -EPERM;
+  event->user.group.id = uid_gid >> 32;
+  event->user.id = uid_gid;
+
+  bpf_printk("User id: %d, Group id: %d\n", event->user.id, event->user.group.id);
+  if (event->user.id == filtered_user) {
+    reject(event)
   }
 
-  bpf_ringbuf_submit(e, RINGBUFFER_FLAGS);
-
-done:
-  return ret_val;
+  accept(event)
 }
-
-char _license[] SEC("license") = "GPL";

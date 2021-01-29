@@ -1,4 +1,6 @@
 #![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+#![allow(unused_imports)]
 
 use std::fmt;
 use std::os::raw::c_int;
@@ -7,26 +9,63 @@ use std::panic;
 pub mod ffi {
     use std::os::raw::{c_char, c_int, c_uint, c_void};
 
+    // begin bprm_check_security
+
     #[repr(C)]
     #[derive(Debug, Copy, Clone)]
-    pub struct event {
-        pub tid: u32,
-        pub pid: u32,
-        pub ppid: u32,
-        pub gid: u32,
-        pub uid: u32,
-        pub state: u8,
-        pub program: [c_char; 256],
-        pub filename: [c_char; 256],
+    pub struct bprm_check_security_event_process_target_t {
+        pub executable: [c_char; 256],
+        pub args_count: u64,
     }
-    pub type event_handler = extern "C" fn(ctx: *mut c_void, e: event);
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct bprm_check_security_event_process_t {
+        pub pid: u32,
+        pub entity_id: [c_char; 256],
+        pub name: [c_char; 256],
+        pub ppid: u32,
+        pub thread__id: u64,
+        pub target: bprm_check_security_event_process_target_t,
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct bprm_check_security_event_user_group_t {
+        pub id: u32,
+        pub name: [c_char; 256],
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct bprm_check_security_event_user_t {
+        pub id: u32,
+        pub name: [c_char; 256],
+        pub group: bprm_check_security_event_user_group_t,
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct bprm_check_security_event_t {
+        pub __timestamp: u64,
+        pub process: bprm_check_security_event_process_t,
+        pub user: bprm_check_security_event_user_t,
+    }
+
+    pub type bprm_check_security_event_handler =
+        extern "C" fn(ctx: *mut c_void, e: bprm_check_security_event_t);
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct state_configuration {
+        pub filtered_uid: u32,
+        pub debug: bool,
+        pub bprm_check_security_ctx: *mut c_void,
+        pub bprm_check_security_handler: bprm_check_security_event_handler,
+    }
     pub enum state {}
     extern "C" {
-        pub fn new_state(
-            ctx: *mut c_void,
-            handler: event_handler,
-            filtered_uid: c_uint,
-        ) -> *mut state;
+        pub fn new_state(config: state_configuration) -> *mut state;
         pub fn poll_state(_self: *mut state, timeout: c_int);
         pub fn destroy_state(_self: *mut state);
     }
@@ -45,13 +84,16 @@ pub mod ffi {
     /// The closure should guarantee that it never panics, seeing as panicking
     /// across the FFI barrier is *Undefined Behaviour*. You may find
     /// `std::panic::catch_unwind()` useful.
-    pub unsafe fn unpack_closure<F>(closure: &mut F) -> (*mut c_void, event_handler)
+
+    pub unsafe fn unpack_bprm_check_security_closure<F>(
+        closure: &mut F,
+    ) -> (*mut c_void, bprm_check_security_event_handler)
     where
-        F: FnMut(event),
+        F: FnMut(bprm_check_security_event_t),
     {
-        extern "C" fn trampoline<F>(data: *mut c_void, e: event)
+        extern "C" fn trampoline<F>(data: *mut c_void, e: bprm_check_security_event_t)
         where
-            F: FnMut(event),
+            F: FnMut(bprm_check_security_event_t),
         {
             let closure: &mut F = unsafe { &mut *(data as *mut F) };
             (*closure)(e);
@@ -76,84 +118,204 @@ impl fmt::Display for Error {
     }
 }
 
-#[derive(PartialEq, PartialOrd, Debug, Clone)]
-pub enum ExecState {
-    Allowed,
-    Denied,
-    Unknown,
-}
-
-impl From<u8> for ExecState {
-    fn from(value: u8) -> Self {
-        match value {
-            0u8 => return ExecState::Allowed,
-            1u8 => return ExecState::Denied,
-            _ => return ExecState::Unknown,
-        };
-    }
-}
-
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct Event {
     pub tid: u32,
     pub pid: u32,
     pub ppid: u32,
     pub gid: u32,
     pub uid: u32,
-    pub state: ExecState,
     pub filename: String,
     pub program: String,
 }
 
-pub struct Probe<'a> {
-    ctx: Option<*mut ffi::state>,
-    // store the closure so that we make sure it has
-    // the same lifetime as the state wrapper
-    _handler: Option<Box<dyn 'a + Fn(ffi::event)>>,
-    filtered_uid: u32,
+use std::ffi::CStr;
+use std::os::raw::c_char;
+fn transform_string(val: Vec<c_char>) -> String {
+    unsafe { CStr::from_ptr(val.as_ptr()).to_string_lossy().into_owned() }
 }
 
-use std::ffi::CStr;
+fn int_to_string(v: u32) -> String {
+    v.to_string()
+}
+
+pub struct Probe<'a> {
+    ctx: Option<*mut ffi::state>,
+    // store the closures so that we make sure it has
+    // the same lifetime as the state wrapper
+    _bprm_check_security_handler: Option<Box<dyn 'a + Fn(ffi::bprm_check_security_event_t)>>,
+
+    filtered_uid: u32,
+    debug: bool,
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct BprmCheckSecurityEventEvent {
+    id: String,
+
+    code: String,
+
+    kind: String,
+
+    category: String,
+
+    action: String,
+
+    r#type: String,
+
+    module: String,
+
+    provider: String,
+
+    sequence: u64,
+
+    ingested: u64,
+}
+#[derive(Default, Debug, Clone)]
+pub struct BprmCheckSecurityEventProcessTarget {
+    executable: String,
+
+    args_count: u64,
+}
+impl From<ffi::bprm_check_security_event_process_target_t> for BprmCheckSecurityEventProcessTarget {
+    fn from(e: ffi::bprm_check_security_event_process_target_t) -> Self {
+        let mut event = Self::default();
+        event.executable = transform_string(e.executable.into());
+        event.args_count = e.args_count;
+        event
+    }
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct BprmCheckSecurityEventProcess {
+    pid: u32,
+
+    entity_id: String,
+
+    name: String,
+
+    ppid: u32,
+
+    thread_id: u64,
+
+    target: BprmCheckSecurityEventProcessTarget,
+}
+impl From<ffi::bprm_check_security_event_process_t> for BprmCheckSecurityEventProcess {
+    fn from(e: ffi::bprm_check_security_event_process_t) -> Self {
+        let mut event = Self::default();
+        event.pid = e.pid;
+        event.entity_id = transform_string(e.entity_id.into());
+        event.name = transform_string(e.name.into());
+        event.ppid = e.ppid;
+        event.thread_id = e.thread__id;
+        event.target = e.target.into();
+        event
+    }
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct BprmCheckSecurityEventUserGroup {
+    id: String,
+
+    name: String,
+}
+impl From<ffi::bprm_check_security_event_user_group_t> for BprmCheckSecurityEventUserGroup {
+    fn from(e: ffi::bprm_check_security_event_user_group_t) -> Self {
+        let mut event = Self::default();
+        event.id = int_to_string(e.id.into());
+        event.name = transform_string(e.name.into());
+        event
+    }
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct BprmCheckSecurityEventUser {
+    id: String,
+
+    name: String,
+
+    group: BprmCheckSecurityEventUserGroup,
+}
+impl From<ffi::bprm_check_security_event_user_t> for BprmCheckSecurityEventUser {
+    fn from(e: ffi::bprm_check_security_event_user_t) -> Self {
+        let mut event = Self::default();
+        event.id = int_to_string(e.id.into());
+        event.name = transform_string(e.name.into());
+        event.group = e.group.into();
+        event
+    }
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct BprmCheckSecurityEvent {
+    _timestamp: u64,
+
+    event: BprmCheckSecurityEventEvent,
+
+    process: BprmCheckSecurityEventProcess,
+
+    user: BprmCheckSecurityEventUser,
+}
+impl From<ffi::bprm_check_security_event_t> for BprmCheckSecurityEvent {
+    fn from(e: ffi::bprm_check_security_event_t) -> Self {
+        let mut event = Self::default();
+        event._timestamp = e.__timestamp;
+        event.process = e.process.into();
+        event.user = e.user.into();
+        event
+    }
+}
+
+pub trait ProbeHandler {
+    fn handle_bprm_check_security(&self, e: BprmCheckSecurityEvent);
+}
+
 impl<'a> Probe<'a> {
-    pub fn filter(uid: u32) -> Self {
+    pub fn new() -> Self {
         Self {
             ctx: None,
-            _handler: None,
-            filtered_uid: uid,
+            _bprm_check_security_handler: None,
+
+            filtered_uid: std::u32::MAX,
+            debug: false,
         }
+    }
+
+    pub fn filter(&mut self, uid: u32) -> &mut Self {
+        self.filtered_uid = uid;
+        self
+    }
+
+    pub fn debug(&mut self, debug: bool) -> &mut Self {
+        self.debug = debug;
+        self
     }
 
     pub fn run<F: 'a>(&mut self, handler: F) -> Result<&mut Self, Error>
     where
-        F: 'a + Fn(Event) + panic::RefUnwindSafe,
+        F: 'a + ProbeHandler + panic::RefUnwindSafe,
     {
-        let mut wrapper = move |e: ffi::event| {
-            let result = panic::catch_unwind(|| unsafe {
-                handler(Event {
-                    tid: e.tid,
-                    pid: e.pid,
-                    ppid: e.ppid,
-                    gid: e.gid,
-                    uid: e.uid,
-                    state: e.state.into(),
-                    filename: CStr::from_ptr(e.filename.as_ptr())
-                        .to_string_lossy()
-                        .into_owned(),
-                    program: CStr::from_ptr(e.program.as_ptr())
-                        .to_string_lossy()
-                        .into_owned(),
-                });
-            });
+        let mut bprm_check_security_wrapper = move |e: ffi::bprm_check_security_event_t| {
+            let result = panic::catch_unwind(|| handler.handle_bprm_check_security(e.into()));
             // do something with the panic
             result.unwrap();
         };
-        let (closure, callback) = unsafe { ffi::unpack_closure(&mut wrapper) };
-        let state = unsafe { ffi::new_state(closure, callback, self.filtered_uid) };
+        let (bprm_check_security_closure, bprm_check_security_callback) =
+            unsafe { ffi::unpack_bprm_check_security_closure(&mut bprm_check_security_wrapper) };
+
+        let state_config = ffi::state_configuration {
+            filtered_uid: self.filtered_uid,
+            debug: self.debug,
+            bprm_check_security_ctx: bprm_check_security_closure,
+            bprm_check_security_handler: bprm_check_security_callback,
+        };
+        let state = unsafe { ffi::new_state(state_config) };
         if state.is_null() {
             return Err(Error::InitializationError);
         }
         self.ctx = Some(state);
-        self._handler = Some(Box::new(wrapper));
+        self._bprm_check_security_handler = Some(Box::new(bprm_check_security_wrapper));
+
         Ok(self)
     }
 

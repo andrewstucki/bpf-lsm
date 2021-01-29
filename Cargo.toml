@@ -9,6 +9,9 @@ description = "Example BPF LSM in C/Rust"
 [dependencies]
 probe-sys = { path = "./probe-sys" }
 seahorse = "1.1"
+# For use as durable storage
+# sled = { git = "https://github.com/spacejam/sled" }
+protobuf = { git = "https://github.com/stepancheg/rust-protobuf", features = ["with-bytes"] }
 
 [workspace]
 members = [ "probe-sys" ]

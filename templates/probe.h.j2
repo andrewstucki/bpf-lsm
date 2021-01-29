@@ -4,27 +4,30 @@
 #ifndef __PROBE_H
 #define __PROBE_H
 
-#include "probe.bpf.h"
 #include <stdint.h>
+#include "probe.bpf.h"
 
 // this header contains forward declarations
 // for the userspace side of things
 
 struct state;
 
-// begin bprm_check_security
+{% for module in modules -%}
+// begin {{module.name}}
 
-typedef void
-bprm_check_security_event_handler(void *ctx,
-                                  struct bpf_bprm_check_security_event_t e);
+{% set entry_point = module.structures | last %}
+typedef void {{module.name}}_event_handler(void *ctx, struct bpf_{{entry_point.name}} e);
 
-// end bprm_check_security
+// end {{module.name}}
+{%- endfor %}
 
 struct state_configuration {
   unsigned int filtered_uid;
   unsigned char debug;
-  void *bprm_check_security_ctx;
-  bprm_check_security_event_handler *bprm_check_security_handler;
+  {% for module in modules -%}
+  void *{{module.name}}_ctx;
+  {{module.name}}_event_handler *{{module.name}}_handler;
+  {% endfor %}
 };
 
 struct state *new_state(struct state_configuration config);

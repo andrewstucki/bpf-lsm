@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "probe.bpf.h"
 #include "probe.h"
+#include "probe.bpf.h"
 #include "probe.skel.h"
 
 struct handle_event_wrapper {
@@ -18,18 +18,21 @@ struct handle_event_wrapper {
 };
 
 struct handlers {
-  struct handle_event_wrapper *bprm_check_security_handler;
+  {% for module in modules -%}
+  struct handle_event_wrapper *{{module.name}}_handler;
+  {% endfor -%}
 };
 
 struct state {
   struct probe_bpf *obj;
   struct ring_buffer *rb;
   struct handlers *handlers;
-  struct bpf_link *bprm_check_security_hook;
+  {% for module in modules -%}
+  struct bpf_link *{{module.name}}_hook;
+  {% endfor -%}
 };
 
-int print_libbpf_log(enum libbpf_print_level lvl, const char *fmt,
-                     va_list args) {
+int print_libbpf_log(enum libbpf_print_level lvl, const char *fmt, va_list args) {
   return vfprintf(stderr, fmt, args);
 }
 
@@ -37,53 +40,54 @@ int noop_log(enum libbpf_print_level lvl, const char *fmt, va_list args) {
   return 0;
 }
 
-// begin bprm_check_security
+{% for module in modules %}
+// begin {{module.name}}
 
-__attribute__((always_inline)) static int handle_bprm_check_security_event(
-    void *ctx, struct bpf_bprm_check_security_event_t bpf_data) {
+{% set entry_point = module.structures | last %}
+__attribute__((always_inline)) static int handle_{{module.name}}_event(void *ctx, struct bpf_{{entry_point.name}} bpf_data) {
   struct handle_event_wrapper *handle = ctx;
-  bprm_check_security_event_handler *callback = handle->handler;
+  {{module.name}}_event_handler *callback = handle->handler;
   callback(handle->ctx, bpf_data);
   return 0;
 }
 
-// end bprm_check_security
+// end {{module.name}}
+{% endfor %}
 
 static int handle_event(void *ctx, void *data, unsigned long size) {
   struct bpf_event_t *event = data;
   struct handlers *handlers = ctx;
-  switch (event->type) {
-
-  case type_bprm_check_security_event_t:
-    return handle_bprm_check_security_event(
-        handlers->bprm_check_security_handler,
-        event->bprm_check_security_event_t);
+  switch(event->type){
+  {% for module in modules %}
+  {% set entry_point = module.structures | last %}
+    case type_{{ entry_point.name }}: return handle_{{module.name}}_event(handlers->{{module.name}}_handler, event->{{entry_point.name}});
+  {% endfor %}
   }
 }
 
 void destroy_handlers(struct handlers *h) {
   if (h) {
-
-    if (h->bprm_check_security_handler) {
-      free((void *)h->bprm_check_security_handler);
+    {% for module in modules %}
+    if (h->{{module.name}}_handler) {
+      free((void *)h->{{module.name}}_handler);
     }
-
+    {% endfor %}
     free((void *)h);
   }
   h = NULL;
 }
 
-struct handlers *new_handlers() {
+struct handlers * new_handlers() {
   struct handlers *h = (struct handlers *)malloc(sizeof(struct handlers));
   if (!h) {
     goto cleanup;
   }
-
-  h->bprm_check_security_handler = (struct handle_event_wrapper *)malloc(
-      sizeof(struct handle_event_wrapper));
-  if (!h->bprm_check_security_handler) {
+  {% for module in modules %}
+  h->{{module.name}}_handler = (struct handle_event_wrapper *)malloc(sizeof(struct handle_event_wrapper));
+  if (!h->{{module.name}}_handler) {
     goto cleanup;
   }
+  {% endfor %}
 
   goto done;
 
@@ -109,40 +113,39 @@ struct state *new_state(struct state_configuration config) {
     goto cleanup;
   }
   s->obj = NULL;
-
-  s->bprm_check_security_hook = NULL;
-
+  {% for module in modules %}
+  s->{{module.name}}_hook = NULL;
+  {% endfor %}
   s->obj = probe_bpf__open();
   if (!s->obj) {
     goto cleanup;
   }
   s->obj->rodata->filtered_user = config.filtered_uid;
-
-  if (config.bprm_check_security_handler) {
-    s->obj->rodata->bprm_check_security_enabled = 1;
-    s->handlers->bprm_check_security_handler->ctx =
-        config.bprm_check_security_ctx;
-    s->handlers->bprm_check_security_handler->handler =
-        config.bprm_check_security_handler;
+  {% for module in modules %}
+  if (config.{{module.name}}_handler) {
+    s->obj->rodata->{{module.name}}_enabled = 1;
+    s->handlers->{{module.name}}_handler->ctx = config.{{module.name}}_ctx;
+    s->handlers->{{module.name}}_handler->handler = config.{{module.name}}_handler;
   }
+  {% endfor %}
 
   if (probe_bpf__load(s->obj)) {
     goto cleanup;
   }
 
-  s->rb = ring_buffer__new(bpf_map__fd(s->obj->maps.events), handle_event,
-                           (void *)s->handlers, NULL);
+  s->rb = ring_buffer__new(bpf_map__fd(s->obj->maps.events), handle_event, (void *)s->handlers, NULL);
   if (!s->rb) {
     goto cleanup;
   }
 
-  if (config.bprm_check_security_handler) {
-    s->bprm_check_security_hook =
-        bpf_program__attach_lsm(s->obj->progs.bprm_check_security_hook);
-    if (!s->bprm_check_security_hook) {
+  {% for module in modules %}
+  if (config.{{module.name}}_handler) {
+    s->{{module.name}}_hook = bpf_program__attach_lsm(s->obj->progs.{{module.name}}_hook);
+    if (!s->{{module.name}}_hook) {
       goto cleanup;
     }
   }
+  {% endfor %}
 
   goto done;
 
@@ -158,11 +161,11 @@ void destroy_state(struct state *s) {
     if (s->rb) {
       ring_buffer__free(s->rb);
     }
-
-    if (s->bprm_check_security_hook) {
-      bpf_link__destroy(s->bprm_check_security_hook);
+    {% for module in modules %}
+    if (s->{{module.name}}_hook) {
+      bpf_link__destroy(s->{{module.name}}_hook);
     }
-
+    {% endfor %}
     if (s->obj) {
       probe_bpf__destroy(s->obj);
     }

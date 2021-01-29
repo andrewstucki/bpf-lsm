@@ -1,7 +1,14 @@
-use probe_sys::{Event, Probe};
+use probe_sys::{BprmCheckSecurityEvent, Probe, ProbeHandler};
 use seahorse::{App, Context, Flag, FlagType};
 use std::convert::TryFrom;
 use std::env;
+
+struct Handler {}
+impl ProbeHandler for Handler {
+    fn handle_bprm_check_security(&self, e: BprmCheckSecurityEvent) {
+        println!("{:?}", e);
+    }
+}
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -27,9 +34,7 @@ fn run(c: &Context) {
         _ => std::u32::MAX,
     };
 
-    match Probe::filter(filtered_uid).run(|e: Event| {
-        println!("{:?}", e);
-    }) {
+    match Probe::new().filter(filtered_uid).run(Handler {}) {
         Ok(probe) => loop {
             probe.poll(10000);
         },

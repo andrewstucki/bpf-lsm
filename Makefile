@@ -3,7 +3,7 @@ CONTAINER := docker run --rm -v ${DIRECTORY}/.cargo:/cargo/registry -v ${DIRECTO
 
 build:
 	@echo "Compiling release binary"
-	@$(CONTAINER) /bin/sh -c "cargo build --release && cp target/release/probe . && strip probe"
+	@$(CONTAINER) /bin/sh -c "RUSTFLAGS=-Ctarget-feature=+crt-static cargo build --release && cp target/release/probe . && strip probe"
 
 clean:
 	@echo "Cleaning"
@@ -16,6 +16,13 @@ bootstrap-vm:
 	@vagrant halt
 	@echo "Bringing VM back up with new kernel"
 	@vagrant up
+
+venv:
+	@python3 -m venv ./venv
+	@. ./venv/bin/activate && pip install -r requirements.txt
+
+generate: venv
+	@. ./venv/bin/activate && ./scripts/generate-structures
 
 toolchain-llvm:
 	cd toolchain/llvm && \
@@ -30,4 +37,4 @@ toolchain-libbpf:
 toolchain-rust:
 	cd toolchain/rust && \
 	docker build . -t andrewstucki/libbpf-rust-builder:0.3
-	docker push andrewstucki/libbpf-rust-builder:0.3
+	#docker push andrewstucki/libbpf-rust-builder:0.3

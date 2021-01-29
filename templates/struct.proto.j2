@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package google.protobuf;
+
+option (rustproto.carllerche_bytes_for_bytes_all) = true;
+option (rustproto.carllerche_bytes_for_string_all) = true;
+option optimize_for = SPEED;
+
+{% for module in modules -%}
+{% for structure in module.structures -%}
+message {{structure.final}} {
+  {% for field in structure.fields %}
+  {{field.type.proto}} {{field.final}} = {{loop.index}};
+  {% endfor %}
+}
+{% endfor %}
+{% endfor %}

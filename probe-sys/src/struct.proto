@@ -1,0 +1,81 @@
+syntax = "proto2";
+
+package google.protobuf;
+
+option (rustproto.carllerche_bytes_for_bytes_all) = true;
+option (rustproto.carllerche_bytes_for_string_all) = true;
+option optimize_for = SPEED;
+
+message BprmCheckSecurityEventEvent {
+  
+  string id = 1;
+  
+  string code = 2;
+  
+  string kind = 3;
+  
+  string category = 4;
+  
+  string action = 5;
+  
+  string r#type = 6;
+  
+  string module = 7;
+  
+  string provider = 8;
+  
+  uint64 sequence = 9;
+  
+  uint64 ingested = 10;
+  
+}
+message BprmCheckSecurityEventProcessTarget {
+  
+  string executable = 1;
+  
+  uint64 args_count = 2;
+  
+}
+message BprmCheckSecurityEventProcess {
+  
+  uint32 pid = 1;
+  
+  string entity_id = 2;
+  
+  string name = 3;
+  
+  uint32 ppid = 4;
+  
+  uint64 thread_id = 5;
+  
+  BprmCheckSecurityEventProcessTarget target = 6;
+  
+}
+message BprmCheckSecurityEventUserGroup {
+  
+  string id = 1;
+  
+  string name = 2;
+  
+}
+message BprmCheckSecurityEventUser {
+  
+  string id = 1;
+  
+  string name = 2;
+  
+  BprmCheckSecurityEventUserGroup group = 3;
+  
+}
+message BprmCheckSecurityEvent {
+  
+  uint64 _timestamp = 1;
+  
+  BprmCheckSecurityEventEvent event = 2;
+  
+  BprmCheckSecurityEventProcess process = 3;
+  
+  BprmCheckSecurityEventUser user = 4;
+  
+}
+

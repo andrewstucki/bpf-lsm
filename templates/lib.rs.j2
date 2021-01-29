@@ -1,0 +1,241 @@
+#![allow(non_camel_case_types)]
+#![allow(non_snake_case)]
+#![allow(unused_imports)]
+
+use std::fmt;
+use std::os::raw::c_int;
+use std::panic;
+
+pub mod ffi {
+    use std::os::raw::{c_char, c_int, c_uint, c_void};
+
+    {% for module in modules %}
+    // begin {{module.name}}
+
+    {% for structure in module.structures -%}
+    {% if not structure.enrichment -%}
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct {{structure.name}} {
+      {% for field in structure.fields -%}
+      {% if not field.enrichment %}pub {{field.name}}: {% if field.type.size is not none %}[{{field.type.rust}}; {{field.type.size}}]{% else %}{{field.type.rust}}{% endif %},
+      {% endif -%}
+      {%- endfor -%}
+    }
+    {% endif %}
+    {% endfor %}
+
+    {% set entry_point = module.structures | last %}
+    pub type {{module.name}}_event_handler = extern "C" fn(ctx: *mut c_void, e: {{entry_point.name}});
+
+    {% endfor %}
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct state_configuration {
+      pub filtered_uid: u32,
+      pub debug: bool,
+      {% for module in modules -%}
+      pub {{module.name}}_ctx: *mut c_void,
+      pub {{module.name}}_handler: {{module.name}}_event_handler,
+      {% endfor %}
+    }
+    pub enum state {}
+    extern "C" {
+        pub fn new_state(config: state_configuration,) -> *mut state;
+        pub fn poll_state(_self: *mut state, timeout: c_int);
+        pub fn destroy_state(_self: *mut state);
+    }
+
+    /// Unpack a Rust closure, extracting a `void*` pointer to the data and a
+    /// trampoline function which can be used to invoke it.
+    ///
+    /// # Safety
+    ///
+    /// It is the user's responsibility to ensure the closure outlives the returned
+    /// `void*` pointer.
+    ///
+    /// Calling the trampoline function with anything except the `void*` pointer
+    /// will result in *Undefined Behaviour*.
+    ///
+    /// The closure should guarantee that it never panics, seeing as panicking
+    /// across the FFI barrier is *Undefined Behaviour*. You may find
+    /// `std::panic::catch_unwind()` useful.
+    {% for module in modules -%}
+    {% set entry_point = module.structures | last %}
+    pub unsafe fn unpack_{{module.name}}_closure<F>(closure: &mut F) -> (*mut c_void, {{module.name}}_event_handler)
+    where
+        F: FnMut({{entry_point.name}}),
+    {
+        extern "C" fn trampoline<F>(data: *mut c_void, e: {{entry_point.name}})
+        where
+            F: FnMut({{entry_point.name}}),
+        {
+            let closure: &mut F = unsafe { &mut *(data as *mut F) };
+            (*closure)(e);
+        }
+
+        (closure as *mut F as *mut c_void, trampoline::<F>)
+    }
+    {% endfor %}
+}
+
+#[derive(Debug, Clone)]
+pub enum Error {
+    InitializationError,
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Error::InitializationError => f.write_str(
+                "Could not initialize BPF object, ensure you're using Linux kernel >= 4.18",
+            ),
+        }
+    }
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct Event {
+    pub tid: u32,
+    pub pid: u32,
+    pub ppid: u32,
+    pub gid: u32,
+    pub uid: u32,
+    pub filename: String,
+    pub program: String,
+}
+
+use std::ffi::CStr;
+use std::os::raw::c_char;
+fn transform_string(val: Vec<c_char>) -> String {
+  unsafe { CStr::from_ptr(val.as_ptr()).to_string_lossy().into_owned() }
+}
+
+fn int_to_string(v: u32) -> String {
+  v.to_string()
+}
+
+pub struct Probe<'a> {
+    ctx: Option<*mut ffi::state>,
+    // store the closures so that we make sure it has
+    // the same lifetime as the state wrapper
+    {% for module in modules -%}
+    {% set entry_point = module.structures | last %}
+    _{{module.name}}_handler: Option<Box<dyn 'a + Fn(ffi::{{entry_point.name}})>>,
+    {% endfor %}
+    filtered_uid: u32,
+    debug: bool,
+}
+
+{% for module in modules -%}
+{% for structure in module.structures -%}
+#[derive(Default, Debug, Clone)]
+pub struct {{structure.final}} {
+  {% for field in structure.fields %}
+  {{field.final}}: {{field.type.final}},
+  {% endfor %}
+}
+
+{%- if not structure.enrichment -%}
+impl From<ffi::{{structure.name}}> for {{structure.final}} {
+    fn from(e: ffi::{{structure.name}}) -> Self {
+        let mut event = Self::default();
+        {%- for field in structure.fields -%}
+        {%- if not field.enrichment -%}
+        {%- if field.type.transformation is not none -%}
+        event.{{field.final}} = {{field.type.transformation}}(e.{{field.name}}.into());
+        {%- elif field.complex -%}
+        event.{{field.final}} = e.{{field.name}}.into();
+        {%- else -%}
+        event.{{field.final}} = e.{{field.name}};
+        {%- endif -%}
+        {%- endif -%}
+        {% endfor -%}
+        event
+    }
+}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+pub trait ProbeHandler {
+  {% for module in modules -%}
+  {% set entry_point = module.structures | last %}
+  fn handle_{{module.name}}(&self, e: {{entry_point.final}});
+  {% endfor %}
+}
+
+impl<'a> Probe<'a> {
+    pub fn new() -> Self {
+        Self {
+            ctx: None,
+            {% for module in modules -%}
+            _{{module.name}}_handler: None,
+            {% endfor %}
+            filtered_uid: std::u32::MAX,
+            debug: false,
+        }
+    }
+
+    pub fn filter(&mut self, uid: u32) -> &mut Self {
+      self.filtered_uid = uid;
+      self
+    }
+
+    pub fn debug(&mut self, debug: bool) -> &mut Self {
+      self.debug = debug;
+      self
+    }
+
+    pub fn run<F: 'a>(&mut self, handler: F) -> Result<&mut Self, Error>
+    where
+        F: 'a + ProbeHandler + panic::RefUnwindSafe,
+    {
+        {% for module in modules -%}
+        {% set entry_point = module.structures | last %}
+        let mut {{module.name}}_wrapper = move |e: ffi::{{entry_point.name}}| {
+            let result = panic::catch_unwind(|| {
+                handler.handle_{{module.name}}(e.into())
+            });
+            // do something with the panic
+            result.unwrap();
+        };
+        let ({{module.name}}_closure, {{module.name}}_callback) = unsafe { ffi::unpack_{{module.name}}_closure(&mut {{module.name}}_wrapper) };
+        {% endfor %}
+  
+        let state_config = ffi::state_configuration {
+          filtered_uid: self.filtered_uid,
+          debug: self.debug,
+          {% for module in modules -%}
+          {{module.name}}_ctx: {{module.name}}_closure,
+          {{module.name}}_handler: {{module.name}}_callback,
+          {% endfor %}
+        };
+        let state = unsafe { ffi::new_state(state_config) };
+        if state.is_null() {
+            return Err(Error::InitializationError);
+        }
+        self.ctx = Some(state);
+        {% for module in modules -%}
+        self._{{module.name}}_handler = Some(Box::new({{module.name}}_wrapper));
+        {% endfor %}
+        Ok(self)
+    }
+
+    pub fn poll(&self, timeout: i32) {
+        match self.ctx {
+            Some(ctx) => unsafe { ffi::poll_state(ctx, timeout as c_int) },
+            _ => return,
+        }
+    }
+}
+
+impl<'a> Drop for Probe<'a> {
+    fn drop(&mut self) {
+        match self.ctx {
+            Some(ctx) => unsafe { ffi::destroy_state(ctx) },
+            _ => return,
+        }
+    }
+}

@@ -1,8 +1,15 @@
 use std::env;
 use std::path::PathBuf;
 use std::process::Command;
+extern crate protobuf_codegen_pure;
 
 fn main() {
+    protobuf_codegen_pure::Args::new()
+        .out_dir("src")
+        .inputs(&["struct.proto"])
+        .run()
+        .expect("protoc");
+
     if cfg!(target_os = "linux") {
         let src_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("src");
         let status = Command::new("make")

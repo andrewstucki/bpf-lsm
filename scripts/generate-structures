@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+
+from os import path
+from glob import glob
+from yaml import load, Loader
+from typing import Any, NamedTuple
+import re
+import subprocess
+
+from jinja2 import Template
+
+CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
+SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "schemas"))
+SCHEMA_FILES = glob(path.join(SCHEMAS_DIRECTORY, "*.yml"))
+BPF_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.bpf.h.j2")).read())
+USERSPACE_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.c.j2")).read())
+USERSPACE_HEADER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.h.j2")).read())
+BPF_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "probe.bpf.h")
+USERSPACE_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "probe.c")
+USERSPACE_HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "probe.h")
+RUST_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "lib.rs.j2")).read())
+RUST_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "lib.rs")
+PROTO_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "struct.proto.j2")).read())
+PROTO_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "struct.proto")
+
+class FieldType(NamedTuple):
+  transformation: Any
+  final: str
+  proto: str
+  rust: str
+  name: str
+  size: Any
+
+class Field(NamedTuple):
+  type: FieldType
+  enrichment: bool
+  final: str
+  name: str
+  complex: bool
+  path: str
+
+class FieldStructure(NamedTuple):
+  final: str
+  name: str
+  enrichment: bool
+  fields: list
+
+class ModuleStructures(NamedTuple):
+  final: str
+  name: str
+  structures: list
+  map: dict = {}
+
+BPF_TYPES = {
+  'date': FieldType(None, 'u64', 'uint64', 'u64', 'unsigned long', None),
+  'long': FieldType(None, 'u64', 'uint64', 'u64', 'unsigned long', None),
+  'keyword': FieldType('transform_string', 'String', 'string', 'c_char', 'char', 256),
+  'wildcard': FieldType('transform_string', 'String', 'string', 'c_char', 'char', 256),
+}
+
+# add to this as need be
+NAME_NORMALIZATION = re.compile(r"[@\.]")
+UNDERSCORE_NORMALIZATION = re.compile(r"__")
+
+def normalize_name(name):
+  return NAME_NORMALIZATION.sub("__", name)
+
+def rustify(name):
+  keywords = ["type"]
+  if name in keywords:
+    return "r#%s" % name
+  if name == "_timestamp":
+    return "timestamp"
+  return UNDERSCORE_NORMALIZATION.sub("_", name)
+
+def rustify_class(name):
+  return ''.join(word.title() for word in name.split('_'))
+
+class Generator:
+  def __init__(self, filename):
+    with open(filename) as file:
+      self.module = path.splitext(path.basename(filename))[0]
+      self.data = load(file, Loader=Loader)
+
+  def _structure_name(self, namespaces):
+    return "_".join([self.module, "event"] + namespaces + ["t"])
+
+  def _rusty_name(self, namespaces):
+    name = "_".join([self.module, "event"] + namespaces)
+    return rustify_class(name)
+
+  def _build_structs(self, types, enrichment=False, namespaces=[], child=None):
+    data = child if child else self.data
+    structure = FieldStructure(self._rusty_name(namespaces), self._structure_name(namespaces), enrichment, [])
+    structures = []
+    for field in data:
+      field_enrichment = field.get('enrichment', enrichment)
+      name = field.get('name')
+      field_type = field.get('type')
+      normalized_name = normalize_name(name)
+      complex = False
+      if field_type == 'group':
+        complex = True
+        child_namespaces = namespaces + [normalized_name]
+        field_type = FieldType(None, self._rusty_name(child_namespaces), self._rusty_name(child_namespaces), self._structure_name(child_namespaces), self._structure_name(child_namespaces), None)
+        structures += self._build_structs(types, field_enrichment, child_namespaces, field.get('fields'))
+      else:
+        if 'override' in field:
+          field_type = FieldType(field['override'].get('transform', None), field['override']['final'], field['override']['proto'], field['override']['rust'], field['override']['c'], None)
+        else:
+          field_type = types[field_type]
+      field_path = ".".join(namespaces)
+      if len(namespaces) > 0:
+        field_path += "."
+      structure.fields.append(Field(field_type, field_enrichment, rustify(normalized_name), normalized_name, complex, field_path))
+    structures.append(structure)
+    return structures
+
+  def dump_structs(self):
+    return ModuleStructures(rustify_class(self.module), self.module, self._build_structs(BPF_TYPES))
+
+  def dump(self):
+    print(self.module, self.data)
+
+if __name__ == "__main__":
+  generators = [Generator(filename) for filename in SCHEMA_FILES]
+  modules = [generator.dump_structs() for generator in generators]
+  with open(BPF_OUTPUT, "w") as bpf_output:
+    bpf_output.write(BPF_TEMPLATE.render(modules=modules))
+  with open(USERSPACE_OUTPUT, "w") as bpf_output:
+    bpf_output.write(USERSPACE_TEMPLATE.render(modules=modules))
+  with open(USERSPACE_HEADER_OUTPUT, "w") as bpf_output:
+    bpf_output.write(USERSPACE_HEADER_TEMPLATE.render(modules=modules))
+  with open(RUST_OUTPUT, "w") as bpf_output:
+    bpf_output.write(RUST_TEMPLATE.render(modules=modules))
+  with open(PROTO_OUTPUT, "w") as bpf_output:
+    bpf_output.write(PROTO_TEMPLATE.render(modules=modules))
+  subprocess.run(["clang-format", "-i", BPF_OUTPUT], check=True)
+  subprocess.run(["clang-format", "-i", USERSPACE_OUTPUT], check=True)
+  subprocess.run(["clang-format", "-i", USERSPACE_HEADER_OUTPUT], check=True)
+  subprocess.run(["cargo", "fmt"], check=True)

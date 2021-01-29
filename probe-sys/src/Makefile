@@ -4,7 +4,7 @@ LLVM_STRIP ?= llvm-strip
 BPFTOOL ?= /usr/bin/bpftool
 INCLUDES := -I$(OUTPUT)
 CFLAGS := -O3 -Os -fdata-sections -ffunction-sections -fvisibility=hidden
-BPFFLAGS := -g -O2 -D__TARGET_ARCH_x86 -D__KERNEL__ -target bpf
+BPFFLAGS := -g -O2 -DBPF -D__TARGET_ARCH_x86 -D__KERNEL__ -target bpf
 LIB = libprobe.a
 SOURCES = probe.c
 BPF_SOURCES = probe.bpf.c
