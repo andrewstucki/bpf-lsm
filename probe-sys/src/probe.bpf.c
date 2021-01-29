@@ -29,7 +29,6 @@ LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
   event->user.group.id = uid_gid >> 32;
   event->user.id = uid_gid;
 
-  bpf_printk("User id: %d, Group id: %d\n", event->user.id, event->user.group.id);
   if (event->user.id == filtered_user) {
     reject(event)
   }

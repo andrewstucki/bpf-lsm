@@ -1,5 +1,5 @@
 DIRECTORY := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-CONTAINER := docker run --rm -v ${DIRECTORY}/.cargo:/cargo/registry -v ${DIRECTORY}:/src andrewstucki/libbpf-rust-builder:0.3
+CONTAINER := docker run --rm -v ${DIRECTORY}/.cargo:/cargo/registry -v ${DIRECTORY}/.cargo/git:/cargo/git -v ${DIRECTORY}:/src andrewstucki/libbpf-rust-builder:0.3
 
 build:
 	@echo "Compiling release binary"
