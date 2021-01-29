@@ -2,9 +2,12 @@
 #![allow(non_snake_case)]
 #![allow(unused_imports)]
 
+extern crate protobuf;
+
 use std::fmt;
 use std::os::raw::c_int;
 use std::panic;
+pub mod struct_pb;
 
 pub mod ffi {
     use std::os::raw::{c_char, c_int, c_uint, c_void};
@@ -149,125 +152,63 @@ pub struct Probe<'a> {
     debug: bool,
 }
 
-#[derive(Default, Debug, Clone)]
-pub struct BprmCheckSecurityEventEvent {
-    id: String,
-
-    code: String,
-
-    kind: String,
-
-    category: String,
-
-    action: String,
-
-    r#type: String,
-
-    module: String,
-
-    provider: String,
-
-    sequence: u64,
-
-    ingested: u64,
-}
-#[derive(Default, Debug, Clone)]
-pub struct BprmCheckSecurityEventProcessTarget {
-    executable: String,
-
-    args_count: u64,
-}
-impl From<ffi::bprm_check_security_event_process_target_t> for BprmCheckSecurityEventProcessTarget {
+impl From<ffi::bprm_check_security_event_process_target_t>
+    for struct_pb::BprmCheckSecurityEventProcessTarget
+{
     fn from(e: ffi::bprm_check_security_event_process_target_t) -> Self {
         let mut event = Self::default();
-        event.executable = transform_string(e.executable.into());
-        event.args_count = e.args_count;
+        event.set_executable(transform_string(e.executable.into()));
+        event.set_args_count(e.args_count);
         event
     }
 }
 
-#[derive(Default, Debug, Clone)]
-pub struct BprmCheckSecurityEventProcess {
-    pid: u32,
-
-    entity_id: String,
-
-    name: String,
-
-    ppid: u32,
-
-    thread_id: u64,
-
-    target: BprmCheckSecurityEventProcessTarget,
-}
-impl From<ffi::bprm_check_security_event_process_t> for BprmCheckSecurityEventProcess {
+impl From<ffi::bprm_check_security_event_process_t> for struct_pb::BprmCheckSecurityEventProcess {
     fn from(e: ffi::bprm_check_security_event_process_t) -> Self {
         let mut event = Self::default();
-        event.pid = e.pid;
-        event.entity_id = transform_string(e.entity_id.into());
-        event.name = transform_string(e.name.into());
-        event.ppid = e.ppid;
-        event.thread_id = e.thread__id;
-        event.target = e.target.into();
+        event.set_pid(e.pid);
+        event.set_entity_id(transform_string(e.entity_id.into()));
+        event.set_name(transform_string(e.name.into()));
+        event.set_ppid(e.ppid);
+        event.set_thread_id(e.thread__id);
+        event.target = Some(e.target.into()).into();
         event
     }
 }
 
-#[derive(Default, Debug, Clone)]
-pub struct BprmCheckSecurityEventUserGroup {
-    id: String,
-
-    name: String,
-}
-impl From<ffi::bprm_check_security_event_user_group_t> for BprmCheckSecurityEventUserGroup {
+impl From<ffi::bprm_check_security_event_user_group_t>
+    for struct_pb::BprmCheckSecurityEventUserGroup
+{
     fn from(e: ffi::bprm_check_security_event_user_group_t) -> Self {
         let mut event = Self::default();
-        event.id = int_to_string(e.id.into());
-        event.name = transform_string(e.name.into());
+        event.set_id(int_to_string(e.id.into()));
+        event.set_name(transform_string(e.name.into()));
         event
     }
 }
 
-#[derive(Default, Debug, Clone)]
-pub struct BprmCheckSecurityEventUser {
-    id: String,
-
-    name: String,
-
-    group: BprmCheckSecurityEventUserGroup,
-}
-impl From<ffi::bprm_check_security_event_user_t> for BprmCheckSecurityEventUser {
+impl From<ffi::bprm_check_security_event_user_t> for struct_pb::BprmCheckSecurityEventUser {
     fn from(e: ffi::bprm_check_security_event_user_t) -> Self {
         let mut event = Self::default();
-        event.id = int_to_string(e.id.into());
-        event.name = transform_string(e.name.into());
-        event.group = e.group.into();
+        event.set_id(int_to_string(e.id.into()));
+        event.set_name(transform_string(e.name.into()));
+        event.group = Some(e.group.into()).into();
         event
     }
 }
 
-#[derive(Default, Debug, Clone)]
-pub struct BprmCheckSecurityEvent {
-    _timestamp: u64,
-
-    event: BprmCheckSecurityEventEvent,
-
-    process: BprmCheckSecurityEventProcess,
-
-    user: BprmCheckSecurityEventUser,
-}
-impl From<ffi::bprm_check_security_event_t> for BprmCheckSecurityEvent {
+impl From<ffi::bprm_check_security_event_t> for struct_pb::BprmCheckSecurityEvent {
     fn from(e: ffi::bprm_check_security_event_t) -> Self {
         let mut event = Self::default();
-        event._timestamp = e.__timestamp;
-        event.process = e.process.into();
-        event.user = e.user.into();
+        event.set_timestamp(e.__timestamp);
+        event.process = Some(e.process.into()).into();
+        event.user = Some(e.user.into()).into();
         event
     }
 }
 
 pub trait ProbeHandler {
-    fn handle_bprm_check_security(&self, e: BprmCheckSecurityEvent);
+    fn handle_bprm_check_security(&self, e: struct_pb::BprmCheckSecurityEvent);
 }
 
 impl<'a> Probe<'a> {

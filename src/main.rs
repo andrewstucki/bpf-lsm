@@ -1,4 +1,6 @@
-use probe_sys::{BprmCheckSecurityEvent, Probe, ProbeHandler};
+use probe_sys::struct_pb::BprmCheckSecurityEvent;
+use probe_sys::{Probe, ProbeHandler};
+use protobuf::json::print_to_string;
 use seahorse::{App, Context, Flag, FlagType};
 use std::convert::TryFrom;
 use std::env;
@@ -6,7 +8,7 @@ use std::env;
 struct Handler {}
 impl ProbeHandler for Handler {
     fn handle_bprm_check_security(&self, e: BprmCheckSecurityEvent) {
-        println!("{:?}", e);
+        println!("{:}", print_to_string(&e).unwrap());
     }
 }
 

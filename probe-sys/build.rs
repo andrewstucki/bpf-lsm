@@ -4,9 +4,10 @@ use std::process::Command;
 extern crate protobuf_codegen_pure;
 
 fn main() {
-    protobuf_codegen_pure::Args::new()
+    protobuf_codegen_pure::Codegen::new()
         .out_dir("src")
-        .inputs(&["struct.proto"])
+        .input("src/struct.proto")
+        .include("src")
         .run()
         .expect("protoc");
 

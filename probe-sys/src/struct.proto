@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package google.protobuf;
+package probe.protobuf;
 
 option (rustproto.carllerche_bytes_for_bytes_all) = true;
 option (rustproto.carllerche_bytes_for_string_all) = true;
@@ -8,74 +8,74 @@ option optimize_for = SPEED;
 
 message BprmCheckSecurityEventEvent {
   
-  string id = 1;
+  required string id = 1 [json_name="id"];
   
-  string code = 2;
+  required string code = 2 [json_name="code"];
   
-  string kind = 3;
+  required string kind = 3 [json_name="kind"];
   
-  string category = 4;
+  required string category = 4 [json_name="category"];
   
-  string action = 5;
+  required string action = 5 [json_name="action"];
   
-  string r#type = 6;
+  required string field_type = 6 [json_name="type"];
   
-  string module = 7;
+  required string module = 7 [json_name="module"];
   
-  string provider = 8;
+  required string provider = 8 [json_name="provider"];
   
-  uint64 sequence = 9;
+  required uint64 sequence = 9 [json_name="sequence"];
   
-  uint64 ingested = 10;
+  required uint64 ingested = 10 [json_name="ingested"];
   
 }
 message BprmCheckSecurityEventProcessTarget {
   
-  string executable = 1;
+  required string executable = 1 [json_name="executable"];
   
-  uint64 args_count = 2;
+  required uint64 args_count = 2 [json_name="args_count"];
   
 }
 message BprmCheckSecurityEventProcess {
   
-  uint32 pid = 1;
+  required uint32 pid = 1 [json_name="pid"];
   
-  string entity_id = 2;
+  required string entity_id = 2 [json_name="entity_id"];
   
-  string name = 3;
+  required string name = 3 [json_name="name"];
   
-  uint32 ppid = 4;
+  required uint32 ppid = 4 [json_name="ppid"];
   
-  uint64 thread_id = 5;
+  required uint64 thread_id = 5 [json_name="thread.id"];
   
-  BprmCheckSecurityEventProcessTarget target = 6;
+  required BprmCheckSecurityEventProcessTarget target = 6 [json_name="target"];
   
 }
 message BprmCheckSecurityEventUserGroup {
   
-  string id = 1;
+  required string id = 1 [json_name="id"];
   
-  string name = 2;
+  required string name = 2 [json_name="name"];
   
 }
 message BprmCheckSecurityEventUser {
   
-  string id = 1;
+  required string id = 1 [json_name="id"];
   
-  string name = 2;
+  required string name = 2 [json_name="name"];
   
-  BprmCheckSecurityEventUserGroup group = 3;
+  required BprmCheckSecurityEventUserGroup group = 3 [json_name="group"];
   
 }
 message BprmCheckSecurityEvent {
   
-  uint64 _timestamp = 1;
+  required uint64 timestamp = 1 [json_name="@timestamp"];
   
-  BprmCheckSecurityEventEvent event = 2;
+  required BprmCheckSecurityEventEvent event = 2 [json_name="event"];
   
-  BprmCheckSecurityEventProcess process = 3;
+  required BprmCheckSecurityEventProcess process = 3 [json_name="process"];
   
-  BprmCheckSecurityEventUser user = 4;
+  required BprmCheckSecurityEventUser user = 4 [json_name="user"];
   
 }
 

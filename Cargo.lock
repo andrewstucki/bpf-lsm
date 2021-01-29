@@ -11,7 +11,7 @@ name = "probe"
 version = "0.0.1"
 dependencies = [
  "probe-sys",
- "protobuf 3.0.0-pre",
+ "protobuf",
  "seahorse",
 ]
 
@@ -19,39 +19,32 @@ dependencies = [
 name = "probe-sys"
 version = "0.0.1"
 dependencies = [
+ "protobuf",
  "protobuf-codegen-pure",
 ]
 
 [[package]]
 name = "protobuf"
-version = "2.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86473d5f16580f10b131a0bf0afb68f8e029d1835d33a00f37281b05694e5312"
-
-[[package]]
-name = "protobuf"
 version = "3.0.0-pre"
-source = "git+https://github.com/stepancheg/rust-protobuf#5f3ed259acf9ae42014e4e49f7c4d62917685584"
+source = "git+https://github.com/stepancheg/rust-protobuf?rev=5f3ed259#5f3ed259acf9ae42014e4e49f7c4d62917685584"
 dependencies = [
  "bytes",
 ]
 
 [[package]]
 name = "protobuf-codegen"
-version = "2.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c8b6ba4581fcd9c3ce3576f25e528467b0d3516e332884c0da6f2084fe59045f"
+version = "3.0.0-pre"
+source = "git+https://github.com/stepancheg/rust-protobuf?rev=5f3ed259#5f3ed259acf9ae42014e4e49f7c4d62917685584"
 dependencies = [
- "protobuf 2.20.0",
+ "protobuf",
 ]
 
 [[package]]
 name = "protobuf-codegen-pure"
-version = "2.20.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0cc5a64733bf127b466ca734a39ad1b123ac37bfe96c5a340fa6f5393dfd964"
+version = "3.0.0-pre"
+source = "git+https://github.com/stepancheg/rust-protobuf?rev=5f3ed259#5f3ed259acf9ae42014e4e49f7c4d62917685584"
 dependencies = [
- "protobuf 2.20.0",
+ "protobuf",
  "protobuf-codegen",
 ]
 

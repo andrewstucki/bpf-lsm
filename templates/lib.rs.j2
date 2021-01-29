@@ -2,9 +2,12 @@
 #![allow(non_snake_case)]
 #![allow(unused_imports)]
 
+extern crate protobuf;
+
 use std::fmt;
 use std::os::raw::c_int;
 use std::panic;
+pub mod struct_pb;
 
 pub mod ffi {
     use std::os::raw::{c_char, c_int, c_uint, c_void};
@@ -130,25 +133,18 @@ pub struct Probe<'a> {
 
 {% for module in modules -%}
 {% for structure in module.structures -%}
-#[derive(Default, Debug, Clone)]
-pub struct {{structure.final}} {
-  {% for field in structure.fields %}
-  {{field.final}}: {{field.type.final}},
-  {% endfor %}
-}
-
 {%- if not structure.enrichment -%}
-impl From<ffi::{{structure.name}}> for {{structure.final}} {
+impl From<ffi::{{structure.name}}> for struct_pb::{{structure.final}} {
     fn from(e: ffi::{{structure.name}}) -> Self {
         let mut event = Self::default();
         {%- for field in structure.fields -%}
         {%- if not field.enrichment -%}
         {%- if field.type.transformation is not none -%}
-        event.{{field.final}} = {{field.type.transformation}}(e.{{field.name}}.into());
+        event.set_{{field.final}}({{field.type.transformation}}(e.{{field.name}}.into()));
         {%- elif field.complex -%}
-        event.{{field.final}} = e.{{field.name}}.into();
+        event.{{field.final}} = Some(e.{{field.name}}.into()).into();
         {%- else -%}
-        event.{{field.final}} = e.{{field.name}};
+        event.set_{{field.final}}(e.{{field.name}});
         {%- endif -%}
         {%- endif -%}
         {% endfor -%}
@@ -162,7 +158,7 @@ impl From<ffi::{{structure.name}}> for {{structure.final}} {
 pub trait ProbeHandler {
   {% for module in modules -%}
   {% set entry_point = module.structures | last %}
-  fn handle_{{module.name}}(&self, e: {{entry_point.final}});
+  fn handle_{{module.name}}(&self, e: struct_pb::{{entry_point.final}});
   {% endfor %}
 }
 

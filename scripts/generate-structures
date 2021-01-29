@@ -36,6 +36,7 @@ class Field(NamedTuple):
   enrichment: bool
   final: str
   name: str
+  original: str
   complex: bool
   path: str
 
@@ -68,8 +69,8 @@ def normalize_name(name):
 def rustify(name):
   keywords = ["type"]
   if name in keywords:
-    return "r#%s" % name
-  if name == "_timestamp":
+    return "field_%s" % name
+  if name == "__timestamp":
     return "timestamp"
   return UNDERSCORE_NORMALIZATION.sub("_", name)
 
@@ -112,7 +113,7 @@ class Generator:
       field_path = ".".join(namespaces)
       if len(namespaces) > 0:
         field_path += "."
-      structure.fields.append(Field(field_type, field_enrichment, rustify(normalized_name), normalized_name, complex, field_path))
+      structure.fields.append(Field(field_type, field_enrichment, rustify(normalized_name), normalized_name, name, complex, field_path))
     structures.append(structure)
     return structures
 

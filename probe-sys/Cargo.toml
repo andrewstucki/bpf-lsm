@@ -9,5 +9,8 @@ build = "build.rs"
 [lib]
 crate-type = ["rlib"]
 
+[dependencies]
+protobuf = { git = "https://github.com/stepancheg/rust-protobuf", rev="5f3ed259", features = ["with-bytes"] }
+
 [build-dependencies]
-protobuf-codegen-pure = "2.3"
+protobuf-codegen-pure = { git = "https://github.com/stepancheg/rust-protobuf", rev="5f3ed259" }
