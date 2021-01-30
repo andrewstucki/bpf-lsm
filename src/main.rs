@@ -1,23 +1,28 @@
-#[macro_use]
-extern crate may;
-
-#[macro_use]
-extern crate lazy_static;
-
-use log::{debug, error, warn, LevelFilter};
-use probe_sys::{BprmCheckSecurityEvent, Probe, ProbeHandler, SerializableEvent};
+use log::{debug, error, LevelFilter};
+use num_cpus;
+use once_cell::sync::OnceCell;
+use probe_sys::{
+    BprmCheckSecurityEvent, Probe, ProbeHandler, SerializableEvent, TransformationHandler,
+};
 use seahorse::{App, Context, Flag, FlagType};
 use sled::{Config, Db};
+use spmc;
 use std::convert::TryFrom;
 use std::env;
 use std::error;
 use std::fmt;
+use uuid::Uuid;
 
-lazy_static! {
-    static ref DB: Db = {
-        let config = Config::new().temporary(true);
-        config.open().unwrap()
-    };
+static DB_INSTANCE: OnceCell<Db> = OnceCell::new();
+
+pub fn global_database() -> &'static Db {
+    DB_INSTANCE.get().expect("database is not initialized")
+}
+
+pub fn initialize_global_database(db: Db) {
+    DB_INSTANCE
+        .set(db)
+        .expect("database could not be initialized");
 }
 
 #[derive(Debug)]
@@ -64,28 +69,42 @@ fn setup_logger(level: LevelFilter) {
     }
 }
 
-#[derive(Clone)]
 struct Handler {}
 
-impl Handler {
+impl ProbeHandler<Error> for Handler {
     fn enqueue<T>(&self, event: &mut T) -> Result<(), Error>
     where
         T: SerializableEvent + std::fmt::Debug,
     {
+        let db = global_database();
+        let uuid = Uuid::new_v4();
+        let sequence = db
+            .generate_id()
+            .map_err(|e| Error::EnqueuingError(e.to_string()))?;
+
+        let mut buffer = Uuid::encode_buffer();
+        let event_id = uuid.to_hyphenated().encode_lower(&mut buffer);
+        event.update_id(event_id);
+        event.update_sequence(sequence);
+
         let data = event
             .to_bytes()
             .map_err(|e| Error::EnqueuingError(e.to_string()))?;
-        DB.insert(b"1", data)
-            .map_err(|e| Error::EnqueuingError(e.to_string()))?;
+        db.insert(
+            [&sequence.to_be_bytes()[..], uuid.as_bytes()].concat(),
+            data,
+        )
+        .map_err(|e| Error::EnqueuingError(e.to_string()))?;
         Ok(())
     }
 }
 
-impl ProbeHandler for Handler {
-    fn handle_bprm_check_security(&self, event: &mut BprmCheckSecurityEvent) {
-        debug!("enqueueing");
-        self.enqueue(event)
-            .unwrap_or_else(|e| warn!("error sending data: {}", e));
+impl TransformationHandler for Handler {
+    fn enrich_bprm_check_security<'a>(
+        &self,
+        event: &'a mut BprmCheckSecurityEvent,
+    ) -> &'a mut BprmCheckSecurityEvent {
+        event
     }
 }
 
@@ -104,12 +123,21 @@ fn main() {
             Flag::new("debug", FlagType::Bool)
                 .description("Verbose debugging")
                 .alias("d"),
+        )
+        .flag(
+            Flag::new("workers", FlagType::Int)
+                .description("Number of workers (default: #cores)")
+                .alias("w"),
         );
 
     app.run(args)
 }
 
 fn run(c: &Context) {
+    let config = Config::new().temporary(true);
+    let db = config.open().expect("could not open database");
+    initialize_global_database(db);
+
     setup_logger(if c.bool_flag("debug") {
         log::LevelFilter::Debug
     } else {
@@ -120,21 +148,47 @@ fn run(c: &Context) {
         u32::try_from(id).unwrap_or(std::u32::MAX)
     });
 
-    let subscriber = DB.watch_prefix(vec![]);
-    go!(move || {
-        for _event in subscriber.take(1) {
-            debug!("data");
-        }
-        debug!("finished consuming channel");
-    });
+    let cores = num_cpus::get() as u32;
+    let workers = c
+        .int_flag("workers")
+        .map_or(cores, |w| u32::try_from(w).unwrap_or(cores));
 
-    match Probe::new().filter(filtered_uid).run(Handler {}) {
-        Ok(probe) => loop {
-            probe.poll(10000);
+    std::thread::spawn(
+        move || match Probe::new().filter(filtered_uid).run(Handler {}) {
+            Ok(probe) => loop {
+                probe.poll(-1);
+            },
+            Err(e) => {
+                error!("error setting up probe: {}", e.to_string());
+                std::process::exit(1);
+            }
         },
-        Err(e) => {
-            error!("error setting up probe: {}", e.to_string());
-            std::process::exit(1);
+    );
+
+    let (mut tx, rx) = spmc::channel();
+    for i in 0..workers {
+        let rx = rx.clone();
+        std::thread::spawn(move || loop {
+            match rx.recv() {
+                Ok(data) => debug!("worker {}: {:?}", i, data),
+                Err(e) => error!("worker {}: {}", i, e.to_string()),
+            }
+        });
+    }
+
+    let mut subscriber = global_database().watch_prefix(vec![]);
+    loop {
+        match subscriber.next() {
+            Some(data) => {
+                let result = tx.send(data);
+                if result.is_err() {
+                    error!("sender: {}", result.unwrap_err().to_string());
+                }
+            }
+            None => {
+                debug!("subscriber closed");
+                break;
+            }
         }
     }
 }

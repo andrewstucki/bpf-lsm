@@ -9,7 +9,7 @@ use std::os::raw::c_int;
 use std::panic;
 use std::error;
 use std::fmt::Debug;
-use log::{debug, error};
+use log::{debug, warn, error};
 
 use protobuf::json::{PrintError, print_to_string};
 use protobuf::{ProtobufError, Message};
@@ -157,6 +157,8 @@ pub type SerializableResult<T> = Result<T, SerializationError>;
 pub trait SerializableEvent {
     fn to_json(&self) -> SerializableResult<String>;
     fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
+    fn update_id(&mut self, id: &mut str);
+    fn update_sequence(&mut self, seq: u64);
 }
 
 {% for module in modules -%}
@@ -166,11 +168,15 @@ impl From<ffi::{{structure.name}}> for {{structure.final}} {
     fn from(e: ffi::{{structure.name}}) -> Self {
         let mut event = Self::default();
         {%- for field in structure.fields -%}
+        {%- if field.complex -%}
         {%- if not field.enrichment -%}
+        event.{{field.final}} = Some(e.{{field.name}}.into()).into();
+        {%- else -%}
+        event.{{field.final}} = Some(Default::default()).into();
+        {%- endif -%}
+        {%- elif not field.enrichment -%}
         {%- if field.type.transformation is not none -%}
         event.set_{{field.final}}({{field.type.transformation}}(e.{{field.name}}.into()));
-        {%- elif field.complex -%}
-        event.{{field.final}} = Some(e.{{field.name}}.into()).into();
         {%- else -%}
         event.set_{{field.final}}(e.{{field.name}});
         {%- endif -%}
@@ -180,8 +186,10 @@ impl From<ffi::{{structure.name}}> for {{structure.final}} {
     }
 }
 {% endif %}
+{% endfor %}
 
-impl SerializableEvent for {{structure.final}} {
+{% set entry_point = module.structures | last %}
+impl SerializableEvent for {{entry_point.final}} {
     fn to_json(&self) -> SerializableResult<String> {
         match print_to_string(self) {
             Ok(result) => Ok(result),
@@ -195,15 +203,48 @@ impl SerializableEvent for {{structure.final}} {
           Err(e) => Err(SerializationError::Bytes(e)),
         }
     }
+
+    fn update_id(&mut self, id: &mut str) {
+      self.event.as_mut().and_then(|e| {
+        e.set_id(id.to_string().to_owned());
+        Some(e)
+      });
+    }
+
+    fn update_sequence(&mut self, seq: u64) {
+      self.event.as_mut().and_then(|e| {
+        e.set_sequence(seq);
+        Some(e)
+      });
+    }
 }
 {% endfor %}
-{% endfor %}
 
-pub trait ProbeHandler {
+pub trait ProbeHandler<U> {
+  fn enqueue<T>(&self, event: &mut T) -> Result<(), U> where T: SerializableEvent + std::fmt::Debug;
+}
+
+pub trait TransformationHandler {
   {% for module in modules -%}
   {% set entry_point = module.structures | last %}
-  fn handle_{{module.name}}(&self, e: &mut {{entry_point.final}});
+  fn enrich_{{module.name}}<'a>(&self, e: &'a mut {{entry_point.final}}) -> &'a mut {{entry_point.final}};
   {% endfor %}
+}
+
+pub struct Transformer<T> {
+    handler: T,
+}
+
+impl<T> Transformer<T> {
+  pub fn new(handler: T) -> Self {
+      Self {
+          handler: handler,
+      }
+  }
+
+  pub fn transform<U>(_data: Vec<u8>) -> Result<String, U> {
+      Ok("".to_string())
+  }  
 }
 
 impl<'a> Probe<'a> {
@@ -228,15 +269,17 @@ impl<'a> Probe<'a> {
       self
     }
 
-    pub fn run<F: 'a>(&mut self, handler: F) -> Result<&mut Self, Error>
+    pub fn run<F: 'a, U>(&mut self, handler: F) -> Result<&mut Self, Error>
     where
-        F: 'a + ProbeHandler + panic::RefUnwindSafe,
+        F: 'a + ProbeHandler<U> + panic::RefUnwindSafe,
+        U: std::fmt::Display
     {
         {% for module in modules -%}
         {% set entry_point = module.structures | last %}
         let mut {{module.name}}_wrapper = move |e: ffi::{{entry_point.name}}| {
             let result = panic::catch_unwind(|| {
-              handler.handle_{{module.name}}(&mut e.into())
+                handler.enqueue(&mut {{entry_point.final}}::from(e))
+                    .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
             });
             if result.is_err() {
               debug!("panic while handling event");

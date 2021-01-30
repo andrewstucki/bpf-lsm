@@ -11,14 +11,16 @@ probe-sys = { path = "./probe-sys" }
 seahorse = "1.1"
 ureq = "2.0.1"
 ajson = "0.2"
-may = "0.3.18"
 flate2 = "1.0.20"
 chrono = "0.4.19"
 log = "0.4"
 fern = "0.5"
-lazy_static = "1.4.0"
+once_cell = "1.5.2"
+spmc = "0.3.0"
+num_cpus = "1.13.0"
+uuid = { version = "0.8.2", features = ["v4"] }
 # For use as durable storage
-sled = { git = "https://github.com/spacejam/sled", rev="d92e56d" }
+sled = { git = "https://github.com/spacejam/sled", rev = "d92e56d" }
 
 [workspace]
 members = [ "probe-sys" ]

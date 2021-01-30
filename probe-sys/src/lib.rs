@@ -4,7 +4,7 @@
 
 extern crate protobuf;
 
-use log::{debug, error};
+use log::{debug, error, warn};
 use std::error;
 use std::fmt;
 use std::fmt::Debug;
@@ -177,23 +177,10 @@ pub type SerializableResult<T> = Result<T, SerializationError>;
 pub trait SerializableEvent {
     fn to_json(&self) -> SerializableResult<String>;
     fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
+    fn update_id(&mut self, id: &mut str);
+    fn update_sequence(&mut self, seq: u64);
 }
 
-impl SerializableEvent for BprmCheckSecurityEventEvent {
-    fn to_json(&self) -> SerializableResult<String> {
-        match print_to_string(self) {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Json(e)),
-        }
-    }
-
-    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
-        match self.write_to_bytes() {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Bytes(e)),
-        }
-    }
-}
 impl From<ffi::bprm_check_security_event_process_target_t> for BprmCheckSecurityEventProcessTarget {
     fn from(e: ffi::bprm_check_security_event_process_target_t) -> Self {
         let mut event = Self::default();
@@ -203,21 +190,6 @@ impl From<ffi::bprm_check_security_event_process_target_t> for BprmCheckSecurity
     }
 }
 
-impl SerializableEvent for BprmCheckSecurityEventProcessTarget {
-    fn to_json(&self) -> SerializableResult<String> {
-        match print_to_string(self) {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Json(e)),
-        }
-    }
-
-    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
-        match self.write_to_bytes() {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Bytes(e)),
-        }
-    }
-}
 impl From<ffi::bprm_check_security_event_process_t> for BprmCheckSecurityEventProcess {
     fn from(e: ffi::bprm_check_security_event_process_t) -> Self {
         let mut event = Self::default();
@@ -231,21 +203,6 @@ impl From<ffi::bprm_check_security_event_process_t> for BprmCheckSecurityEventPr
     }
 }
 
-impl SerializableEvent for BprmCheckSecurityEventProcess {
-    fn to_json(&self) -> SerializableResult<String> {
-        match print_to_string(self) {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Json(e)),
-        }
-    }
-
-    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
-        match self.write_to_bytes() {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Bytes(e)),
-        }
-    }
-}
 impl From<ffi::bprm_check_security_event_user_group_t> for BprmCheckSecurityEventUserGroup {
     fn from(e: ffi::bprm_check_security_event_user_group_t) -> Self {
         let mut event = Self::default();
@@ -255,21 +212,6 @@ impl From<ffi::bprm_check_security_event_user_group_t> for BprmCheckSecurityEven
     }
 }
 
-impl SerializableEvent for BprmCheckSecurityEventUserGroup {
-    fn to_json(&self) -> SerializableResult<String> {
-        match print_to_string(self) {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Json(e)),
-        }
-    }
-
-    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
-        match self.write_to_bytes() {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Bytes(e)),
-        }
-    }
-}
 impl From<ffi::bprm_check_security_event_user_t> for BprmCheckSecurityEventUser {
     fn from(e: ffi::bprm_check_security_event_user_t) -> Self {
         let mut event = Self::default();
@@ -280,25 +222,11 @@ impl From<ffi::bprm_check_security_event_user_t> for BprmCheckSecurityEventUser 
     }
 }
 
-impl SerializableEvent for BprmCheckSecurityEventUser {
-    fn to_json(&self) -> SerializableResult<String> {
-        match print_to_string(self) {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Json(e)),
-        }
-    }
-
-    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
-        match self.write_to_bytes() {
-            Ok(result) => Ok(result),
-            Err(e) => Err(SerializationError::Bytes(e)),
-        }
-    }
-}
 impl From<ffi::bprm_check_security_event_t> for BprmCheckSecurityEvent {
     fn from(e: ffi::bprm_check_security_event_t) -> Self {
         let mut event = Self::default();
         event.set_timestamp(e.__timestamp);
+        event.event = Some(Default::default()).into();
         event.process = Some(e.process.into()).into();
         event.user = Some(e.user.into()).into();
         event
@@ -319,10 +247,47 @@ impl SerializableEvent for BprmCheckSecurityEvent {
             Err(e) => Err(SerializationError::Bytes(e)),
         }
     }
+
+    fn update_id(&mut self, id: &mut str) {
+        self.event.as_mut().and_then(|e| {
+            e.set_id(id.to_string().to_owned());
+            Some(e)
+        });
+    }
+
+    fn update_sequence(&mut self, seq: u64) {
+        self.event.as_mut().and_then(|e| {
+            e.set_sequence(seq);
+            Some(e)
+        });
+    }
 }
 
-pub trait ProbeHandler {
-    fn handle_bprm_check_security(&self, e: &mut BprmCheckSecurityEvent);
+pub trait ProbeHandler<U> {
+    fn enqueue<T>(&self, event: &mut T) -> Result<(), U>
+    where
+        T: SerializableEvent + std::fmt::Debug;
+}
+
+pub trait TransformationHandler {
+    fn enrich_bprm_check_security<'a>(
+        &self,
+        e: &'a mut BprmCheckSecurityEvent,
+    ) -> &'a mut BprmCheckSecurityEvent;
+}
+
+pub struct Transformer<T> {
+    handler: T,
+}
+
+impl<T> Transformer<T> {
+    pub fn new(handler: T) -> Self {
+        Self { handler: handler }
+    }
+
+    pub fn transform<U>(_data: Vec<u8>) -> Result<String, U> {
+        Ok("".to_string())
+    }
 }
 
 impl<'a> Probe<'a> {
@@ -346,12 +311,17 @@ impl<'a> Probe<'a> {
         self
     }
 
-    pub fn run<F: 'a>(&mut self, handler: F) -> Result<&mut Self, Error>
+    pub fn run<F: 'a, U>(&mut self, handler: F) -> Result<&mut Self, Error>
     where
-        F: 'a + ProbeHandler + panic::RefUnwindSafe,
+        F: 'a + ProbeHandler<U> + panic::RefUnwindSafe,
+        U: std::fmt::Display,
     {
         let mut bprm_check_security_wrapper = move |e: ffi::bprm_check_security_event_t| {
-            let result = panic::catch_unwind(|| handler.handle_bprm_check_security(&mut e.into()));
+            let result = panic::catch_unwind(|| {
+                handler
+                    .enqueue(&mut BprmCheckSecurityEvent::from(e))
+                    .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
+            });
             if result.is_err() {
                 debug!("panic while handling event");
             }
