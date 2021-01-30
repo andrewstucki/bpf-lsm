@@ -159,6 +159,7 @@ pub trait SerializableEvent {
     fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
     fn update_id(&mut self, id: &mut str);
     fn update_sequence(&mut self, seq: u64);
+    fn suffix(&self) -> &'static str;
 }
 
 {% for module in modules -%}
@@ -219,6 +220,10 @@ impl SerializableEvent for {{entry_point.final}} {
         e.set_sequence(seq);
         Some(e)
       });
+    }
+
+    fn suffix(&self) -> &'static str {
+        "{{module.name}}"
     }
 }
 {% endfor %}

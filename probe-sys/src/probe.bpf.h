@@ -67,12 +67,10 @@ struct bpf_bprm_check_security_event_process_t {
 
 struct bpf_bprm_check_security_event_user_group_t {
   unsigned int id;
-  char name[256];
 };
 
 struct bpf_bprm_check_security_event_user_t {
   unsigned int id;
-  char name[256];
   struct bpf_bprm_check_security_event_user_group_t group;
 };
 

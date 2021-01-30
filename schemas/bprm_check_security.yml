@@ -94,6 +94,7 @@
         proto: string
         transform: int_to_string
     - name: name
+      enrichment: true
       type: wildcard
       description: Short name or login of the user.
     - name: group
@@ -110,5 +111,6 @@
             proto: string
             transform: int_to_string
         - name: name
+          enrichment: true
           type: keyword
           description: Name of the group.

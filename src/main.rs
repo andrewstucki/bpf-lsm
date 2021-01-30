@@ -1,6 +1,6 @@
 use log::{debug, error, LevelFilter};
 use num_cpus;
-use once_cell::sync::OnceCell;
+use once_cell::sync::{Lazy, OnceCell};
 use probe_sys::{
     BprmCheckSecurityEvent, Probe, ProbeHandler, SerializableEvent, TransformationHandler,
     Transformer,
@@ -12,8 +12,11 @@ use std::convert::TryFrom;
 use std::env;
 use std::error;
 use std::fmt;
+use std::sync::Mutex;
+use users::{Groups, Users, UsersCache};
 use uuid::Uuid;
 
+static USERS_CACHE: Lazy<Mutex<UsersCache>> = Lazy::new(|| Mutex::new(UsersCache::new()));
 static DB_INSTANCE: OnceCell<Db> = OnceCell::new();
 
 pub fn global_database() -> &'static Db {
@@ -105,6 +108,37 @@ impl TransformationHandler for Handler {
         &self,
         event: &'a mut BprmCheckSecurityEvent,
     ) -> &'a mut BprmCheckSecurityEvent {
+        let group = USERS_CACHE
+            .lock()
+            .unwrap()
+            .get_group_by_gid(
+                event
+                    .user
+                    .as_ref()
+                    .unwrap()
+                    .group
+                    .as_ref()
+                    .unwrap()
+                    .get_id()
+                    .parse::<u32>()
+                    .unwrap(),
+            )
+            .unwrap();
+        let user = USERS_CACHE
+            .lock()
+            .unwrap()
+            .get_user_by_uid(
+                event
+                    .user
+                    .as_ref()
+                    .unwrap()
+                    .get_id()
+                    .parse::<u32>()
+                    .unwrap(),
+            )
+            .unwrap();
+        debug!("group: {:?}, user: {:?}", group.name(), user.name());
+        // add real enrichment
         event
     }
 }
@@ -172,10 +206,17 @@ fn run(c: &Context) {
         let rx = rx.clone();
         std::thread::spawn(move || loop {
             match rx.recv() {
-                Ok(data) => match transformer.transform(data) {
-                    Ok(json) => debug!("worker {}: {:?}", i, json),
-                    Err(e) => error!("worker {}: {:?}", i, e),
-                },
+                Ok((key, data)) => {
+                    match transformer.transform(data) {
+                        Ok(json) => debug!("worker {}: {:?}", i, json),
+                        Err(e) => error!("worker {}: {:?}", i, e),
+                    };
+                    // batch the transformations up and then remove in a transaction
+                    match global_database().remove(key) {
+                        Ok(_) => debug!("worker {}: cleaned record", i),
+                        Err(e) => error!("worker {}: error removing record {:?}", i, e),
+                    }
+                }
                 Err(e) => error!("worker {}: {}", i, e.to_string()),
             }
         });
@@ -185,9 +226,10 @@ fn run(c: &Context) {
     loop {
         match subscriber.next() {
             Some(event) => {
-                for (_, _, data) in event.into_iter() {
+                for (_, key, data) in event.into_iter() {
                     if data.is_some() {
-                        let result = tx.send(data.clone().unwrap().to_vec());
+                        let value = data.clone().unwrap().to_vec();
+                        let result = tx.send((key.clone(), value));
                         if result.is_err() {
                             error!("sender: {}", result.unwrap_err().to_string());
                         }

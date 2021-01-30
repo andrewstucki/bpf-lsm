@@ -44,14 +44,12 @@ pub mod ffi {
     #[derive(Debug, Copy, Clone)]
     pub struct bprm_check_security_event_user_group_t {
         pub id: u32,
-        pub name: [c_char; 256],
     }
 
     #[repr(C)]
     #[derive(Debug, Copy, Clone)]
     pub struct bprm_check_security_event_user_t {
         pub id: u32,
-        pub name: [c_char; 256],
         pub group: bprm_check_security_event_user_group_t,
     }
 
@@ -179,6 +177,7 @@ pub trait SerializableEvent {
     fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
     fn update_id(&mut self, id: &mut str);
     fn update_sequence(&mut self, seq: u64);
+    fn suffix(&self) -> &'static str;
 }
 
 impl From<ffi::bprm_check_security_event_process_target_t> for BprmCheckSecurityEventProcessTarget {
@@ -207,7 +206,6 @@ impl From<ffi::bprm_check_security_event_user_group_t> for BprmCheckSecurityEven
     fn from(e: ffi::bprm_check_security_event_user_group_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
-        event.set_name(transform_string(e.name.into()));
         event
     }
 }
@@ -216,7 +214,6 @@ impl From<ffi::bprm_check_security_event_user_t> for BprmCheckSecurityEventUser 
     fn from(e: ffi::bprm_check_security_event_user_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
-        event.set_name(transform_string(e.name.into()));
         event.group = Some(e.group.into()).into();
         event
     }
@@ -263,6 +260,10 @@ impl SerializableEvent for BprmCheckSecurityEvent {
             e.set_sequence(seq);
             Some(e)
         });
+    }
+
+    fn suffix(&self) -> &'static str {
+        "bprm_check_security"
     }
 }
 
