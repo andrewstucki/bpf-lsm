@@ -1905,6 +1905,228 @@ impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEvent {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
+#[derive(PartialEq,Clone,Default)]
+pub struct Event {
+    // message fields
+    event_type: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<event::EventType>>,
+    pub bprm_check_security_event_t: ::protobuf::MessageField<BprmCheckSecurityEvent>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a Event {
+    fn default() -> &'a Event {
+        <Event as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl Event {
+    pub fn new() -> Event {
+        ::std::default::Default::default()
+    }
+
+    // required .probe.protobuf.Event.EventType event_type = 1;
+
+    pub fn get_event_type(&self) -> event::EventType {
+        match self.event_type {
+            Some(e) => e.enum_value_or(event::EventType::BPRMCHECKSECURITYEVENT),
+            None => event::EventType::BPRMCHECKSECURITYEVENT,
+        }
+    }
+
+    pub fn clear_event_type(&mut self) {
+        self.event_type = ::std::option::Option::None;
+    }
+
+    pub fn has_event_type(&self) -> bool {
+        self.event_type.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_event_type(&mut self, v: event::EventType) {
+        self.event_type = ::std::option::Option::Some(::protobuf::ProtobufEnumOrUnknown::new(v));
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_enum_accessor::<_, event::EventType>(
+            "event_type",
+            |m: &Event| { &m.event_type },
+            |m: &mut Event| { &mut m.event_type },
+            event::EventType::BPRMCHECKSECURITYEVENT,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, BprmCheckSecurityEvent>(
+            "bprm_check_security_event_t",
+            |m: &Event| { &m.bprm_check_security_event_t },
+            |m: &mut Event| { &mut m.bprm_check_security_event_t },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<Event>(
+            "Event",
+            6,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for Event {
+    fn is_initialized(&self) -> bool {
+        if self.event_type.is_none() {
+            return false;
+        }
+        for v in &self.bprm_check_security_event_t {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.event_type = ::std::option::Option::Some(is.read_enum_or_unknown()?);
+                },
+                2 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.bprm_check_security_event_t)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.event_type {
+            my_size += ::protobuf::rt::enum_or_unknown_size(1, v);
+        }
+        if let Some(v) = self.bprm_check_security_event_t.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.event_type {
+            os.write_enum(1, ::protobuf::ProtobufEnumOrUnknown::value(&v))?;
+        }
+        if let Some(v) = self.bprm_check_security_event_t.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> Event {
+        Event::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
+    }
+
+    fn default_instance() -> &'static Event {
+        static instance: Event = Event {
+            event_type: ::std::option::Option::None,
+            bprm_check_security_event_t: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for Event {
+    fn clear(&mut self) {
+        self.event_type = ::std::option::Option::None;
+        self.bprm_check_security_event_t.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for Event {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for Event {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+/// Nested message and enums of message `Event`
+pub mod event {
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    pub enum EventType {
+        BPRMCHECKSECURITYEVENT = 0,
+    }
+
+    impl ::protobuf::ProtobufEnum for EventType {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<EventType> {
+            match value {
+                0 => ::std::option::Option::Some(EventType::BPRMCHECKSECURITYEVENT),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [EventType] = &[
+                EventType::BPRMCHECKSECURITYEVENT,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> ::protobuf::reflect::EnumDescriptor {
+            ::protobuf::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
+        }
+    }
+
+    impl ::std::default::Default for EventType {
+        fn default() -> Self {
+            EventType::BPRMCHECKSECURITYEVENT
+        }
+    }
+
+    impl ::protobuf::reflect::ProtobufValue for EventType {
+        type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl EventType {
+        pub(in super) fn generated_enum_descriptor_data() -> ::protobuf::reflect::GeneratedEnumDescriptorData {
+            ::protobuf::reflect::GeneratedEnumDescriptorData::new_2::<EventType>("Event.EventType", 0)
+        }
+    }
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x0cstruct.proto\x12\x0eprobe.protobuf\"\xa5\x02\n\x1bBprmCheckSecurit\
     yEventEvent\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04co\
@@ -1933,7 +2155,11 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     rmCheckSecurityEventEventR\x05eventB\0\x12I\n\x07process\x18\x03\x20\x01\
     (\x0b2-.probe.protobuf.BprmCheckSecurityEventProcessR\x07processB\0\x12@\
     \n\x04user\x18\x04\x20\x01(\x0b2*.probe.protobuf.BprmCheckSecurityEventU\
-    serR\x04userB\0:\0B\x02H\x01b\x06proto2\
+    serR\x04userB\0:\0\"\xe0\x01\n\x05Event\x12@\n\nevent_type\x18\x01\x20\
+    \x02(\x0e2\x1f.probe.protobuf.Event.EventTypeR\teventTypeB\0\x12f\n\x1bb\
+    prm_check_security_event_t\x18\x02\x20\x01(\x0b2&.probe.protobuf.BprmChe\
+    ckSecurityEventR\x17bprmCheckSecurityEventTB\0\"+\n\tEventType\x12\x1c\n\
+    \x16BPRMCHECKSECURITYEVENT\x10\0\x1a\0\x1a\0:\0B\x02H\x01b\x06proto2\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
@@ -1956,7 +2182,9 @@ pub fn file_descriptor() -> ::protobuf::reflect::FileDescriptor {
         messages.push(BprmCheckSecurityEventUserGroup::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEventUser::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEvent::generated_message_descriptor_data());
+        messages.push(Event::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
+        enums.push(event::EventType::generated_enum_descriptor_data());
         ::protobuf::reflect::GeneratedFileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,

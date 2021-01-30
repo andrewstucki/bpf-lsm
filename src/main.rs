@@ -3,6 +3,7 @@ use num_cpus;
 use once_cell::sync::OnceCell;
 use probe_sys::{
     BprmCheckSecurityEvent, Probe, ProbeHandler, SerializableEvent, TransformationHandler,
+    Transformer,
 };
 use seahorse::{App, Context, Flag, FlagType};
 use sled::{Config, Db};
@@ -167,10 +168,14 @@ fn run(c: &Context) {
 
     let (mut tx, rx) = spmc::channel();
     for i in 0..workers {
+        let transformer = Transformer::new(Handler {});
         let rx = rx.clone();
         std::thread::spawn(move || loop {
             match rx.recv() {
-                Ok(data) => debug!("worker {}: {:?}", i, data),
+                Ok(data) => match transformer.transform(data) {
+                    Ok(json) => debug!("worker {}: {:?}", i, json),
+                    Err(e) => error!("worker {}: {:?}", i, e),
+                },
                 Err(e) => error!("worker {}: {}", i, e.to_string()),
             }
         });
@@ -179,10 +184,14 @@ fn run(c: &Context) {
     let mut subscriber = global_database().watch_prefix(vec![]);
     loop {
         match subscriber.next() {
-            Some(data) => {
-                let result = tx.send(data);
-                if result.is_err() {
-                    error!("sender: {}", result.unwrap_err().to_string());
+            Some(event) => {
+                for (_, _, data) in event.into_iter() {
+                    if data.is_some() {
+                        let result = tx.send(data.clone().unwrap().to_vec());
+                        if result.is_err() {
+                            error!("sender: {}", result.unwrap_err().to_string());
+                        }
+                    }
                 }
             }
             None => {

@@ -242,7 +242,10 @@ impl SerializableEvent for BprmCheckSecurityEvent {
     }
 
     fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
-        match self.write_to_bytes() {
+        let mut event = Event::new();
+        event.bprm_check_security_event_t = Some(self.clone()).into();
+        event.set_event_type(event::EventType::BPRMCHECKSECURITYEVENT);
+        match event.write_to_bytes() {
             Ok(result) => Ok(result),
             Err(e) => Err(SerializationError::Bytes(e)),
         }
@@ -280,13 +283,19 @@ pub struct Transformer<T> {
     handler: T,
 }
 
-impl<T> Transformer<T> {
+impl<T: TransformationHandler> Transformer<T> {
     pub fn new(handler: T) -> Self {
         Self { handler: handler }
     }
 
-    pub fn transform<U>(_data: Vec<u8>) -> Result<String, U> {
-        Ok("".to_string())
+    pub fn transform(&self, data: Vec<u8>) -> SerializableResult<String> {
+        let e = Event::parse_from_bytes(&data).unwrap();
+        match e.get_event_type() {
+            event::EventType::BPRMCHECKSECURITYEVENT => self
+                .handler
+                .enrich_bprm_check_security(&mut e.bprm_check_security_event_t.unwrap())
+                .to_json(),
+        }
     }
 }
 

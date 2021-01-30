@@ -198,7 +198,10 @@ impl SerializableEvent for {{entry_point.final}} {
     }
 
     fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
-        match self.write_to_bytes() {
+        let mut event = Event::new();
+        event.{{entry_point.name}} = Some(self.clone()).into();
+        event.set_event_type(event::EventType::{{entry_point.final | upper}});
+        match event.write_to_bytes() {
           Ok(result) => Ok(result),
           Err(e) => Err(SerializationError::Bytes(e)),
         }
@@ -235,15 +238,23 @@ pub struct Transformer<T> {
     handler: T,
 }
 
-impl<T> Transformer<T> {
+impl<T: TransformationHandler> Transformer<T> {
   pub fn new(handler: T) -> Self {
       Self {
           handler: handler,
       }
   }
 
-  pub fn transform<U>(_data: Vec<u8>) -> Result<String, U> {
-      Ok("".to_string())
+  pub fn transform(&self, data: Vec<u8>) -> SerializableResult<String> {
+      let e = Event::parse_from_bytes(&data).unwrap();
+      match e.get_event_type() {
+          {% for module in modules -%}
+          {% set entry_point = module.structures | last %}
+          event::EventType::{{entry_point.final | upper}} => {
+              self.handler.enrich_{{module.name}}(&mut e.{{entry_point.name}}.unwrap()).to_json()
+          },
+          {% endfor %}
+      }
   }  
 }
 

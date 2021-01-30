@@ -79,3 +79,16 @@ message BprmCheckSecurityEvent {
   
 }
 
+
+
+message Event {
+  enum EventType {
+    
+    BPRMCHECKSECURITYEVENT = 0;
+    
+  }
+  required EventType event_type = 1;
+  
+  optional BprmCheckSecurityEvent bprm_check_security_event_t = 2;
+  
+}

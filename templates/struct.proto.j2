@@ -15,3 +15,17 @@ message {{structure.final}} {
 }
 {% endfor %}
 {% endfor %}
+
+message Event {
+  enum EventType {
+    {% for module in modules -%}
+    {% set entry_point = module.structures | last %}
+    {{ entry_point.final | upper }} = {{loop.index0}};
+    {% endfor %}
+  }
+  required EventType event_type = 1;
+  {% for module in modules -%}
+  {% set entry_point = module.structures | last %}
+  optional {{ entry_point.final }} {{ entry_point.name }} = {{loop.index + 1}};
+  {% endfor %}
+}
