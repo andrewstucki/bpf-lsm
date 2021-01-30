@@ -132,6 +132,7 @@ pub struct Probe<'a> {
 pub enum SerializationError {
     Json(PrintError),
     Bytes(ProtobufError),
+    Transform(String),
 }
 
 impl fmt::Display for SerializationError {
@@ -139,6 +140,7 @@ impl fmt::Display for SerializationError {
         match self {
           Self::Json(_e) => write!(f, "json serialization failed"),
           Self::Bytes(e) => std::fmt::Display::fmt(&e, f),
+          Self::Transform(e) => std::fmt::Display::fmt(&e, f),
         }
     }
 }
@@ -146,8 +148,9 @@ impl fmt::Display for SerializationError {
 impl error::Error for SerializationError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
-          Self::Json(_e) => None,
+          Self::Json(_) => None,
           Self::Bytes(e) => Some(e),
+          Self::Transform(_) => None,
         }
     }
 }
@@ -235,7 +238,7 @@ pub trait ProbeHandler<U> {
 pub trait TransformationHandler {
   {% for module in modules -%}
   {% set entry_point = module.structures | last %}
-  fn enrich_{{module.name}}<'a>(&self, e: &'a mut {{entry_point.final}}) -> &'a mut {{entry_point.final}};
+  fn enrich_{{module.name}}<'a>(&self, e: &'a mut {{entry_point.final}}) -> SerializableResult<&'a mut {{entry_point.final}}>;
   {% endfor %}
 }
 
@@ -256,7 +259,7 @@ impl<T: TransformationHandler> Transformer<T> {
           {% for module in modules -%}
           {% set entry_point = module.structures | last %}
           event::EventType::{{entry_point.final | upper}} => {
-              self.handler.enrich_{{module.name}}(&mut e.{{entry_point.name}}.unwrap()).to_json()
+              self.handler.enrich_{{module.name}}(&mut e.{{entry_point.name}}.unwrap())?.to_json()
           },
           {% endfor %}
       }

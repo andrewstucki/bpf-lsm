@@ -2,8 +2,8 @@ use log::{debug, error, LevelFilter};
 use num_cpus;
 use once_cell::sync::{Lazy, OnceCell};
 use probe_sys::{
-    BprmCheckSecurityEvent, Probe, ProbeHandler, SerializableEvent, TransformationHandler,
-    Transformer,
+    BprmCheckSecurityEvent, Probe, ProbeHandler, SerializableEvent, SerializableResult,
+    TransformationHandler, Transformer,
 };
 use seahorse::{App, Context, Flag, FlagType};
 use sled::{Config, Db};
@@ -107,39 +107,20 @@ impl TransformationHandler for Handler {
     fn enrich_bprm_check_security<'a>(
         &self,
         event: &'a mut BprmCheckSecurityEvent,
-    ) -> &'a mut BprmCheckSecurityEvent {
-        let group = USERS_CACHE
-            .lock()
-            .unwrap()
-            .get_group_by_gid(
-                event
-                    .user
-                    .as_ref()
-                    .unwrap()
-                    .group
-                    .as_ref()
-                    .unwrap()
-                    .get_id()
-                    .parse::<u32>()
-                    .unwrap(),
-            )
-            .unwrap();
-        let user = USERS_CACHE
-            .lock()
-            .unwrap()
-            .get_user_by_uid(
-                event
-                    .user
-                    .as_ref()
-                    .unwrap()
-                    .get_id()
-                    .parse::<u32>()
-                    .unwrap(),
-            )
-            .unwrap();
-        debug!("group: {:?}, user: {:?}", group.name(), user.name());
-        // add real enrichment
-        event
+    ) -> SerializableResult<&'a mut BprmCheckSecurityEvent> {
+        let cache = USERS_CACHE.lock().unwrap();
+        let user = event.user.get_mut_ref();
+        let uid = user.get_id().parse::<u32>().unwrap();
+        let group = user.group.get_mut_ref();
+        let gid = group.get_id().parse::<u32>().unwrap();
+
+        for enriched_group in cache.get_group_by_gid(gid) {
+            group.set_name(enriched_group.name().to_string_lossy().to_string());
+        }
+        for enriched_user in cache.get_user_by_uid(uid) {
+            user.set_name(enriched_user.name().to_string_lossy().to_string());
+        }
+        Ok(event)
     }
 }
 

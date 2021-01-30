@@ -151,6 +151,7 @@ pub struct Probe<'a> {
 pub enum SerializationError {
     Json(PrintError),
     Bytes(ProtobufError),
+    Transform(String),
 }
 
 impl fmt::Display for SerializationError {
@@ -158,6 +159,7 @@ impl fmt::Display for SerializationError {
         match self {
             Self::Json(_e) => write!(f, "json serialization failed"),
             Self::Bytes(e) => std::fmt::Display::fmt(&e, f),
+            Self::Transform(e) => std::fmt::Display::fmt(&e, f),
         }
     }
 }
@@ -165,8 +167,9 @@ impl fmt::Display for SerializationError {
 impl error::Error for SerializationError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
-            Self::Json(_e) => None,
+            Self::Json(_) => None,
             Self::Bytes(e) => Some(e),
+            Self::Transform(_) => None,
         }
     }
 }
@@ -277,7 +280,7 @@ pub trait TransformationHandler {
     fn enrich_bprm_check_security<'a>(
         &self,
         e: &'a mut BprmCheckSecurityEvent,
-    ) -> &'a mut BprmCheckSecurityEvent;
+    ) -> SerializableResult<&'a mut BprmCheckSecurityEvent>;
 }
 
 pub struct Transformer<T> {
@@ -294,7 +297,7 @@ impl<T: TransformationHandler> Transformer<T> {
         match e.get_event_type() {
             event::EventType::BPRMCHECKSECURITYEVENT => self
                 .handler
-                .enrich_bprm_check_security(&mut e.bprm_check_security_event_t.unwrap())
+                .enrich_bprm_check_security(&mut e.bprm_check_security_event_t.unwrap())?
                 .to_json(),
         }
     }
