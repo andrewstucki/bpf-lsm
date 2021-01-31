@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "probe.h"
 #include "probe.bpf.h"
@@ -32,6 +33,8 @@ struct state {
   {% endfor -%}
 };
 
+unsigned long clock_adjustment = 0;
+
 int print_libbpf_log(enum libbpf_print_level lvl, const char *fmt, va_list args) {
   return vfprintf(stderr, fmt, args);
 }
@@ -44,10 +47,10 @@ int noop_log(enum libbpf_print_level lvl, const char *fmt, va_list args) {
 // begin {{module.name}}
 
 {% set entry_point = module.structures | last %}
-__attribute__((always_inline)) static int handle_{{module.name}}_event(void *ctx, struct bpf_{{entry_point.name}} bpf_data) {
+__attribute__((always_inline)) static int handle_{{module.name}}_event(void *ctx, unsigned long ts, struct bpf_{{entry_point.name}} bpf_data) {
   struct handle_event_wrapper *handle = ctx;
   {{module.name}}_event_handler *callback = handle->handler;
-  callback(handle->ctx, bpf_data);
+  callback(handle->ctx, ts, bpf_data);
   return 0;
 }
 
@@ -55,12 +58,15 @@ __attribute__((always_inline)) static int handle_{{module.name}}_event(void *ctx
 {% endfor %}
 
 static int handle_event(void *ctx, void *data, unsigned long size) {
+  unsigned long ts;
   struct bpf_event_t *event = data;
   struct handlers *handlers = ctx;
   switch(event->type){
   {% for module in modules %}
   {% set entry_point = module.structures | last %}
-    case type_{{ entry_point.name }}: return handle_{{module.name}}_event(handlers->{{module.name}}_handler, event->{{entry_point.name}});
+    case type_{{ entry_point.name }}:
+      ts = (event->{{entry_point.name}}.__timestamp + clock_adjustment) / 1000000000l;
+      return handle_{{module.name}}_event(handlers->{{module.name}}_handler, ts, event->{{entry_point.name}});
   {% endfor %}
   }
 }
@@ -99,6 +105,23 @@ done:
 }
 
 struct state *new_state(struct state_configuration config) {
+  // figure out clock offsets
+  struct timespec boot;
+  struct timespec current;
+  if (clock_gettime(CLOCK_BOOTTIME, &boot) != 0) {
+    // we can't figure out the clock offset, so
+    // just return
+    return NULL;
+  }
+  if (clock_gettime(CLOCK_REALTIME, &current) != 0) {
+    // we can't figure out the clock offset, so
+    // just return
+    return NULL;
+  }
+  unsigned long current_ns = 1000000000*current.tv_sec + current.tv_nsec;
+  unsigned long boot_ns = 1000000000*boot.tv_sec + boot.tv_nsec;
+  clock_adjustment = current_ns - boot_ns;
+
   if (config.debug) {
     libbpf_set_print(print_libbpf_log);
   } else {

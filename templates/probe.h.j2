@@ -16,7 +16,7 @@ struct state;
 // begin {{module.name}}
 
 {% set entry_point = module.structures | last %}
-typedef void {{module.name}}_event_handler(void *ctx, struct bpf_{{entry_point.name}} e);
+typedef void {{module.name}}_event_handler(void *ctx, unsigned long ts, struct bpf_{{entry_point.name}} e);
 
 // end {{module.name}}
 {%- endfor %}

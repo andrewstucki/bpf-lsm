@@ -24,9 +24,10 @@
       event->type = type_##module##_event_t;                                   \
     int __ret = 0;                                                             \
     _Pragma("GCC diagnostic push")                                             \
-        _Pragma("GCC diagnostic ignored \"-Wint-conversion\"") if (event)      \
-            __ret =                                                            \
-                ____##module(___bpf_ctx_cast(args), &event->module##_event_t); \
+        _Pragma("GCC diagnostic ignored \"-Wint-conversion\"") if (event) {    \
+      event->module##_event_t.__timestamp = bpf_ktime_get_boot_ns();           \
+      __ret = ____##module(___bpf_ctx_cast(args), &event->module##_event_t);   \
+    }                                                                          \
     _Pragma("GCC diagnostic pop") if (event)                                   \
         bpf_ringbuf_submit(event, RINGBUFFER_FLAGS);                           \
     return __ret;                                                              \

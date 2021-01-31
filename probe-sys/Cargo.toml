@@ -11,6 +11,8 @@ crate-type = ["rlib"]
 
 [dependencies]
 log = "0.4"
+once_cell = "1.5.2"
+users = "0.11.0"
 protobuf = { git = "https://github.com/stepancheg/rust-protobuf", rev="5f3ed259", features = ["with-bytes"] }
 
 [build-dependencies]

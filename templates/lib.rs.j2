@@ -10,12 +10,17 @@ use std::panic;
 use std::error;
 use std::fmt::Debug;
 use log::{debug, warn, error};
+use std::sync::Mutex;
+use users::{Groups, Users, UsersCache};
+use once_cell::sync::Lazy;
 
 use protobuf::json::{PrintError, print_to_string};
 use protobuf::{ProtobufError, Message};
 
 mod struct_pb;
 pub use struct_pb::*;
+
+static USERS_CACHE: Lazy<Mutex<UsersCache>> = Lazy::new(|| Mutex::new(UsersCache::new()));
 
 pub mod ffi {
     use std::os::raw::{c_char, c_int, c_uint, c_void};
@@ -37,7 +42,7 @@ pub mod ffi {
     {% endfor %}
 
     {% set entry_point = module.structures | last %}
-    pub type {{module.name}}_event_handler = extern "C" fn(ctx: *mut c_void, e: {{entry_point.name}});
+    pub type {{module.name}}_event_handler = extern "C" fn(ctx: *mut c_void, ts: u64, e: {{entry_point.name}});
 
     {% endfor %}
 
@@ -53,7 +58,7 @@ pub mod ffi {
     }
     pub enum state {}
     extern "C" {
-        pub fn new_state(config: state_configuration,) -> *mut state;
+        pub fn new_state(config: state_configuration) -> *mut state;
         pub fn poll_state(_self: *mut state, timeout: c_int);
         pub fn destroy_state(_self: *mut state);
     }
@@ -76,14 +81,14 @@ pub mod ffi {
     {% set entry_point = module.structures | last %}
     pub unsafe fn unpack_{{module.name}}_closure<F>(closure: &mut F) -> (*mut c_void, {{module.name}}_event_handler)
     where
-        F: FnMut({{entry_point.name}}),
+        F: FnMut(u64, {{entry_point.name}}),
     {
-        extern "C" fn trampoline<F>(data: *mut c_void, e: {{entry_point.name}})
+        extern "C" fn trampoline<F>(data: *mut c_void, ts: u64, e: {{entry_point.name}})
         where
-            F: FnMut({{entry_point.name}}),
+            F: FnMut(u64, {{entry_point.name}}),
         {
             let closure: &mut F = unsafe { &mut *(data as *mut F) };
-            (*closure)(e);
+            (*closure)(ts, e);
         }
 
         (closure as *mut F as *mut c_void, trampoline::<F>)
@@ -122,7 +127,7 @@ pub struct Probe<'a> {
     // the same lifetime as the state wrapper
     {% for module in modules -%}
     {% set entry_point = module.structures | last %}
-    _{{module.name}}_handler: Option<Box<dyn 'a + Fn(ffi::{{entry_point.name}})>>,
+    _{{module.name}}_handler: Option<Box<dyn 'a + Fn(u64, ffi::{{entry_point.name}})>>,
     {% endfor %}
     filtered_uid: u32,
     debug: bool,
@@ -160,6 +165,7 @@ pub type SerializableResult<T> = Result<T, SerializationError>;
 pub trait SerializableEvent {
     fn to_json(&self) -> SerializableResult<String>;
     fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
+    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self>;
     fn update_id(&mut self, id: &mut str);
     fn update_sequence(&mut self, seq: u64);
     fn suffix(&self) -> &'static str;
@@ -228,6 +234,23 @@ impl SerializableEvent for {{entry_point.final}} {
     fn suffix(&self) -> &'static str {
         "{{module.name}}"
     }
+
+    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self> {
+        let cache = USERS_CACHE.lock().unwrap();
+        let user = self.user.get_mut_ref();
+        let uid = user.get_id().parse::<u32>().unwrap();
+        let group = user.group.get_mut_ref();
+        let gid = group.get_id().parse::<u32>().unwrap();
+
+        for enriched_group in cache.get_group_by_gid(gid) {
+            group.set_name(enriched_group.name().to_string_lossy().to_string());
+        }
+        for enriched_user in cache.get_user_by_uid(uid) {
+            user.set_name(enriched_user.name().to_string_lossy().to_string());
+        }
+
+        Ok(self)
+    }
 }
 {% endfor %}
 
@@ -295,9 +318,11 @@ impl<'a> Probe<'a> {
     {
         {% for module in modules -%}
         {% set entry_point = module.structures | last %}
-        let mut {{module.name}}_wrapper = move |e: ffi::{{entry_point.name}}| {
+        let mut {{module.name}}_wrapper = move |ts: u64, e: ffi::{{entry_point.name}}| {
             let result = panic::catch_unwind(|| {
-                handler.enqueue(&mut {{entry_point.final}}::from(e))
+                let mut event = {{entry_point.final}}::from(e);
+                event.set_timestamp(ts);
+                handler.enqueue(&mut event)
                     .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
             });
             if result.is_err() {

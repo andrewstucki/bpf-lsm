@@ -313,7 +313,6 @@ dependencies = [
  "sled",
  "spmc",
  "ureq",
- "users",
  "uuid",
 ]
 
@@ -322,8 +321,10 @@ name = "probe-sys"
 version = "0.0.1"
 dependencies = [
  "log",
+ "once_cell",
  "protobuf",
  "protobuf-codegen-pure",
+ "users",
 ]
 
 [[package]]

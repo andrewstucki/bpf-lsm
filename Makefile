@@ -11,7 +11,7 @@ debug:
 
 clean:
 	@echo "Cleaning"
-	@rm -rf probe-sys/src/.output target probe
+	@rm -rf probe-sys/src/.output # target probe
 
 bootstrap-vm:
 	@echo "Bringing up fresh VM and installing BPF Kernel"

@@ -18,7 +18,6 @@ fern = "0.5"
 once_cell = "1.5.2"
 spmc = "0.3.0"
 num_cpus = "1.13.0"
-users = "0.11.0"
 uuid = { version = "0.8.2", features = ["v4"] }
 # For use as durable storage
 sled = { git = "https://github.com/spacejam/sled", rev = "d92e56d" }

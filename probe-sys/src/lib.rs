@@ -5,17 +5,22 @@
 extern crate protobuf;
 
 use log::{debug, error, warn};
+use once_cell::sync::Lazy;
 use std::error;
 use std::fmt;
 use std::fmt::Debug;
 use std::os::raw::c_int;
 use std::panic;
+use std::sync::Mutex;
+use users::{Groups, Users, UsersCache};
 
 use protobuf::json::{print_to_string, PrintError};
 use protobuf::{Message, ProtobufError};
 
 mod struct_pb;
 pub use struct_pb::*;
+
+static USERS_CACHE: Lazy<Mutex<UsersCache>> = Lazy::new(|| Mutex::new(UsersCache::new()));
 
 pub mod ffi {
     use std::os::raw::{c_char, c_int, c_uint, c_void};
@@ -62,7 +67,7 @@ pub mod ffi {
     }
 
     pub type bprm_check_security_event_handler =
-        extern "C" fn(ctx: *mut c_void, e: bprm_check_security_event_t);
+        extern "C" fn(ctx: *mut c_void, ts: u64, e: bprm_check_security_event_t);
 
     #[repr(C)]
     #[derive(Debug, Copy, Clone)]
@@ -98,14 +103,14 @@ pub mod ffi {
         closure: &mut F,
     ) -> (*mut c_void, bprm_check_security_event_handler)
     where
-        F: FnMut(bprm_check_security_event_t),
+        F: FnMut(u64, bprm_check_security_event_t),
     {
-        extern "C" fn trampoline<F>(data: *mut c_void, e: bprm_check_security_event_t)
+        extern "C" fn trampoline<F>(data: *mut c_void, ts: u64, e: bprm_check_security_event_t)
         where
-            F: FnMut(bprm_check_security_event_t),
+            F: FnMut(u64, bprm_check_security_event_t),
         {
             let closure: &mut F = unsafe { &mut *(data as *mut F) };
-            (*closure)(e);
+            (*closure)(ts, e);
         }
 
         (closure as *mut F as *mut c_void, trampoline::<F>)
@@ -141,7 +146,7 @@ pub struct Probe<'a> {
     ctx: Option<*mut ffi::state>,
     // store the closures so that we make sure it has
     // the same lifetime as the state wrapper
-    _bprm_check_security_handler: Option<Box<dyn 'a + Fn(ffi::bprm_check_security_event_t)>>,
+    _bprm_check_security_handler: Option<Box<dyn 'a + Fn(u64, ffi::bprm_check_security_event_t)>>,
 
     filtered_uid: u32,
     debug: bool,
@@ -178,6 +183,7 @@ pub type SerializableResult<T> = Result<T, SerializationError>;
 pub trait SerializableEvent {
     fn to_json(&self) -> SerializableResult<String>;
     fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
+    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self>;
     fn update_id(&mut self, id: &mut str);
     fn update_sequence(&mut self, seq: u64);
     fn suffix(&self) -> &'static str;
@@ -268,6 +274,23 @@ impl SerializableEvent for BprmCheckSecurityEvent {
     fn suffix(&self) -> &'static str {
         "bprm_check_security"
     }
+
+    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self> {
+        let cache = USERS_CACHE.lock().unwrap();
+        let user = self.user.get_mut_ref();
+        let uid = user.get_id().parse::<u32>().unwrap();
+        let group = user.group.get_mut_ref();
+        let gid = group.get_id().parse::<u32>().unwrap();
+
+        for enriched_group in cache.get_group_by_gid(gid) {
+            group.set_name(enriched_group.name().to_string_lossy().to_string());
+        }
+        for enriched_user in cache.get_user_by_uid(uid) {
+            user.set_name(enriched_user.name().to_string_lossy().to_string());
+        }
+
+        Ok(self)
+    }
 }
 
 pub trait ProbeHandler<U> {
@@ -329,16 +352,19 @@ impl<'a> Probe<'a> {
         F: 'a + ProbeHandler<U> + panic::RefUnwindSafe,
         U: std::fmt::Display,
     {
-        let mut bprm_check_security_wrapper = move |e: ffi::bprm_check_security_event_t| {
-            let result = panic::catch_unwind(|| {
-                handler
-                    .enqueue(&mut BprmCheckSecurityEvent::from(e))
-                    .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
-            });
-            if result.is_err() {
-                debug!("panic while handling event");
-            }
-        };
+        let mut bprm_check_security_wrapper =
+            move |ts: u64, e: ffi::bprm_check_security_event_t| {
+                let result = panic::catch_unwind(|| {
+                    let mut event = BprmCheckSecurityEvent::from(e);
+                    event.set_timestamp(ts);
+                    handler
+                        .enqueue(&mut event)
+                        .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
+                });
+                if result.is_err() {
+                    debug!("panic while handling event");
+                }
+            };
         let (bprm_check_security_closure, bprm_check_security_callback) =
             unsafe { ffi::unpack_bprm_check_security_closure(&mut bprm_check_security_wrapper) };
 

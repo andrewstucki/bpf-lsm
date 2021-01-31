@@ -15,7 +15,7 @@ struct state;
 // begin bprm_check_security
 
 typedef void
-bprm_check_security_event_handler(void *ctx,
+bprm_check_security_event_handler(void *ctx, unsigned long ts,
                                   struct bpf_bprm_check_security_event_t e);
 
 // end bprm_check_security
