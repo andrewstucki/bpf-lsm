@@ -25,7 +25,8 @@
     int __ret = 0;                                                             \
     _Pragma("GCC diagnostic push")                                             \
         _Pragma("GCC diagnostic ignored \"-Wint-conversion\"") if (event) {    \
-      event->module##_event_t.__timestamp = bpf_ktime_get_boot_ns();           \
+      event->module##_event_t.__timestamp =                                    \
+          (bpf_ktime_get_boot_ns() + clock_adjustment) / 1000000000l;          \
       __ret = ____##module(___bpf_ctx_cast(args), &event->module##_event_t);   \
     }                                                                          \
     _Pragma("GCC diagnostic pop") if (event)                                   \
@@ -46,6 +47,7 @@ struct {
   __uint(max_entries, 256 * 1024);
 } events SEC(".maps");
 
+const volatile unsigned long clock_adjustment = 0;
 const volatile unsigned char bprm_check_security_enabled = 0;
 char _license[] SEC("license") = "GPL";
 #endif

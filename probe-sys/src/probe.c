@@ -29,8 +29,6 @@ struct state {
   struct bpf_link *bprm_check_security_hook;
 };
 
-unsigned long clock_adjustment = 0;
-
 int print_libbpf_log(enum libbpf_print_level lvl, const char *fmt,
                      va_list args) {
   return vfprintf(stderr, fmt, args);
@@ -43,27 +41,23 @@ int noop_log(enum libbpf_print_level lvl, const char *fmt, va_list args) {
 // begin bprm_check_security
 
 __attribute__((always_inline)) static int handle_bprm_check_security_event(
-    void *ctx, unsigned long ts,
-    struct bpf_bprm_check_security_event_t bpf_data) {
+    void *ctx, struct bpf_bprm_check_security_event_t bpf_data) {
   struct handle_event_wrapper *handle = ctx;
   bprm_check_security_event_handler *callback = handle->handler;
-  callback(handle->ctx, ts, bpf_data);
+  callback(handle->ctx, bpf_data);
   return 0;
 }
 
 // end bprm_check_security
 
 static int handle_event(void *ctx, void *data, unsigned long size) {
-  unsigned long ts;
   struct bpf_event_t *event = data;
   struct handlers *handlers = ctx;
   switch (event->type) {
 
   case type_bprm_check_security_event_t:
-    ts = (event->bprm_check_security_event_t.__timestamp + clock_adjustment) /
-         1000000000l;
     return handle_bprm_check_security_event(
-        handlers->bprm_check_security_handler, ts,
+        handlers->bprm_check_security_handler,
         event->bprm_check_security_event_t);
   }
 }
@@ -103,6 +97,7 @@ done:
 
 struct state *new_state(struct state_configuration config) {
   // figure out clock offsets
+  unsigned long clock_adjustment;
   struct timespec boot;
   struct timespec current;
   if (clock_gettime(CLOCK_BOOTTIME, &boot) != 0) {
@@ -140,6 +135,7 @@ struct state *new_state(struct state_configuration config) {
   if (!s->obj) {
     goto cleanup;
   }
+  s->obj->rodata->clock_adjustment = clock_adjustment;
   s->obj->rodata->filtered_user = config.filtered_uid;
 
   if (config.bprm_check_security_handler) {

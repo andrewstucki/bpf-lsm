@@ -42,7 +42,7 @@ pub mod ffi {
     {% endfor %}
 
     {% set entry_point = module.structures | last %}
-    pub type {{module.name}}_event_handler = extern "C" fn(ctx: *mut c_void, ts: u64, e: {{entry_point.name}});
+    pub type {{module.name}}_event_handler = extern "C" fn(ctx: *mut c_void, e: {{entry_point.name}});
 
     {% endfor %}
 
@@ -81,14 +81,14 @@ pub mod ffi {
     {% set entry_point = module.structures | last %}
     pub unsafe fn unpack_{{module.name}}_closure<F>(closure: &mut F) -> (*mut c_void, {{module.name}}_event_handler)
     where
-        F: FnMut(u64, {{entry_point.name}}),
+        F: FnMut({{entry_point.name}}),
     {
-        extern "C" fn trampoline<F>(data: *mut c_void, ts: u64, e: {{entry_point.name}})
+        extern "C" fn trampoline<F>(data: *mut c_void, e: {{entry_point.name}})
         where
-            F: FnMut(u64, {{entry_point.name}}),
+            F: FnMut({{entry_point.name}}),
         {
             let closure: &mut F = unsafe { &mut *(data as *mut F) };
-            (*closure)(ts, e);
+            (*closure)(e);
         }
 
         (closure as *mut F as *mut c_void, trampoline::<F>)
@@ -127,7 +127,7 @@ pub struct Probe<'a> {
     // the same lifetime as the state wrapper
     {% for module in modules -%}
     {% set entry_point = module.structures | last %}
-    _{{module.name}}_handler: Option<Box<dyn 'a + Fn(u64, ffi::{{entry_point.name}})>>,
+    _{{module.name}}_handler: Option<Box<dyn 'a + Fn(ffi::{{entry_point.name}})>>,
     {% endfor %}
     filtered_uid: u32,
     debug: bool,
@@ -318,11 +318,9 @@ impl<'a> Probe<'a> {
     {
         {% for module in modules -%}
         {% set entry_point = module.structures | last %}
-        let mut {{module.name}}_wrapper = move |ts: u64, e: ffi::{{entry_point.name}}| {
+        let mut {{module.name}}_wrapper = move |e: ffi::{{entry_point.name}}| {
             let result = panic::catch_unwind(|| {
-                let mut event = {{entry_point.final}}::from(e);
-                event.set_timestamp(ts);
-                handler.enqueue(&mut event)
+                handler.enqueue(&mut {{entry_point.final}}::from(e))
                     .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
             });
             if result.is_err() {
