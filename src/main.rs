@@ -145,7 +145,8 @@ fn run(c: &Context) {
     let db = config.open().expect("could not open database");
     initialize_global_database(db);
 
-    setup_logger(if c.bool_flag("debug") {
+    let debug = c.bool_flag("debug");
+    setup_logger(if debug {
         log::LevelFilter::Debug
     } else {
         log::LevelFilter::Info
@@ -160,8 +161,12 @@ fn run(c: &Context) {
         .int_flag("workers")
         .map_or(cores, |w| u32::try_from(w).unwrap_or(cores));
 
-    std::thread::spawn(
-        move || match Probe::new().debug().filter(filtered_uid).run(Handler {}) {
+    std::thread::spawn(move || {
+        match Probe::new()
+            .debug(debug)
+            .filter(filtered_uid)
+            .run(Handler {})
+        {
             Ok(probe) => loop {
                 probe.poll(-1);
             },
@@ -169,8 +174,8 @@ fn run(c: &Context) {
                 error!("error setting up probe: {}", e.to_string());
                 std::process::exit(1);
             }
-        },
-    );
+        }
+    });
 
     let (mut tx, rx) = spmc::channel();
     for i in 0..workers {
@@ -180,7 +185,7 @@ fn run(c: &Context) {
             match rx.recv() {
                 Ok((key, data)) => {
                     match transformer.transform(data) {
-                        Ok(json) => debug!("worker {}: {:?}", i, json),
+                        Ok(json) => println!("{}", json),
                         Err(e) => error!("worker {}: {:?}", i, e),
                     };
                     // batch the transformations up and then remove in a transaction
