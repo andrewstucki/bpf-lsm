@@ -139,4 +139,3 @@ if __name__ == "__main__":
   subprocess.run(["clang-format", "-i", BPF_OUTPUT], check=True)
   subprocess.run(["clang-format", "-i", USERSPACE_OUTPUT], check=True)
   subprocess.run(["clang-format", "-i", USERSPACE_HEADER_OUTPUT], check=True)
-  subprocess.run(["cargo", "fmt"], check=True)

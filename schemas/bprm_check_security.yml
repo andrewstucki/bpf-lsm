@@ -41,6 +41,46 @@
       type: date
       enrichment: true
       description: Timestamp when an event arrived in the central data store.
+- name: host
+  description: Fields describing the relevant computing instance.
+  type: group
+  enrichment: true
+  fields:
+    - name: hostname
+      type: keyword
+      description: Hostname of the host.
+    - name: ip
+      type: ip
+      description: Host ip addresses.
+      override:
+        c: n/a
+        rust: n/a
+        final: n/a
+        proto: repeated string
+    - name: mac
+      type: keyword
+      description: Host mac addresses.
+      override:
+        c: n/a
+        rust: n/a
+        final: n/a
+        proto: repeated string
+    - name: uptime
+      type: long
+      description: Seconds the host has been up.
+    - name: os
+      description: OS fields contain information about the operating system.
+      type: group
+      fields:
+        - name: type
+          type: keyword
+          description: "Which commercial OS family (one of: linux, macos, unix or windows)."
+        - name: name
+          type: keyword
+          description: Operating system name, without the version.
+        - name: kernel
+          type: keyword
+          description: Operating system kernel version as a raw string.
 - name: process
   description: These fields contain information about a process.
   type: group

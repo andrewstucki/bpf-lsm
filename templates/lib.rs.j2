@@ -18,6 +18,8 @@ use protobuf::json::{PrintError, print_to_string};
 use protobuf::{ProtobufError, Message};
 use machine_uid;
 use sha2::Digest;
+use sysinfo::SystemExt;
+use pnet::datalink::interfaces;
 
 mod struct_pb;
 pub use struct_pb::*;
@@ -282,6 +284,35 @@ impl SerializableEvent for {{entry_point.final}} {
 
         parent.set_entity_id(format!("{:x}", sha2::Sha256::digest(parent_entity_id.as_bytes())));
 
+        let mut system = sysinfo::System::new_all();
+        system.refresh_all();
+
+        let host = self.host.get_mut_ref();
+        host.set_uptime(system.get_uptime());
+        for hostname in system.get_host_name() {
+           host.set_hostname(hostname);
+        }
+        let all_interfaces = interfaces();
+        let active_interfaces = all_interfaces.iter().filter(|e| e.is_up() && !e.is_loopback() && !e.ips.is_empty());
+        for interface in active_interfaces {
+            if interface.mac.is_some() {
+                host.mac.push(interface.mac.unwrap().to_string());
+            }
+            for ip in &interface.ips {
+                host.ip.push(ip.ip().to_string());
+            }
+        }
+        host.os = Some(Default::default()).into();
+
+        let os = host.os.get_mut_ref();
+        os.set_field_type("linux".to_string());
+        for os_name in system.get_name() {
+          os.set_name(os_name);
+        }        
+        for kernel_version in system.get_kernel_version() {
+          os.set_kernel(kernel_version);
+        }        
+        
         Ok(self)
     }
 }

@@ -10,7 +10,7 @@ option optimize_for = SPEED;
 {% for structure in module.structures -%}
 message {{structure.final}} {
   {% for field in structure.fields %}
-  optional {{field.type.proto}} {{field.final}} = {{loop.index}} [json_name="{{field.original}}"];
+  {% if not field.type.proto.startswith('repeated ') %}optional {% endif %}{{field.type.proto}} {{field.final}} = {{loop.index}} [json_name="{{field.original}}"];
   {% endfor %}
 }
 {% endfor %}
