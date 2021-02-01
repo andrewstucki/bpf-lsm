@@ -29,6 +29,23 @@ pub mod ffi {
 
     #[repr(C)]
     #[derive(Debug, Copy, Clone)]
+    pub struct bprm_check_security_event_event_t {
+        pub action: [c_char; 256],
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct bprm_check_security_event_process_parent_t {
+        pub pid: u32,
+        pub entity_id: [c_char; 256],
+        pub name: [c_char; 256],
+        pub ppid: u32,
+        pub start: u64,
+        pub thread__id: u64,
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
     pub struct bprm_check_security_event_process_target_t {
         pub executable: [c_char; 256],
         pub args_count: u64,
@@ -41,7 +58,9 @@ pub mod ffi {
         pub entity_id: [c_char; 256],
         pub name: [c_char; 256],
         pub ppid: u32,
+        pub start: u64,
         pub thread__id: u64,
+        pub parent: bprm_check_security_event_process_parent_t,
         pub target: bprm_check_security_event_process_target_t,
     }
 
@@ -53,15 +72,30 @@ pub mod ffi {
 
     #[repr(C)]
     #[derive(Debug, Copy, Clone)]
+    pub struct bprm_check_security_event_user_effective_group_t {
+        pub id: u32,
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
+    pub struct bprm_check_security_event_user_effective_t {
+        pub id: u32,
+        pub group: bprm_check_security_event_user_effective_group_t,
+    }
+
+    #[repr(C)]
+    #[derive(Debug, Copy, Clone)]
     pub struct bprm_check_security_event_user_t {
         pub id: u32,
         pub group: bprm_check_security_event_user_group_t,
+        pub effective: bprm_check_security_event_user_effective_t,
     }
 
     #[repr(C)]
     #[derive(Debug, Copy, Clone)]
     pub struct bprm_check_security_event_t {
         pub __timestamp: u64,
+        pub event: bprm_check_security_event_event_t,
         pub process: bprm_check_security_event_process_t,
         pub user: bprm_check_security_event_user_t,
     }
@@ -189,6 +223,27 @@ pub trait SerializableEvent {
     fn suffix(&self) -> &'static str;
 }
 
+impl From<ffi::bprm_check_security_event_event_t> for BprmCheckSecurityEventEvent {
+    fn from(e: ffi::bprm_check_security_event_event_t) -> Self {
+        let mut event = Self::default();
+        event.set_action(transform_string(e.action.into()));
+        event
+    }
+}
+
+impl From<ffi::bprm_check_security_event_process_parent_t> for BprmCheckSecurityEventProcessParent {
+    fn from(e: ffi::bprm_check_security_event_process_parent_t) -> Self {
+        let mut event = Self::default();
+        event.set_pid(e.pid);
+        event.set_entity_id(transform_string(e.entity_id.into()));
+        event.set_name(transform_string(e.name.into()));
+        event.set_ppid(e.ppid);
+        event.set_start(e.start);
+        event.set_thread_id(e.thread__id);
+        event
+    }
+}
+
 impl From<ffi::bprm_check_security_event_process_target_t> for BprmCheckSecurityEventProcessTarget {
     fn from(e: ffi::bprm_check_security_event_process_target_t) -> Self {
         let mut event = Self::default();
@@ -205,7 +260,9 @@ impl From<ffi::bprm_check_security_event_process_t> for BprmCheckSecurityEventPr
         event.set_entity_id(transform_string(e.entity_id.into()));
         event.set_name(transform_string(e.name.into()));
         event.set_ppid(e.ppid);
+        event.set_start(e.start);
         event.set_thread_id(e.thread__id);
+        event.parent = Some(e.parent.into()).into();
         event.target = Some(e.target.into()).into();
         event
     }
@@ -219,11 +276,31 @@ impl From<ffi::bprm_check_security_event_user_group_t> for BprmCheckSecurityEven
     }
 }
 
+impl From<ffi::bprm_check_security_event_user_effective_group_t>
+    for BprmCheckSecurityEventUserEffectiveGroup
+{
+    fn from(e: ffi::bprm_check_security_event_user_effective_group_t) -> Self {
+        let mut event = Self::default();
+        event.set_id(int_to_string(e.id.into()));
+        event
+    }
+}
+
+impl From<ffi::bprm_check_security_event_user_effective_t> for BprmCheckSecurityEventUserEffective {
+    fn from(e: ffi::bprm_check_security_event_user_effective_t) -> Self {
+        let mut event = Self::default();
+        event.set_id(int_to_string(e.id.into()));
+        event.group = Some(e.group.into()).into();
+        event
+    }
+}
+
 impl From<ffi::bprm_check_security_event_user_t> for BprmCheckSecurityEventUser {
     fn from(e: ffi::bprm_check_security_event_user_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
         event.group = Some(e.group.into()).into();
+        event.effective = Some(e.effective.into()).into();
         event
     }
 }
@@ -232,7 +309,7 @@ impl From<ffi::bprm_check_security_event_t> for BprmCheckSecurityEvent {
     fn from(e: ffi::bprm_check_security_event_t) -> Self {
         let mut event = Self::default();
         event.set_timestamp(e.__timestamp);
-        event.event = Some(Default::default()).into();
+        event.event = Some(e.event.into()).into();
         event.process = Some(e.process.into()).into();
         event.user = Some(e.user.into()).into();
         event
@@ -289,6 +366,17 @@ impl SerializableEvent for BprmCheckSecurityEvent {
             user.set_name(enriched_user.name().to_string_lossy().to_string());
         }
 
+        let effective_user = user.effective.get_mut_ref();
+        let effective_uid = effective_user.get_id().parse::<u32>().unwrap();
+        let effective_group = effective_user.group.get_mut_ref();
+        let effective_gid = effective_group.get_id().parse::<u32>().unwrap();
+        for enriched_group in cache.get_group_by_gid(effective_gid) {
+            effective_group.set_name(enriched_group.name().to_string_lossy().to_string());
+        }
+        for enriched_user in cache.get_user_by_uid(effective_uid) {
+            effective_user.set_name(enriched_user.name().to_string_lossy().to_string());
+        }
+
         Ok(self)
     }
 }
@@ -320,7 +408,9 @@ impl<T: TransformationHandler> Transformer<T> {
         match e.get_event_type() {
             event::EventType::BPRMCHECKSECURITYEVENT => self
                 .handler
-                .enrich_bprm_check_security(&mut e.bprm_check_security_event_t.unwrap())?
+                .enrich_bprm_check_security(
+                    (&mut e.bprm_check_security_event_t.unwrap()).enrich_common()?,
+                )?
                 .to_json(),
         }
     }
@@ -342,8 +432,8 @@ impl<'a> Probe<'a> {
         self
     }
 
-    pub fn debug(&mut self, debug: bool) -> &mut Self {
-        self.debug = debug;
+    pub fn debug(&mut self) -> &mut Self {
+        self.debug = true;
         self
     }
 

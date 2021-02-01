@@ -10,9 +10,28 @@
 
 #ifdef BPF
 #define RINGBUFFER_FLAGS 0
+
+#ifndef memset
+#define memset(dest, chr, n) __builtin_memset((dest), (chr), (n))
+#endif
+
+#ifndef memcpy
+#define memcpy(dest, src, n) __builtin_memcpy((dest), (src), (n))
+#endif
+
+#ifndef memmove
+#define memmove(dest, src, n) __builtin_memmove((dest), (src), (n))
+#endif
+
+#define SET_STRING(dest, src)                                                  \
+  memcpy(dest, src, (sizeof(src) / sizeof(src[0]) + 1))
+
+// note that might need to make another macro
+// for "sleepable" hooks, denoted with "lsm.s"
 #define LSM_HOOK(module, args...)                                              \
   __attribute__((always_inline)) static int ____##module(                      \
-      unsigned long long *ctx, ##args, struct bpf_##module##_event_t *event);  \
+      unsigned long long *ctx, ##args, struct bpf_##module##_event_t *event,   \
+      struct task_struct *current_task);                                       \
   SEC("lsm/" #module)                                                          \
   int BPF_PROG(module##_hook, ##args) {                                        \
     if (module##_enabled == 0) {                                               \
@@ -25,16 +44,57 @@
     int __ret = 0;                                                             \
     _Pragma("GCC diagnostic push")                                             \
         _Pragma("GCC diagnostic ignored \"-Wint-conversion\"") if (event) {    \
+      struct task_struct *current_task =                                       \
+          (struct task_struct *)bpf_get_current_task();                        \
+                                                                               \
       event->module##_event_t.__timestamp =                                    \
-          (bpf_ktime_get_boot_ns() + clock_adjustment) / 1000000000l;          \
-      __ret = ____##module(___bpf_ctx_cast(args), &event->module##_event_t);   \
+          adjust_timestamp(bpf_ktime_get_boot_ns());                           \
+                                                                               \
+      event->module##_event_t.process.pid = BPF_CORE_READ(current_task, pid);  \
+      event->module##_event_t.process.thread__id =                             \
+          BPF_CORE_READ(current_task, tgid);                                   \
+      event->module##_event_t.process.ppid =                                   \
+          BPF_CORE_READ(current_task, real_parent, pid);                       \
+      event->module##_event_t.process.start =                                  \
+          adjust_timestamp(BPF_CORE_READ(current_task, start_time));           \
+      BPF_CORE_READ_INTO(&event->module##_event_t.process.name, current_task,  \
+                         comm);                                                \
+      /* blocked on d_path resolution for executable name by                   \
+       * https://lwn.net/Articles/827938/ essentially d_path of                \
+       * current_task->mm->exe_file->f_path kernel 5.11 */                     \
+                                                                               \
+      event->module##_event_t.process.parent.pid =                             \
+          BPF_CORE_READ(current_task, real_parent, pid);                       \
+      event->module##_event_t.process.parent.thread__id =                      \
+          BPF_CORE_READ(current_task, real_parent, tgid);                      \
+      event->module##_event_t.process.parent.ppid =                            \
+          BPF_CORE_READ(current_task, real_parent, real_parent, pid);          \
+      event->module##_event_t.process.parent.start = adjust_timestamp(         \
+          BPF_CORE_READ(current_task, real_parent, start_time));               \
+      BPF_CORE_READ_INTO(&event->module##_event_t.process.parent.name,         \
+                         current_task, real_parent, comm);                     \
+      /* blocked on d_path resolution for executable name by                   \
+       * https://lwn.net/Articles/827938/ essentially d_path of                \
+       * current_task->real_parent->mm->exe_file->f_path  kernel 5.11 */       \
+                                                                               \
+      event->module##_event_t.user.id =                                        \
+          BPF_CORE_READ(current_task, real_cred, uid.val);                     \
+      event->module##_event_t.user.group.id =                                  \
+          BPF_CORE_READ(current_task, real_cred, gid.val);                     \
+      event->module##_event_t.user.effective.id =                              \
+          BPF_CORE_READ(current_task, cred, uid.val);                          \
+      event->module##_event_t.user.effective.group.id =                        \
+          BPF_CORE_READ(current_task, cred, gid.val);                          \
+      __ret = ____##module(___bpf_ctx_cast(args), &event->module##_event_t,    \
+                           current_task);                                      \
     }                                                                          \
     _Pragma("GCC diagnostic pop") if (event)                                   \
         bpf_ringbuf_submit(event, RINGBUFFER_FLAGS);                           \
     return __ret;                                                              \
   }                                                                            \
   static int ____##module(unsigned long long *ctx, ##args,                     \
-                          struct bpf_##module##_event_t *event)
+                          struct bpf_##module##_event_t *event,                \
+                          struct task_struct *current_task)
 
 #define initialize_event()                                                     \
   if (!event)                                                                  \
@@ -42,17 +102,36 @@
 #define reject(event) return -EPERM;
 #define accept(event) return 0;
 
+const volatile unsigned long clock_adjustment = 0;
+
+__attribute__((always_inline)) static unsigned long
+adjust_timestamp(unsigned long timestamp) {
+  return (timestamp + clock_adjustment) / 1000000000l;
+}
+
 struct {
   __uint(type, BPF_MAP_TYPE_RINGBUF);
   __uint(max_entries, 256 * 1024);
 } events SEC(".maps");
 
-const volatile unsigned long clock_adjustment = 0;
 const volatile unsigned char bprm_check_security_enabled = 0;
 char _license[] SEC("license") = "GPL";
 #endif
 
 // begin bprm_check_security
+
+struct bpf_bprm_check_security_event_event_t {
+  char action[256];
+};
+
+struct bpf_bprm_check_security_event_process_parent_t {
+  unsigned int pid;
+  char entity_id[256];
+  char name[256];
+  unsigned int ppid;
+  unsigned long start;
+  unsigned long thread__id;
+};
 
 struct bpf_bprm_check_security_event_process_target_t {
   char executable[256];
@@ -64,7 +143,9 @@ struct bpf_bprm_check_security_event_process_t {
   char entity_id[256];
   char name[256];
   unsigned int ppid;
+  unsigned long start;
   unsigned long thread__id;
+  struct bpf_bprm_check_security_event_process_parent_t parent;
   struct bpf_bprm_check_security_event_process_target_t target;
 };
 
@@ -72,13 +153,24 @@ struct bpf_bprm_check_security_event_user_group_t {
   unsigned int id;
 };
 
+struct bpf_bprm_check_security_event_user_effective_group_t {
+  unsigned int id;
+};
+
+struct bpf_bprm_check_security_event_user_effective_t {
+  unsigned int id;
+  struct bpf_bprm_check_security_event_user_effective_group_t group;
+};
+
 struct bpf_bprm_check_security_event_user_t {
   unsigned int id;
   struct bpf_bprm_check_security_event_user_group_t group;
+  struct bpf_bprm_check_security_event_user_effective_t effective;
 };
 
 struct bpf_bprm_check_security_event_t {
   unsigned long __timestamp;
+  struct bpf_bprm_check_security_event_event_t event;
   struct bpf_bprm_check_security_event_process_t process;
   struct bpf_bprm_check_security_event_user_t user;
 };

@@ -10,23 +10,36 @@ message BprmCheckSecurityEventEvent {
   
   optional string id = 1 [json_name="id"];
   
-  optional string code = 2 [json_name="code"];
+  optional string kind = 2 [json_name="kind"];
   
-  optional string kind = 3 [json_name="kind"];
+  optional string category = 3 [json_name="category"];
   
-  optional string category = 4 [json_name="category"];
+  optional string action = 4 [json_name="action"];
   
-  optional string action = 5 [json_name="action"];
+  optional string field_type = 5 [json_name="type"];
   
-  optional string field_type = 6 [json_name="type"];
+  optional string module = 6 [json_name="module"];
   
-  optional string module = 7 [json_name="module"];
+  optional string provider = 7 [json_name="provider"];
   
-  optional string provider = 8 [json_name="provider"];
+  optional uint64 sequence = 8 [json_name="sequence"];
   
-  optional uint64 sequence = 9 [json_name="sequence"];
+  optional uint64 ingested = 9 [json_name="ingested"];
   
-  optional uint64 ingested = 10 [json_name="ingested"];
+}
+message BprmCheckSecurityEventProcessParent {
+  
+  optional uint32 pid = 1 [json_name="pid"];
+  
+  optional string entity_id = 2 [json_name="entity_id"];
+  
+  optional string name = 3 [json_name="name"];
+  
+  optional uint32 ppid = 4 [json_name="ppid"];
+  
+  optional uint64 start = 5 [json_name="start"];
+  
+  optional uint64 thread_id = 6 [json_name="thread.id"];
   
 }
 message BprmCheckSecurityEventProcessTarget {
@@ -46,9 +59,13 @@ message BprmCheckSecurityEventProcess {
   
   optional uint32 ppid = 4 [json_name="ppid"];
   
-  optional uint64 thread_id = 5 [json_name="thread.id"];
+  optional uint64 start = 5 [json_name="start"];
   
-  optional BprmCheckSecurityEventProcessTarget target = 6 [json_name="target"];
+  optional uint64 thread_id = 6 [json_name="thread.id"];
+  
+  optional BprmCheckSecurityEventProcessParent parent = 7 [json_name="parent"];
+  
+  optional BprmCheckSecurityEventProcessTarget target = 8 [json_name="target"];
   
 }
 message BprmCheckSecurityEventUserGroup {
@@ -58,6 +75,22 @@ message BprmCheckSecurityEventUserGroup {
   optional string name = 2 [json_name="name"];
   
 }
+message BprmCheckSecurityEventUserEffectiveGroup {
+  
+  optional string id = 1 [json_name="id"];
+  
+  optional string name = 2 [json_name="name"];
+  
+}
+message BprmCheckSecurityEventUserEffective {
+  
+  optional string id = 1 [json_name="id"];
+  
+  optional string name = 2 [json_name="name"];
+  
+  optional BprmCheckSecurityEventUserEffectiveGroup group = 3 [json_name="group"];
+  
+}
 message BprmCheckSecurityEventUser {
   
   optional string id = 1 [json_name="id"];
@@ -65,6 +98,8 @@ message BprmCheckSecurityEventUser {
   optional string name = 2 [json_name="name"];
   
   optional BprmCheckSecurityEventUserGroup group = 3 [json_name="group"];
+  
+  optional BprmCheckSecurityEventUserEffective effective = 4 [json_name="effective"];
   
 }
 message BprmCheckSecurityEvent {

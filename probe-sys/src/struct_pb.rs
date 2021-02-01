@@ -29,7 +29,6 @@ const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_3_0_0_PRE;
 pub struct BprmCheckSecurityEventEvent {
     // message fields
     id: ::std::option::Option<::std::string::String>,
-    code: ::std::option::Option<::std::string::String>,
     kind: ::std::option::Option<::std::string::String>,
     category: ::std::option::Option<::std::string::String>,
     action: ::std::option::Option<::std::string::String>,
@@ -90,43 +89,7 @@ impl BprmCheckSecurityEventEvent {
         self.id.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string code = 2;
-
-    pub fn get_code(&self) -> &str {
-        match self.code.as_ref() {
-            Some(v) => v,
-            None => "",
-        }
-    }
-
-    pub fn clear_code(&mut self) {
-        self.code = ::std::option::Option::None;
-    }
-
-    pub fn has_code(&self) -> bool {
-        self.code.is_some()
-    }
-
-    // Param is passed by value, moved
-    pub fn set_code(&mut self, v: ::std::string::String) {
-        self.code = ::std::option::Option::Some(v);
-    }
-
-    // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_code(&mut self) -> &mut ::std::string::String {
-        if self.code.is_none() {
-            self.code = ::std::option::Option::Some(::std::string::String::new());
-        }
-        self.code.as_mut().unwrap()
-    }
-
-    // Take field
-    pub fn take_code(&mut self) -> ::std::string::String {
-        self.code.take().unwrap_or_else(|| ::std::string::String::new())
-    }
-
-    // optional string kind = 3;
+    // optional string kind = 2;
 
     pub fn get_kind(&self) -> &str {
         match self.kind.as_ref() {
@@ -162,7 +125,7 @@ impl BprmCheckSecurityEventEvent {
         self.kind.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string category = 4;
+    // optional string category = 3;
 
     pub fn get_category(&self) -> &str {
         match self.category.as_ref() {
@@ -198,7 +161,7 @@ impl BprmCheckSecurityEventEvent {
         self.category.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string action = 5;
+    // optional string action = 4;
 
     pub fn get_action(&self) -> &str {
         match self.action.as_ref() {
@@ -234,7 +197,7 @@ impl BprmCheckSecurityEventEvent {
         self.action.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string field_type = 6;
+    // optional string field_type = 5;
 
     pub fn get_field_type(&self) -> &str {
         match self.field_type.as_ref() {
@@ -270,7 +233,7 @@ impl BprmCheckSecurityEventEvent {
         self.field_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string module = 7;
+    // optional string module = 6;
 
     pub fn get_module(&self) -> &str {
         match self.module.as_ref() {
@@ -306,7 +269,7 @@ impl BprmCheckSecurityEventEvent {
         self.module.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string provider = 8;
+    // optional string provider = 7;
 
     pub fn get_provider(&self) -> &str {
         match self.provider.as_ref() {
@@ -342,7 +305,7 @@ impl BprmCheckSecurityEventEvent {
         self.provider.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional uint64 sequence = 9;
+    // optional uint64 sequence = 8;
 
     pub fn get_sequence(&self) -> u64 {
         self.sequence.unwrap_or(0)
@@ -361,7 +324,7 @@ impl BprmCheckSecurityEventEvent {
         self.sequence = ::std::option::Option::Some(v);
     }
 
-    // optional uint64 ingested = 10;
+    // optional uint64 ingested = 9;
 
     pub fn get_ingested(&self) -> u64 {
         self.ingested.unwrap_or(0)
@@ -387,12 +350,6 @@ impl BprmCheckSecurityEventEvent {
             |m: &BprmCheckSecurityEventEvent| { &m.id },
             |m: &mut BprmCheckSecurityEventEvent| { &mut m.id },
             BprmCheckSecurityEventEvent::get_id,
-        ));
-        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
-            "code",
-            |m: &BprmCheckSecurityEventEvent| { &m.code },
-            |m: &mut BprmCheckSecurityEventEvent| { &mut m.code },
-            BprmCheckSecurityEventEvent::get_code,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "kind",
@@ -469,51 +426,45 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.code = ::std::option::Option::Some(is.read_string()?);
+                    self.kind = ::std::option::Option::Some(is.read_string()?);
                 },
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.kind = ::std::option::Option::Some(is.read_string()?);
+                    self.category = ::std::option::Option::Some(is.read_string()?);
                 },
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.category = ::std::option::Option::Some(is.read_string()?);
+                    self.action = ::std::option::Option::Some(is.read_string()?);
                 },
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.action = ::std::option::Option::Some(is.read_string()?);
+                    self.field_type = ::std::option::Option::Some(is.read_string()?);
                 },
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.field_type = ::std::option::Option::Some(is.read_string()?);
+                    self.module = ::std::option::Option::Some(is.read_string()?);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.module = ::std::option::Option::Some(is.read_string()?);
-                },
-                8 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
                     self.provider = ::std::option::Option::Some(is.read_string()?);
                 },
-                9 => {
+                8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     self.sequence = ::std::option::Option::Some(is.read_uint64()?);
                 },
-                10 => {
+                9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
@@ -534,32 +485,29 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
         if let Some(v) = self.id.as_ref() {
             my_size += ::protobuf::rt::string_size(1, &v);
         }
-        if let Some(v) = self.code.as_ref() {
+        if let Some(v) = self.kind.as_ref() {
             my_size += ::protobuf::rt::string_size(2, &v);
         }
-        if let Some(v) = self.kind.as_ref() {
+        if let Some(v) = self.category.as_ref() {
             my_size += ::protobuf::rt::string_size(3, &v);
         }
-        if let Some(v) = self.category.as_ref() {
+        if let Some(v) = self.action.as_ref() {
             my_size += ::protobuf::rt::string_size(4, &v);
         }
-        if let Some(v) = self.action.as_ref() {
+        if let Some(v) = self.field_type.as_ref() {
             my_size += ::protobuf::rt::string_size(5, &v);
         }
-        if let Some(v) = self.field_type.as_ref() {
+        if let Some(v) = self.module.as_ref() {
             my_size += ::protobuf::rt::string_size(6, &v);
         }
-        if let Some(v) = self.module.as_ref() {
+        if let Some(v) = self.provider.as_ref() {
             my_size += ::protobuf::rt::string_size(7, &v);
         }
-        if let Some(v) = self.provider.as_ref() {
-            my_size += ::protobuf::rt::string_size(8, &v);
-        }
         if let Some(v) = self.sequence {
-            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.ingested {
-            my_size += ::protobuf::rt::value_size(10, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -570,32 +518,29 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
         if let Some(v) = self.id.as_ref() {
             os.write_string(1, v)?;
         }
-        if let Some(v) = self.code.as_ref() {
+        if let Some(v) = self.kind.as_ref() {
             os.write_string(2, v)?;
         }
-        if let Some(v) = self.kind.as_ref() {
+        if let Some(v) = self.category.as_ref() {
             os.write_string(3, v)?;
         }
-        if let Some(v) = self.category.as_ref() {
+        if let Some(v) = self.action.as_ref() {
             os.write_string(4, v)?;
         }
-        if let Some(v) = self.action.as_ref() {
+        if let Some(v) = self.field_type.as_ref() {
             os.write_string(5, v)?;
         }
-        if let Some(v) = self.field_type.as_ref() {
+        if let Some(v) = self.module.as_ref() {
             os.write_string(6, v)?;
         }
-        if let Some(v) = self.module.as_ref() {
+        if let Some(v) = self.provider.as_ref() {
             os.write_string(7, v)?;
         }
-        if let Some(v) = self.provider.as_ref() {
-            os.write_string(8, v)?;
-        }
         if let Some(v) = self.sequence {
-            os.write_uint64(9, v)?;
+            os.write_uint64(8, v)?;
         }
         if let Some(v) = self.ingested {
-            os.write_uint64(10, v)?;
+            os.write_uint64(9, v)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -624,7 +569,6 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
     fn default_instance() -> &'static BprmCheckSecurityEventEvent {
         static instance: BprmCheckSecurityEventEvent = BprmCheckSecurityEventEvent {
             id: ::std::option::Option::None,
-            code: ::std::option::Option::None,
             kind: ::std::option::Option::None,
             category: ::std::option::Option::None,
             action: ::std::option::Option::None,
@@ -643,7 +587,6 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
 impl ::protobuf::Clear for BprmCheckSecurityEventEvent {
     fn clear(&mut self) {
         self.id = ::std::option::Option::None;
-        self.code = ::std::option::Option::None;
         self.kind = ::std::option::Option::None;
         self.category = ::std::option::Option::None;
         self.action = ::std::option::Option::None;
@@ -663,6 +606,385 @@ impl ::std::fmt::Debug for BprmCheckSecurityEventEvent {
 }
 
 impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEventEvent {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct BprmCheckSecurityEventProcessParent {
+    // message fields
+    pid: ::std::option::Option<u32>,
+    entity_id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    ppid: ::std::option::Option<u32>,
+    start: ::std::option::Option<u64>,
+    thread_id: ::std::option::Option<u64>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a BprmCheckSecurityEventProcessParent {
+    fn default() -> &'a BprmCheckSecurityEventProcessParent {
+        <BprmCheckSecurityEventProcessParent as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl BprmCheckSecurityEventProcessParent {
+    pub fn new() -> BprmCheckSecurityEventProcessParent {
+        ::std::default::Default::default()
+    }
+
+    // optional uint32 pid = 1;
+
+    pub fn get_pid(&self) -> u32 {
+        self.pid.unwrap_or(0)
+    }
+
+    pub fn clear_pid(&mut self) {
+        self.pid = ::std::option::Option::None;
+    }
+
+    pub fn has_pid(&self) -> bool {
+        self.pid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_pid(&mut self, v: u32) {
+        self.pid = ::std::option::Option::Some(v);
+    }
+
+    // optional string entity_id = 2;
+
+    pub fn get_entity_id(&self) -> &str {
+        match self.entity_id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_entity_id(&mut self) {
+        self.entity_id = ::std::option::Option::None;
+    }
+
+    pub fn has_entity_id(&self) -> bool {
+        self.entity_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_entity_id(&mut self, v: ::std::string::String) {
+        self.entity_id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_entity_id(&mut self) -> &mut ::std::string::String {
+        if self.entity_id.is_none() {
+            self.entity_id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.entity_id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_entity_id(&mut self) -> ::std::string::String {
+        self.entity_id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 3;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint32 ppid = 4;
+
+    pub fn get_ppid(&self) -> u32 {
+        self.ppid.unwrap_or(0)
+    }
+
+    pub fn clear_ppid(&mut self) {
+        self.ppid = ::std::option::Option::None;
+    }
+
+    pub fn has_ppid(&self) -> bool {
+        self.ppid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_ppid(&mut self, v: u32) {
+        self.ppid = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 start = 5;
+
+    pub fn get_start(&self) -> u64 {
+        self.start.unwrap_or(0)
+    }
+
+    pub fn clear_start(&mut self) {
+        self.start = ::std::option::Option::None;
+    }
+
+    pub fn has_start(&self) -> bool {
+        self.start.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_start(&mut self, v: u64) {
+        self.start = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 thread_id = 6;
+
+    pub fn get_thread_id(&self) -> u64 {
+        self.thread_id.unwrap_or(0)
+    }
+
+    pub fn clear_thread_id(&mut self) {
+        self.thread_id = ::std::option::Option::None;
+    }
+
+    pub fn has_thread_id(&self) -> bool {
+        self.thread_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_thread_id(&mut self, v: u64) {
+        self.thread_id = ::std::option::Option::Some(v);
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "pid",
+            |m: &BprmCheckSecurityEventProcessParent| { &m.pid },
+            |m: &mut BprmCheckSecurityEventProcessParent| { &mut m.pid },
+            BprmCheckSecurityEventProcessParent::get_pid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "entity_id",
+            |m: &BprmCheckSecurityEventProcessParent| { &m.entity_id },
+            |m: &mut BprmCheckSecurityEventProcessParent| { &mut m.entity_id },
+            BprmCheckSecurityEventProcessParent::get_entity_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &BprmCheckSecurityEventProcessParent| { &m.name },
+            |m: &mut BprmCheckSecurityEventProcessParent| { &mut m.name },
+            BprmCheckSecurityEventProcessParent::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "ppid",
+            |m: &BprmCheckSecurityEventProcessParent| { &m.ppid },
+            |m: &mut BprmCheckSecurityEventProcessParent| { &mut m.ppid },
+            BprmCheckSecurityEventProcessParent::get_ppid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "start",
+            |m: &BprmCheckSecurityEventProcessParent| { &m.start },
+            |m: &mut BprmCheckSecurityEventProcessParent| { &mut m.start },
+            BprmCheckSecurityEventProcessParent::get_start,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "thread_id",
+            |m: &BprmCheckSecurityEventProcessParent| { &m.thread_id },
+            |m: &mut BprmCheckSecurityEventProcessParent| { &mut m.thread_id },
+            BprmCheckSecurityEventProcessParent::get_thread_id,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<BprmCheckSecurityEventProcessParent>(
+            "BprmCheckSecurityEventProcessParent",
+            1,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for BprmCheckSecurityEventProcessParent {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.pid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.entity_id = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ppid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                5 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.start = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.thread_id = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.pid {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        if let Some(v) = self.ppid {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.start {
+            my_size += ::protobuf::rt::value_size(5, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.thread_id {
+            my_size += ::protobuf::rt::value_size(6, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.pid {
+            os.write_uint32(1, v)?;
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(3, v)?;
+        }
+        if let Some(v) = self.ppid {
+            os.write_uint32(4, v)?;
+        }
+        if let Some(v) = self.start {
+            os.write_uint64(5, v)?;
+        }
+        if let Some(v) = self.thread_id {
+            os.write_uint64(6, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> BprmCheckSecurityEventProcessParent {
+        BprmCheckSecurityEventProcessParent::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
+    }
+
+    fn default_instance() -> &'static BprmCheckSecurityEventProcessParent {
+        static instance: BprmCheckSecurityEventProcessParent = BprmCheckSecurityEventProcessParent {
+            pid: ::std::option::Option::None,
+            entity_id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            ppid: ::std::option::Option::None,
+            start: ::std::option::Option::None,
+            thread_id: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for BprmCheckSecurityEventProcessParent {
+    fn clear(&mut self) {
+        self.pid = ::std::option::Option::None;
+        self.entity_id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.ppid = ::std::option::Option::None;
+        self.start = ::std::option::Option::None;
+        self.thread_id = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for BprmCheckSecurityEventProcessParent {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEventProcessParent {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -758,7 +1080,7 @@ impl BprmCheckSecurityEventProcessTarget {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<BprmCheckSecurityEventProcessTarget>(
             "BprmCheckSecurityEventProcessTarget",
-            1,
+            2,
             fields,
         )
     }
@@ -836,7 +1158,7 @@ impl ::protobuf::Message for BprmCheckSecurityEventProcessTarget {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 
     fn default_instance() -> &'static BprmCheckSecurityEventProcessTarget {
@@ -875,7 +1197,9 @@ pub struct BprmCheckSecurityEventProcess {
     entity_id: ::std::option::Option<::std::string::String>,
     name: ::std::option::Option<::std::string::String>,
     ppid: ::std::option::Option<u32>,
+    start: ::std::option::Option<u64>,
     thread_id: ::std::option::Option<u64>,
+    pub parent: ::protobuf::MessageField<BprmCheckSecurityEventProcessParent>,
     pub target: ::protobuf::MessageField<BprmCheckSecurityEventProcessTarget>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -1003,7 +1327,26 @@ impl BprmCheckSecurityEventProcess {
         self.ppid = ::std::option::Option::Some(v);
     }
 
-    // optional uint64 thread_id = 5;
+    // optional uint64 start = 5;
+
+    pub fn get_start(&self) -> u64 {
+        self.start.unwrap_or(0)
+    }
+
+    pub fn clear_start(&mut self) {
+        self.start = ::std::option::Option::None;
+    }
+
+    pub fn has_start(&self) -> bool {
+        self.start.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_start(&mut self, v: u64) {
+        self.start = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 thread_id = 6;
 
     pub fn get_thread_id(&self) -> u64 {
         self.thread_id.unwrap_or(0)
@@ -1049,10 +1392,21 @@ impl BprmCheckSecurityEventProcess {
             BprmCheckSecurityEventProcess::get_ppid,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "start",
+            |m: &BprmCheckSecurityEventProcess| { &m.start },
+            |m: &mut BprmCheckSecurityEventProcess| { &mut m.start },
+            BprmCheckSecurityEventProcess::get_start,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "thread_id",
             |m: &BprmCheckSecurityEventProcess| { &m.thread_id },
             |m: &mut BprmCheckSecurityEventProcess| { &mut m.thread_id },
             BprmCheckSecurityEventProcess::get_thread_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, BprmCheckSecurityEventProcessParent>(
+            "parent",
+            |m: &BprmCheckSecurityEventProcess| { &m.parent },
+            |m: &mut BprmCheckSecurityEventProcess| { &mut m.parent },
         ));
         fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, BprmCheckSecurityEventProcessTarget>(
             "target",
@@ -1061,7 +1415,7 @@ impl BprmCheckSecurityEventProcess {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<BprmCheckSecurityEventProcess>(
             "BprmCheckSecurityEventProcess",
-            2,
+            3,
             fields,
         )
     }
@@ -1069,6 +1423,11 @@ impl BprmCheckSecurityEventProcess {
 
 impl ::protobuf::Message for BprmCheckSecurityEventProcess {
     fn is_initialized(&self) -> bool {
+        for v in &self.parent {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         for v in &self.target {
             if !v.is_initialized() {
                 return false;
@@ -1109,9 +1468,18 @@ impl ::protobuf::Message for BprmCheckSecurityEventProcess {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.thread_id = ::std::option::Option::Some(is.read_uint64()?);
+                    self.start = ::std::option::Option::Some(is.read_uint64()?);
                 },
                 6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.thread_id = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                7 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.parent)?;
+                },
+                8 => {
                     ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.target)?;
                 },
                 _ => {
@@ -1138,8 +1506,15 @@ impl ::protobuf::Message for BprmCheckSecurityEventProcess {
         if let Some(v) = self.ppid {
             my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
         }
-        if let Some(v) = self.thread_id {
+        if let Some(v) = self.start {
             my_size += ::protobuf::rt::value_size(5, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.thread_id {
+            my_size += ::protobuf::rt::value_size(6, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.parent.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
         if let Some(v) = self.target.as_ref() {
             let len = v.compute_size();
@@ -1163,11 +1538,17 @@ impl ::protobuf::Message for BprmCheckSecurityEventProcess {
         if let Some(v) = self.ppid {
             os.write_uint32(4, v)?;
         }
-        if let Some(v) = self.thread_id {
+        if let Some(v) = self.start {
             os.write_uint64(5, v)?;
         }
+        if let Some(v) = self.thread_id {
+            os.write_uint64(6, v)?;
+        }
+        if let Some(v) = self.parent.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(7, v, os)?;
+        }
         if let Some(v) = self.target.as_ref() {
-            ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
+            ::protobuf::rt::write_message_field_with_cached_size(8, v, os)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -1190,7 +1571,7 @@ impl ::protobuf::Message for BprmCheckSecurityEventProcess {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
     }
 
     fn default_instance() -> &'static BprmCheckSecurityEventProcess {
@@ -1199,7 +1580,9 @@ impl ::protobuf::Message for BprmCheckSecurityEventProcess {
             entity_id: ::std::option::Option::None,
             name: ::std::option::Option::None,
             ppid: ::std::option::Option::None,
+            start: ::std::option::Option::None,
             thread_id: ::std::option::Option::None,
+            parent: ::protobuf::MessageField::none(),
             target: ::protobuf::MessageField::none(),
             unknown_fields: ::protobuf::UnknownFields::new(),
             cached_size: ::protobuf::rt::CachedSize::new(),
@@ -1214,7 +1597,9 @@ impl ::protobuf::Clear for BprmCheckSecurityEventProcess {
         self.entity_id = ::std::option::Option::None;
         self.name = ::std::option::Option::None;
         self.ppid = ::std::option::Option::None;
+        self.start = ::std::option::Option::None;
         self.thread_id = ::std::option::Option::None;
+        self.parent.clear();
         self.target.clear();
         self.unknown_fields.clear();
     }
@@ -1339,7 +1724,7 @@ impl BprmCheckSecurityEventUserGroup {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<BprmCheckSecurityEventUserGroup>(
             "BprmCheckSecurityEventUserGroup",
-            3,
+            4,
             fields,
         )
     }
@@ -1417,7 +1802,7 @@ impl ::protobuf::Message for BprmCheckSecurityEventUserGroup {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
     }
 
     fn default_instance() -> &'static BprmCheckSecurityEventUserGroup {
@@ -1450,11 +1835,473 @@ impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEventUserGroup {
 }
 
 #[derive(PartialEq,Clone,Default)]
+pub struct BprmCheckSecurityEventUserEffectiveGroup {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a BprmCheckSecurityEventUserEffectiveGroup {
+    fn default() -> &'a BprmCheckSecurityEventUserEffectiveGroup {
+        <BprmCheckSecurityEventUserEffectiveGroup as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl BprmCheckSecurityEventUserEffectiveGroup {
+    pub fn new() -> BprmCheckSecurityEventUserEffectiveGroup {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &BprmCheckSecurityEventUserEffectiveGroup| { &m.id },
+            |m: &mut BprmCheckSecurityEventUserEffectiveGroup| { &mut m.id },
+            BprmCheckSecurityEventUserEffectiveGroup::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &BprmCheckSecurityEventUserEffectiveGroup| { &m.name },
+            |m: &mut BprmCheckSecurityEventUserEffectiveGroup| { &mut m.name },
+            BprmCheckSecurityEventUserEffectiveGroup::get_name,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<BprmCheckSecurityEventUserEffectiveGroup>(
+            "BprmCheckSecurityEventUserEffectiveGroup",
+            5,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for BprmCheckSecurityEventUserEffectiveGroup {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> BprmCheckSecurityEventUserEffectiveGroup {
+        BprmCheckSecurityEventUserEffectiveGroup::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
+    }
+
+    fn default_instance() -> &'static BprmCheckSecurityEventUserEffectiveGroup {
+        static instance: BprmCheckSecurityEventUserEffectiveGroup = BprmCheckSecurityEventUserEffectiveGroup {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for BprmCheckSecurityEventUserEffectiveGroup {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for BprmCheckSecurityEventUserEffectiveGroup {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEventUserEffectiveGroup {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct BprmCheckSecurityEventUserEffective {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    pub group: ::protobuf::MessageField<BprmCheckSecurityEventUserEffectiveGroup>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a BprmCheckSecurityEventUserEffective {
+    fn default() -> &'a BprmCheckSecurityEventUserEffective {
+        <BprmCheckSecurityEventUserEffective as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl BprmCheckSecurityEventUserEffective {
+    pub fn new() -> BprmCheckSecurityEventUserEffective {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &BprmCheckSecurityEventUserEffective| { &m.id },
+            |m: &mut BprmCheckSecurityEventUserEffective| { &mut m.id },
+            BprmCheckSecurityEventUserEffective::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &BprmCheckSecurityEventUserEffective| { &m.name },
+            |m: &mut BprmCheckSecurityEventUserEffective| { &mut m.name },
+            BprmCheckSecurityEventUserEffective::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, BprmCheckSecurityEventUserEffectiveGroup>(
+            "group",
+            |m: &BprmCheckSecurityEventUserEffective| { &m.group },
+            |m: &mut BprmCheckSecurityEventUserEffective| { &mut m.group },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<BprmCheckSecurityEventUserEffective>(
+            "BprmCheckSecurityEventUserEffective",
+            6,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for BprmCheckSecurityEventUserEffective {
+    fn is_initialized(&self) -> bool {
+        for v in &self.group {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.group)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.group.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.group.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> BprmCheckSecurityEventUserEffective {
+        BprmCheckSecurityEventUserEffective::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
+    }
+
+    fn default_instance() -> &'static BprmCheckSecurityEventUserEffective {
+        static instance: BprmCheckSecurityEventUserEffective = BprmCheckSecurityEventUserEffective {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            group: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for BprmCheckSecurityEventUserEffective {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.group.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for BprmCheckSecurityEventUserEffective {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEventUserEffective {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
 pub struct BprmCheckSecurityEventUser {
     // message fields
     id: ::std::option::Option<::std::string::String>,
     name: ::std::option::Option<::std::string::String>,
     pub group: ::protobuf::MessageField<BprmCheckSecurityEventUserGroup>,
+    pub effective: ::protobuf::MessageField<BprmCheckSecurityEventUserEffective>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::rt::CachedSize,
@@ -1562,9 +2409,14 @@ impl BprmCheckSecurityEventUser {
             |m: &BprmCheckSecurityEventUser| { &m.group },
             |m: &mut BprmCheckSecurityEventUser| { &mut m.group },
         ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, BprmCheckSecurityEventUserEffective>(
+            "effective",
+            |m: &BprmCheckSecurityEventUser| { &m.effective },
+            |m: &mut BprmCheckSecurityEventUser| { &mut m.effective },
+        ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<BprmCheckSecurityEventUser>(
             "BprmCheckSecurityEventUser",
-            4,
+            7,
             fields,
         )
     }
@@ -1573,6 +2425,11 @@ impl BprmCheckSecurityEventUser {
 impl ::protobuf::Message for BprmCheckSecurityEventUser {
     fn is_initialized(&self) -> bool {
         for v in &self.group {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.effective {
             if !v.is_initialized() {
                 return false;
             }
@@ -1599,6 +2456,9 @@ impl ::protobuf::Message for BprmCheckSecurityEventUser {
                 3 => {
                     ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.group)?;
                 },
+                4 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.effective)?;
+                },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
@@ -1621,6 +2481,10 @@ impl ::protobuf::Message for BprmCheckSecurityEventUser {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
+        if let Some(v) = self.effective.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -1635,6 +2499,9 @@ impl ::protobuf::Message for BprmCheckSecurityEventUser {
         }
         if let Some(v) = self.group.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        if let Some(v) = self.effective.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -1657,7 +2524,7 @@ impl ::protobuf::Message for BprmCheckSecurityEventUser {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
     }
 
     fn default_instance() -> &'static BprmCheckSecurityEventUser {
@@ -1665,6 +2532,7 @@ impl ::protobuf::Message for BprmCheckSecurityEventUser {
             id: ::std::option::Option::None,
             name: ::std::option::Option::None,
             group: ::protobuf::MessageField::none(),
+            effective: ::protobuf::MessageField::none(),
             unknown_fields: ::protobuf::UnknownFields::new(),
             cached_size: ::protobuf::rt::CachedSize::new(),
         };
@@ -1677,6 +2545,7 @@ impl ::protobuf::Clear for BprmCheckSecurityEventUser {
         self.id = ::std::option::Option::None;
         self.name = ::std::option::Option::None;
         self.group.clear();
+        self.effective.clear();
         self.unknown_fields.clear();
     }
 }
@@ -1758,7 +2627,7 @@ impl BprmCheckSecurityEvent {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<BprmCheckSecurityEvent>(
             "BprmCheckSecurityEvent",
-            5,
+            8,
             fields,
         )
     }
@@ -1869,7 +2738,7 @@ impl ::protobuf::Message for BprmCheckSecurityEvent {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
     }
 
     fn default_instance() -> &'static BprmCheckSecurityEvent {
@@ -1963,7 +2832,7 @@ impl Event {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<Event>(
             "Event",
-            6,
+            9,
             fields,
         )
     }
@@ -2047,7 +2916,7 @@ impl ::protobuf::Message for Event {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 9)
     }
 
     fn default_instance() -> &'static Event {
@@ -2128,38 +2997,52 @@ pub mod event {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\x0cstruct.proto\x12\x0eprobe.protobuf\"\xa5\x02\n\x1bBprmCheckSecurit\
-    yEventEvent\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04co\
-    de\x18\x02\x20\x01(\tR\x04codeB\0\x12\x14\n\x04kind\x18\x03\x20\x01(\tR\
-    \x04kindB\0\x12\x1c\n\x08category\x18\x04\x20\x01(\tR\x08categoryB\0\x12\
-    \x18\n\x06action\x18\x05\x20\x01(\tR\x06actionB\0\x12\x1a\n\nfield_type\
-    \x18\x06\x20\x01(\tR\x04typeB\0\x12\x18\n\x06module\x18\x07\x20\x01(\tR\
-    \x06moduleB\0\x12\x1c\n\x08provider\x18\x08\x20\x01(\tR\x08providerB\0\
-    \x12\x1c\n\x08sequence\x18\t\x20\x01(\x04R\x08sequenceB\0\x12\x1c\n\x08i\
-    ngested\x18\n\x20\x01(\x04R\x08ingestedB\0:\0\"k\n#BprmCheckSecurityEven\
-    tProcessTarget\x12\x20\n\nexecutable\x18\x01\x20\x01(\tR\nexecutableB\0\
-    \x12\x20\n\nargs_count\x18\x02\x20\x01(\x04R\nargs_countB\0:\0\"\xf0\x01\
-    \n\x1dBprmCheckSecurityEventProcess\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\
-    \x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tentity_idB\0\x12\
-    \x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x14\n\x04ppid\x18\x04\
-    \x20\x01(\rR\x04ppidB\0\x12\x1e\n\tthread_id\x18\x05\x20\x01(\x04R\tthre\
-    ad.idB\0\x12M\n\x06target\x18\x06\x20\x01(\x0b23.probe.protobuf.BprmChec\
-    kSecurityEventProcessTargetR\x06targetB\0:\0\"K\n\x1fBprmCheckSecurityEv\
-    entUserGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04n\
-    ame\x18\x02\x20\x01(\tR\x04nameB\0:\0\"\x8f\x01\n\x1aBprmCheckSecurityEv\
-    entUser\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\
-    \x18\x02\x20\x01(\tR\x04nameB\0\x12G\n\x05group\x18\x03\x20\x01(\x0b2/.p\
-    robe.protobuf.BprmCheckSecurityEventUserGroupR\x05groupB\0:\0\"\x8d\x02\
-    \n\x16BprmCheckSecurityEvent\x12\x1f\n\ttimestamp\x18\x01\x20\x01(\x04R\
-    \n@timestampB\0\x12C\n\x05event\x18\x02\x20\x01(\x0b2+.probe.protobuf.Bp\
-    rmCheckSecurityEventEventR\x05eventB\0\x12I\n\x07process\x18\x03\x20\x01\
-    (\x0b2-.probe.protobuf.BprmCheckSecurityEventProcessR\x07processB\0\x12@\
-    \n\x04user\x18\x04\x20\x01(\x0b2*.probe.protobuf.BprmCheckSecurityEventU\
-    serR\x04userB\0:\0\"\xe0\x01\n\x05Event\x12@\n\nevent_type\x18\x01\x20\
-    \x02(\x0e2\x1f.probe.protobuf.Event.EventTypeR\teventTypeB\0\x12f\n\x1bb\
-    prm_check_security_event_t\x18\x02\x20\x01(\x0b2&.probe.protobuf.BprmChe\
-    ckSecurityEventR\x17bprmCheckSecurityEventTB\0\"+\n\tEventType\x12\x1c\n\
-    \x16BPRMCHECKSECURITYEVENT\x10\0\x1a\0\x1a\0:\0B\x02H\x01b\x06proto2\
+    \n\x0cstruct.proto\x12\x0eprobe.protobuf\"\x8f\x02\n\x1bBprmCheckSecurit\
+    yEventEvent\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04ki\
+    nd\x18\x02\x20\x01(\tR\x04kindB\0\x12\x1c\n\x08category\x18\x03\x20\x01(\
+    \tR\x08categoryB\0\x12\x18\n\x06action\x18\x04\x20\x01(\tR\x06actionB\0\
+    \x12\x1a\n\nfield_type\x18\x05\x20\x01(\tR\x04typeB\0\x12\x18\n\x06modul\
+    e\x18\x06\x20\x01(\tR\x06moduleB\0\x12\x1c\n\x08provider\x18\x07\x20\x01\
+    (\tR\x08providerB\0\x12\x1c\n\x08sequence\x18\x08\x20\x01(\x04R\x08seque\
+    nceB\0\x12\x1c\n\x08ingested\x18\t\x20\x01(\x04R\x08ingestedB\0:\0\"\xbf\
+    \x01\n#BprmCheckSecurityEventProcessParent\x12\x12\n\x03pid\x18\x01\x20\
+    \x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tentity_idB\
+    \0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x14\n\x04ppid\
+    \x18\x04\x20\x01(\rR\x04ppidB\0\x12\x16\n\x05start\x18\x05\x20\x01(\x04R\
+    \x05startB\0\x12\x1e\n\tthread_id\x18\x06\x20\x01(\x04R\tthread.idB\0:\0\
+    \"k\n#BprmCheckSecurityEventProcessTarget\x12\x20\n\nexecutable\x18\x01\
+    \x20\x01(\tR\nexecutableB\0\x12\x20\n\nargs_count\x18\x02\x20\x01(\x04R\
+    \nargs_countB\0:\0\"\xd7\x02\n\x1dBprmCheckSecurityEventProcess\x12\x12\
+    \n\x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\
+    \x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\
+    \x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\x04ppidB\0\x12\x16\n\x05start\x18\
+    \x05\x20\x01(\x04R\x05startB\0\x12\x1e\n\tthread_id\x18\x06\x20\x01(\x04\
+    R\tthread.idB\0\x12M\n\x06parent\x18\x07\x20\x01(\x0b23.probe.protobuf.B\
+    prmCheckSecurityEventProcessParentR\x06parentB\0\x12M\n\x06target\x18\
+    \x08\x20\x01(\x0b23.probe.protobuf.BprmCheckSecurityEventProcessTargetR\
+    \x06targetB\0:\0\"K\n\x1fBprmCheckSecurityEventUserGroup\x12\x10\n\x02id\
+    \x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04n\
+    ameB\0:\0\"T\n(BprmCheckSecurityEventUserEffectiveGroup\x12\x10\n\x02id\
+    \x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04n\
+    ameB\0:\0\"\xa1\x01\n#BprmCheckSecurityEventUserEffective\x12\x10\n\x02i\
+    d\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04\
+    nameB\0\x12P\n\x05group\x18\x03\x20\x01(\x0b28.probe.protobuf.BprmCheckS\
+    ecurityEventUserEffectiveGroupR\x05groupB\0:\0\"\xe4\x01\n\x1aBprmCheckS\
+    ecurityEventUser\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\
+    \x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12G\n\x05group\x18\x03\x20\x01(\
+    \x0b2/.probe.protobuf.BprmCheckSecurityEventUserGroupR\x05groupB\0\x12S\
+    \n\teffective\x18\x04\x20\x01(\x0b23.probe.protobuf.BprmCheckSecurityEve\
+    ntUserEffectiveR\teffectiveB\0:\0\"\x8d\x02\n\x16BprmCheckSecurityEvent\
+    \x12\x1f\n\ttimestamp\x18\x01\x20\x01(\x04R\n@timestampB\0\x12C\n\x05eve\
+    nt\x18\x02\x20\x01(\x0b2+.probe.protobuf.BprmCheckSecurityEventEventR\
+    \x05eventB\0\x12I\n\x07process\x18\x03\x20\x01(\x0b2-.probe.protobuf.Bpr\
+    mCheckSecurityEventProcessR\x07processB\0\x12@\n\x04user\x18\x04\x20\x01\
+    (\x0b2*.probe.protobuf.BprmCheckSecurityEventUserR\x04userB\0:\0\"\xe0\
+    \x01\n\x05Event\x12@\n\nevent_type\x18\x01\x20\x02(\x0e2\x1f.probe.proto\
+    buf.Event.EventTypeR\teventTypeB\0\x12f\n\x1bbprm_check_security_event_t\
+    \x18\x02\x20\x01(\x0b2&.probe.protobuf.BprmCheckSecurityEventR\x17bprmCh\
+    eckSecurityEventTB\0\"+\n\tEventType\x12\x1c\n\x16BPRMCHECKSECURITYEVENT\
+    \x10\0\x1a\0\x1a\0:\0B\x02H\x01b\x06proto2\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
@@ -2177,9 +3060,12 @@ pub fn file_descriptor() -> ::protobuf::reflect::FileDescriptor {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
         messages.push(BprmCheckSecurityEventEvent::generated_message_descriptor_data());
+        messages.push(BprmCheckSecurityEventProcessParent::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEventProcessTarget::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEventProcess::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEventUserGroup::generated_message_descriptor_data());
+        messages.push(BprmCheckSecurityEventUserEffectiveGroup::generated_message_descriptor_data());
+        messages.push(BprmCheckSecurityEventUserEffective::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEventUser::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEvent::generated_message_descriptor_data());
         messages.push(Event::generated_message_descriptor_data());

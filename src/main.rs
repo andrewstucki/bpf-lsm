@@ -103,10 +103,15 @@ impl ProbeHandler<Error> for Handler {
 impl TransformationHandler for Handler {
     fn enrich_bprm_check_security<'a>(
         &self,
-        event: &'a mut BprmCheckSecurityEvent,
+        e: &'a mut BprmCheckSecurityEvent,
     ) -> SerializableResult<&'a mut BprmCheckSecurityEvent> {
-        event.enrich_common()?;
-        Ok(event)
+        let event = e.event.get_mut_ref();
+        event.set_kind("event".to_string());
+        event.set_category("process".to_string());
+        event.set_field_type("start".to_string());
+        event.set_module("bpf-lsm".to_string());
+        event.set_provider("bprm-check-security".to_string());
+        Ok(e)
     }
 }
 
@@ -156,7 +161,7 @@ fn run(c: &Context) {
         .map_or(cores, |w| u32::try_from(w).unwrap_or(cores));
 
     std::thread::spawn(
-        move || match Probe::new().filter(filtered_uid).run(Handler {}) {
+        move || match Probe::new().debug().filter(filtered_uid).run(Handler {}) {
             Ok(probe) => loop {
                 probe.poll(-1);
             },
