@@ -28,6 +28,10 @@
 
 // note that might need to make another macro
 // for "sleepable" hooks, denoted with "lsm.s"
+// due to the way sleepable hooks work, where you
+// can only submit to a map/array, look into doing
+// a map submit but only with whatever minimal data
+// the hook needs to pass on to the next handler.
 #define LSM_HOOK(module, args...)                                              \
   __attribute__((always_inline)) static int ____##module(                      \
       unsigned long long *ctx, ##args, struct bpf_##module##_event_t *event,   \

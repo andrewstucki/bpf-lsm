@@ -1,135 +1,18 @@
-use log::{debug, error, LevelFilter};
-use num_cpus;
-use once_cell::sync::OnceCell;
-use probe_sys::{
-    BprmCheckSecurityEvent, Probe, ProbeHandler, SerializableEvent, SerializableResult,
-    TransformationHandler, Transformer,
-};
+use log::{debug, error};
+use probe_sys::{Probe, Transformer};
 use seahorse::{App, Context, Flag, FlagType};
-use sled::{Config, Db};
-use spmc;
+use sled::Config;
 use std::convert::TryFrom;
-use std::env;
-use std::error;
-use std::fmt;
-use uuid::Uuid;
-use std::path::Path;
 
-static DB_INSTANCE: OnceCell<Db> = OnceCell::new();
+mod errors;
+mod globals;
+mod handler;
+mod logging;
 
-pub fn global_database() -> &'static Db {
-    DB_INSTANCE.get().expect("database is not initialized")
-}
-
-pub fn initialize_global_database(db: Db) {
-    DB_INSTANCE
-        .set(db)
-        .expect("database could not be initialized");
-}
-
-#[derive(Debug)]
-pub enum Error {
-    EnqueuingError(String),
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Error::EnqueuingError(ref e) => write!(f, "could not enqueue data: {}", e),
-        }
-    }
-}
-
-impl error::Error for Error {
-    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
-        match *self {
-            Error::EnqueuingError(..) => None,
-        }
-    }
-}
-
-fn setup_logger(level: LevelFilter) {
-    let result = fern::Dispatch::new()
-        .format(|out, message, record| {
-            out.finish(format_args!(
-                "{}[{}][{}] {}",
-                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
-                record.target(),
-                record.level(),
-                message
-            ))
-        })
-        .level(level)
-        .chain(std::io::stderr())
-        .apply();
-    if result.is_err() {
-        eprintln!(
-            "Error initializing logging: {:}",
-            result.unwrap_err().to_string()
-        );
-        std::process::exit(1);
-    }
-}
-
-struct Handler {}
-
-impl ProbeHandler<Error> for Handler {
-    fn enqueue<T>(&self, event: &mut T) -> Result<(), Error>
-    where
-        T: SerializableEvent + std::fmt::Debug,
-    {
-        let db = global_database();
-        let uuid = Uuid::new_v4();
-        let sequence = db
-            .generate_id()
-            .map_err(|e| Error::EnqueuingError(e.to_string()))?;
-
-        let mut buffer = Uuid::encode_buffer();
-        let event_id = uuid.to_hyphenated().encode_lower(&mut buffer);
-        event.update_id(event_id);
-        event.update_sequence(sequence);
-
-        let data = event
-            .to_bytes()
-            .map_err(|e| Error::EnqueuingError(e.to_string()))?;
-        db.insert(
-            [&sequence.to_be_bytes()[..], uuid.as_bytes()].concat(),
-            data,
-        )
-        .map_err(|e| Error::EnqueuingError(e.to_string()))?;
-        Ok(())
-    }
-}
-
-impl TransformationHandler for Handler {
-    fn enrich_bprm_check_security<'a>(
-        &self,
-        e: &'a mut BprmCheckSecurityEvent,
-    ) -> SerializableResult<&'a mut BprmCheckSecurityEvent> {
-        let event = e.event.get_mut_ref();
-        event.set_kind("event".to_string());
-        event.set_category("process".to_string());
-        event.set_field_type("start".to_string());
-        event.set_module("bpf-lsm".to_string());
-        event.set_provider("bprm-check-security".to_string());
-
-        let process = e.process.get_mut_ref();
-        let executable = process.get_executable();
-        // override the name of the process since we're capturing
-        // an exec and the process is going to have the forking
-        // process name initially
-        for name in Path::new(executable).file_name().map(|f| {
-            f.to_string_lossy().to_string()
-        }) {
-            process.set_name(name);
-        }
-
-        Ok(e)
-    }
-}
+use crate::globals::{initialize_global_database, global_database};
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
     let app = App::new(env!("CARGO_PKG_NAME"))
         .description(env!("CARGO_PKG_DESCRIPTION"))
         .version(env!("CARGO_PKG_VERSION"))
@@ -159,7 +42,7 @@ fn run(c: &Context) {
     initialize_global_database(db);
 
     let debug = c.bool_flag("debug");
-    setup_logger(if debug {
+    logging::setup_logger(if debug {
         log::LevelFilter::Debug
     } else {
         log::LevelFilter::Info
@@ -178,7 +61,7 @@ fn run(c: &Context) {
         match Probe::new()
             .debug(debug)
             .filter(filtered_uid)
-            .run(Handler {})
+            .run(handler::Handler {})
         {
             Ok(probe) => loop {
                 probe.poll(-1);
@@ -192,7 +75,7 @@ fn run(c: &Context) {
 
     let (mut tx, rx) = spmc::channel();
     for i in 0..workers {
-        let transformer = Transformer::new(Handler {});
+        let transformer = Transformer::new(handler::Handler {});
         let rx = rx.clone();
         std::thread::spawn(move || loop {
             match rx.recv() {
@@ -202,10 +85,10 @@ fn run(c: &Context) {
                         Err(e) => error!("worker {}: {:?}", i, e),
                     };
                     // batch the transformations up and then remove in a transaction
-                    match global_database().remove(key) {
-                        Ok(_) => debug!("worker {}: cleaned record", i),
-                        Err(e) => error!("worker {}: error removing record {:?}", i, e),
-                    }
+                    // match global_database().remove(key) {
+                    //     Ok(_) => debug!("worker {}: cleaned record", i),
+                    //     Err(e) => error!("worker {}: error removing record {:?}", i, e),
+                    // }
                 }
                 Err(e) => error!("worker {}: {}", i, e.to_string()),
             }
