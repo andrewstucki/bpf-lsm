@@ -109,6 +109,12 @@
         rust: u32
         proto: uint32
         final: u32
+    - name: executable
+      type: wildcard
+      description: Absolute path to the process executable.
+    - name: args_count
+      type: long
+      description: Length of the process.args array.
     - name: start
       type: date
       description: The time the process started.
@@ -151,17 +157,6 @@
           format: string
           type: long
           description: Thread ID.
-    # Non-ECS
-    - name: target
-      description: These fields contain information about a process being executed.
-      type: group
-      fields:
-        - name: executable
-          type: wildcard
-          description: Absolute path to the process executable.
-        - name: args_count
-          type: long
-          description: Length of the process.args array.
 - name: user
   description: Fields to describe the user relevant to the event.
   type: group

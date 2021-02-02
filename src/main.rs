@@ -13,6 +13,7 @@ use std::env;
 use std::error;
 use std::fmt;
 use uuid::Uuid;
+use std::path::Path;
 
 static DB_INSTANCE: OnceCell<Db> = OnceCell::new();
 
@@ -111,6 +112,18 @@ impl TransformationHandler for Handler {
         event.set_field_type("start".to_string());
         event.set_module("bpf-lsm".to_string());
         event.set_provider("bprm-check-security".to_string());
+
+        let process = e.process.get_mut_ref();
+        let executable = process.get_executable();
+        // override the name of the process since we're capturing
+        // an exec and the process is going to have the forking
+        // process name initially
+        for name in Path::new(executable).file_name().map(|f| {
+            f.to_string_lossy().to_string()
+        }) {
+            process.set_name(name);
+        }
+
         Ok(e)
     }
 }

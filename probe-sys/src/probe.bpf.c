@@ -17,8 +17,9 @@ const volatile unsigned int filtered_user = 0xffffffff;
 LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
   initialize_event();
 
-  bpf_probe_read_kernel_str(&event->process.target.executable, sizeof(event->process.target.executable), bprm->filename);
-  event->process.target.args_count = bprm->argc;
+  // override the process fields since we're execing a new process
+  bpf_probe_read_kernel_str(&event->process.executable, sizeof(event->process.executable), bprm->filename);
+  event->process.args_count = bprm->argc;
 
   // for now we can only sleep in bprm_committed_creds
   // any additional LSM hooks are not sleepable until
