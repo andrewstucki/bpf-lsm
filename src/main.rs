@@ -84,11 +84,11 @@ fn run(c: &Context) {
                         Ok(json) => println!("{}", json),
                         Err(e) => error!("worker {}: {:?}", i, e),
                     };
-                    // batch the transformations up and then remove in a transaction
-                    // match global_database().remove(key) {
-                    //     Ok(_) => debug!("worker {}: cleaned record", i),
-                    //     Err(e) => error!("worker {}: error removing record {:?}", i, e),
-                    // }
+                    batch the transformations up and then remove in a transaction
+                    match global_database().remove(key) {
+                        Ok(_) => debug!("worker {}: cleaned record", i),
+                        Err(e) => error!("worker {}: error removing record {:?}", i, e),
+                    }
                 }
                 Err(e) => error!("worker {}: {}", i, e.to_string()),
             }

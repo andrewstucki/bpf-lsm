@@ -18,7 +18,7 @@ use protobuf::json::{PrintError, print_to_string};
 use protobuf::{ProtobufError, Message};
 use machine_uid;
 use sha2::Digest;
-use sysinfo::SystemExt;
+use sysinfo::{System, SystemExt};
 use pnet::datalink::interfaces;
 
 mod struct_pb;
@@ -285,8 +285,9 @@ impl SerializableEvent for {{entry_point.final}} {
 
         parent.set_entity_id(format!("{:x}", sha2::Sha256::digest(parent_entity_id.as_bytes())));
 
-        let mut system = sysinfo::System::new_all();
-        system.refresh_all();
+
+        // We want everything except disks.
+        let system = System::new();
 
         let host = self.host.get_mut_ref();
         host.set_uptime(system.get_uptime());
