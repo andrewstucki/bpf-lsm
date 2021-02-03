@@ -11,7 +11,7 @@ debug:
 
 clean:
 	@echo "Cleaning"
-	@rm -rf venv probe-sys/src/{.output,lib.rs,probe.bpf.h,probe.c,probe.h,struct_pb.rs,struct.proto} probe # target
+	@rm -rf venv probe-sys/src/{.output,lib.rs,probe.bpf.h,probe.c,probe.h,struct_pb.rs,struct.proto} probe target
 
 venv:
 	@python3 -m venv ./venv
