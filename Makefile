@@ -11,34 +11,11 @@ debug:
 
 clean:
 	@echo "Cleaning"
-	@rm -rf probe-sys/src/.output # target probe
-
-bootstrap-vm:
-	@echo "Bringing up fresh VM and installing BPF Kernel"
-	@vagrant up --provider virtualbox
-	@echo "Stopping VM"
-	@vagrant halt
-	@echo "Bringing VM back up with new kernel"
-	@vagrant up
+	@rm -rf venv probe-sys/src/{.output,lib.rs,probe.bpf.h,probe.c,probe.h,struct_pb.rs,struct.proto} probe # target
 
 venv:
 	@python3 -m venv ./venv
 	@. ./venv/bin/activate && pip install -r requirements.txt
 
 generate: venv
-	@. ./venv/bin/activate && ./scripts/generate-structures
-
-toolchain-llvm:
-	cd toolchain/llvm && \
-	docker build . -t andrewstucki/llvm10rc3-musl-toolchain
-	docker push andrewstucki/llvm10rc3-musl-toolchain
-
-toolchain-libbpf:
-	cd toolchain/libbpf && \
-	docker build . -t andrewstucki/libbpf-builder:0.3
-	docker push andrewstucki/libbpf-builder:0.3
-
-toolchain-rust:
-	cd toolchain/rust && \
-	docker build . -t andrewstucki/libbpf-rust-builder:0.3
-	#docker push andrewstucki/libbpf-rust-builder:0.3
+	@. ./venv/bin/activate && ./probe-sys/scripts/generate-structures

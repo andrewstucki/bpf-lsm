@@ -10,18 +10,18 @@ import subprocess
 from jinja2 import Template
 
 CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
-SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "schemas"))
+SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "..", "schemas"))
 SCHEMA_FILES = glob(path.join(SCHEMAS_DIRECTORY, "*.yml"))
 BPF_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.bpf.h.j2")).read())
 USERSPACE_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.c.j2")).read())
 USERSPACE_HEADER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.h.j2")).read())
-BPF_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "probe.bpf.h")
-USERSPACE_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "probe.c")
-USERSPACE_HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "probe.h")
+BPF_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.bpf.h")
+USERSPACE_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.c")
+USERSPACE_HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.h")
 RUST_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "lib.rs.j2")).read())
-RUST_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "lib.rs")
+RUST_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "lib.rs")
 PROTO_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "struct.proto.j2")).read())
-PROTO_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "probe-sys", "src", "struct.proto")
+PROTO_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "struct.proto")
 
 class FieldType(NamedTuple):
   transformation: Any
