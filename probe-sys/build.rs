@@ -12,7 +12,7 @@ fn main() {
         .expect("protoc");
 
     if cfg!(target_os = "linux") {
-        let src_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("src");
+        let src_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
         let status = Command::new("make")
             .current_dir(src_dir.clone())
             .status()
@@ -22,7 +22,7 @@ fn main() {
 
         println!(
             "cargo:rustc-link-search=native={}",
-            src_dir.join(".output").to_str().unwrap()
+            src_dir.join("src").join(".output").to_str().unwrap()
         );
         println!("cargo:rustc-link-search=native=/usr/lib");
         println!("cargo:rustc-link-search=native=/lib");
