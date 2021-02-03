@@ -36,8 +36,13 @@ fn main() {
         )
         .flag(
             Flag::new("batch", FlagType::Int)
-                .description("Maximum batch size before a flush occurs (default: 5)")
+                .description("Maximum batch size before a flush occurs (default: 1000)")
                 .alias("b"),
+        )
+        .flag(
+            Flag::new("size", FlagType::Int)
+                .description("Maximum batch size (in bytes) before a flush occurs (default: 1MB)")
+                .alias("s"),
         );
 
     app.run(args)
@@ -66,14 +71,18 @@ fn run(c: &Context) {
 
     let batch_size = c
         .int_flag("batch")
-        .map_or(5, |w| usize::try_from(w).unwrap_or(5));
+        .map_or(500, |w| usize::try_from(w).unwrap_or(500));
+
+    let batch_bytes = c
+        .int_flag("size")
+        .map_or(1<<20, |w| usize::try_from(w).unwrap_or(1<<20));
 
     let flush_rate = c
         .int_flag("flush")
         .map_or(30, |w| u64::try_from(w).unwrap_or(30));
 
     std::thread::spawn(move || loop {
-        batcher::Batcher::run(flush_rate, batch_size, workers)
+        batcher::Batcher::run(flush_rate, batch_size, batch_bytes, workers)
     });
 
     match probe_sys::Probe::new()

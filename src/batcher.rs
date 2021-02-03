@@ -7,7 +7,7 @@ use crate::globals::global_database;
 pub struct Batcher {}
 
 impl Batcher {
-    pub fn run(flush_rate: u64, max_batch_size: usize, workers: u32) {
+    pub fn run(flush_rate: u64, max_batch_size: usize, max_batch_bytes: usize, workers: u32) {
         let (mut tx, rx) = spmc::channel();
         for i in 0..workers {
             let transformer = probe_sys::Transformer::new(crate::handler::Handler {});
@@ -15,12 +15,16 @@ impl Batcher {
             let flush_timeout = Duration::new(flush_rate, 0);
             std::thread::spawn(move || {
                 let mut batch = Vec::new();
+                let mut current_batch_bytes: usize = 0;
                 let mut last_flush = SystemTime::now();
                 loop {
                     match rx.recv_timeout(flush_timeout) {
                         Ok((key, data)) => {
                             match transformer.transform(data) {
-                                Ok(json) => batch.push((key, json)),
+                                Ok(json) => {
+                                    current_batch_bytes += json.chars().count() + 1; // 1 == newline
+                                    batch.push((key, json));
+                                }
                                 Err(e) => error!("worker {}: {:?}", i, e),
                             };
                         }
@@ -37,7 +41,10 @@ impl Batcher {
                         .duration_since(last_flush)
                         .unwrap_or(flush_timeout)
                         .as_secs();
-                    if batch_size >= max_batch_size || elapsed > flush_rate {
+                    if current_batch_bytes >= max_batch_bytes
+                        || batch_size >= max_batch_size
+                        || elapsed > flush_rate
+                    {
                         for (k, v) in &batch {
                             println!("{}", v);
                             match global_database().remove(k) {
@@ -46,6 +53,7 @@ impl Batcher {
                             }
                         }
                         batch.clear();
+                        current_batch_bytes = 0;
                         last_flush = now;
                     }
                 }
