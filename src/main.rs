@@ -3,6 +3,7 @@ use seahorse::{App, Context, Flag, FlagType};
 use std::convert::{TryFrom, TryInto};
 
 mod batcher;
+mod client;
 mod errors;
 mod globals;
 mod handler;
@@ -75,7 +76,7 @@ fn run(c: &Context) {
 
     let batch_bytes = c
         .int_flag("size")
-        .map_or(1<<20, |w| usize::try_from(w).unwrap_or(1<<20));
+        .map_or(1 << 20, |w| usize::try_from(w).unwrap_or(1 << 20));
 
     let flush_rate = c
         .int_flag("flush")

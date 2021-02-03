@@ -25,6 +25,8 @@ TRACEPOINT(syscalls, sys_enter_execve, struct trace_event_raw_sys_enter* ctx) {
 
 	#pragma unroll
 	for (int i = 0; i < MAX_ARGS; i++) {
+    // get the args from userspace since we can't retrieve
+    // them in the lsm hook
 		bpf_probe_read_user(&argp, sizeof(argp), &args[i]);
 		if (!argp) goto done;
     bpf_probe_read_user_str(&event->args[i], ARGSIZE, argp);
@@ -67,6 +69,3 @@ LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
   SET_STRING(event->event.action, allowed);
   accept(event)
 }
-
-// take a look at https://github.com/facebookincubator/katran/blob/master/katran/lib/bpf/balancer_kern.c
-// for xdp based packet filtering example
