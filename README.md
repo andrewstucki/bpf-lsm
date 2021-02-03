@@ -8,7 +8,7 @@ In order to be completely portable (assuming a new enough kernel), and to show h
 
 ```bash
 vagrant up
-generate && make
+make
 ```
 
 In one VM ssh session:
