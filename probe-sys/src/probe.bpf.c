@@ -14,6 +14,32 @@ const volatile unsigned int filtered_user = 0xffffffff;
 
 //  Security hooks for program execution operations.
 
+#define MAX_ARGS 64
+#define ARGSIZE 128
+
+TRACEPOINT(syscalls, sys_enter_execve, struct trace_event_raw_sys_enter* ctx) {
+  initialize_event();
+
+	const char *argp;
+  const char **args = (const char **)(ctx->args[1]);
+
+	#pragma unroll
+	for (int i = 0; i < MAX_ARGS; i++) {
+		bpf_probe_read_user(&argp, sizeof(argp), &args[i]);
+		if (!argp) goto done;
+    bpf_probe_read_user_str(&event->args[i], ARGSIZE, argp);
+	}
+  /* try to read one more argument to check if there is one */
+	bpf_probe_read_user(&argp, sizeof(argp), &args[MAX_ARGS]);
+	if (!argp) goto done;
+
+	/* pointer to max_args+1 isn't null, asume we have more arguments */
+	event->truncated = 1;
+
+done:
+  accept(event);
+}
+
 LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
   initialize_event();
 
@@ -21,26 +47,23 @@ LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
   bpf_probe_read_kernel_str(&event->process.executable, sizeof(event->process.executable), bprm->filename);
   event->process.args_count = bprm->argc;
 
-  // for now we can only sleep in bprm_committed_creds
-  // any additional LSM hooks are not sleepable until
-  // kernel 5.11, see:
-  // https://github.com/torvalds/linux/commit/423f16108c9d832bd96059d5c882c8ef6d76eb96
-  // bpf_copy_from_user(&event->process.target.command_line, bprm->mm->arg_start, (bprm->mm->arg_end - bprm->mm->arg_start));
-  // 
-  // note that when we try and do this we need to make sure we refactor
-  // the ring buffer code, otherwise we get "Sleepable programs can only use array and hash maps"
-  // one thought is to gather arguments in one hook invocation and then do the actual
-  // accept/reject in another
-  // 
-  // take a look at https://github.com/torvalds/linux/blob/1048ba83fb1c00cd24172e23e8263972f6b5d9ac/fs/exec.c#L1239
-  // for more detailed lifecycle implementation
-  
+  struct tp_sys_enter_execve_event *tp_event = get_tracepoint_event(sys_enter_execve);
+  if (tp_event) {
+    // best effort enrichment
+    #pragma unroll
+    for (int i = 0; i < MAX_ARGS && i < event->process.args_count; i++) {
+      memcpy(event->process.args[i], tp_event->args[i], ARGSIZE);
+    }
+    delete_tracepoint_event(sys_enter_execve);
+  }
+
   const char denied[] = "execution-denied";
   const char allowed[] = "execution-allowed";
   if (event->user.id == filtered_user) {
     SET_STRING(event->event.action, denied);
     reject(event)
   }
+
   SET_STRING(event->event.action, allowed);
   accept(event)
 }

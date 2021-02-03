@@ -9,9 +9,18 @@ import subprocess
 
 from jinja2 import Template
 
+class Tracepoint(NamedTuple):
+  family: str
+  hook: str
+  fields: Any
+
+BPF_MODULES = ["bprm_check_security"]
+TP_MODULES = [("syscalls", "sys_enter_execve")]
+
 CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
 SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "..", "schemas"))
-SCHEMA_FILES = glob(path.join(SCHEMAS_DIRECTORY, "*.yml"))
+BPF_SCHEMA_FILES = [path.join(SCHEMAS_DIRECTORY, "%s.yml" % f) for f in BPF_MODULES]
+TP_SCHEMAS = [(family, p, path.join(SCHEMAS_DIRECTORY, "%s/%s.yml" % (family, p))) for (family, p) in TP_MODULES]
 BPF_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.bpf.h.j2")).read())
 USERSPACE_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.c.j2")).read())
 USERSPACE_HEADER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.h.j2")).read())
@@ -28,8 +37,10 @@ class FieldType(NamedTuple):
   final: str
   proto: str
   rust: str
-  name: str
+  name: Any
   size: Any
+  lifetime: bool
+  setter: Any
 
 class Field(NamedTuple):
   type: FieldType
@@ -44,6 +55,7 @@ class FieldStructure(NamedTuple):
   final: str
   name: str
   enrichment: bool
+  lifetime: bool
   fields: list
 
 class ModuleStructures(NamedTuple):
@@ -52,11 +64,14 @@ class ModuleStructures(NamedTuple):
   structures: list
   map: dict = {}
 
+class Transformation(NamedTuple):
+  method: str
+
 BPF_TYPES = {
-  'date': FieldType(None, 'u64', 'uint64', 'u64', 'unsigned long', None),
-  'long': FieldType(None, 'u64', 'uint64', 'u64', 'unsigned long', None),
-  'keyword': FieldType('transform_string', 'String', 'string', 'c_char', 'char', 256),
-  'wildcard': FieldType('transform_string', 'String', 'string', 'c_char', 'char', 256),
+  'date': FieldType(None, 'u64', 'uint64', 'u64', 'unsigned long', None, False, None),
+  'long': FieldType(None, 'u64', 'uint64', 'u64', 'unsigned long', None, False, None),
+  'keyword': FieldType(Transformation('transform_string'), 'String', 'string', 'c_char', 'char', 256, False, None),
+  'wildcard': FieldType(Transformation('transform_string'), 'String', 'string', 'c_char', 'char', 256, False, None),
 }
 
 # add to this as need be
@@ -90,46 +105,55 @@ class Generator:
     name = "_".join([self.module, "event"] + namespaces)
     return rustify_class(name)
 
-  def _build_structs(self, types, enrichment=False, namespaces=[], child=None):
+  def _build_structs(self, types, lifetime, enrichment=False, namespaces=[], child=None):
     data = child if child else self.data
-    structure = FieldStructure(self._rusty_name(namespaces), self._structure_name(namespaces), enrichment, [])
     structures = []
+    fields = []
     for field in data:
       field_enrichment = field.get('enrichment', enrichment)
       name = field.get('name')
       field_type = field.get('type')
       normalized_name = normalize_name(name)
+      rust_name = rustify(normalized_name)
       complex = False
       if field_type == 'group':
         complex = True
         child_namespaces = namespaces + [normalized_name]
-        field_type = FieldType(None, self._rusty_name(child_namespaces), self._rusty_name(child_namespaces), self._structure_name(child_namespaces), self._structure_name(child_namespaces), None)
-        structures += self._build_structs(types, field_enrichment, child_namespaces, field.get('fields'))
+        child_lifetime = field.get('lifetime', False)
+        if child_lifetime:
+          lifetime = True
+        field_type = FieldType(None, self._rusty_name(child_namespaces), self._rusty_name(child_namespaces), self._structure_name(child_namespaces), self._structure_name(child_namespaces), None, child_lifetime, None)
+        structures += self._build_structs(types, child_lifetime, field_enrichment, child_namespaces, field.get('fields'))
       else:
         if 'override' in field:
-          field_type = FieldType(field['override'].get('transform', None), field['override']['final'], field['override']['proto'], field['override']['rust'], field['override']['c'], None)
+          field_type = FieldType(field['override'].get('transform', None), field['override']['final'], field['override']['proto'], field['override']['rust'], field['override']['c'], None, False, field['override'].get('setter', None))
         else:
           field_type = types[field_type]
       field_path = ".".join(namespaces)
       if len(namespaces) > 0:
         field_path += "."
-      structure.fields.append(Field(field_type, field_enrichment, rustify(normalized_name), normalized_name, name, complex, field_path))
+      fields.append(Field(field_type, field_enrichment, rust_name, normalized_name, name, complex, field_path))
+    structure = FieldStructure(self._rusty_name(namespaces), self._structure_name(namespaces), enrichment, lifetime, fields)
     structures.append(structure)
     return structures
 
-  def dump_structs(self):
-    return ModuleStructures(rustify_class(self.module), self.module, self._build_structs(BPF_TYPES))
+  def dump_bpf_structs(self):
+    return ModuleStructures(rustify_class(self.module), self.module, self._build_structs(BPF_TYPES, False))
+
+  def dump_tracepoint_structs(self):
+    return self.data
 
   def dump(self):
     print(self.module, self.data)
 
 if __name__ == "__main__":
-  generators = [Generator(filename) for filename in SCHEMA_FILES]
-  modules = [generator.dump_structs() for generator in generators]
+  generators = [Generator(filename) for filename in BPF_SCHEMA_FILES]
+  modules = [generator.dump_bpf_structs() for generator in generators]
+  tracepoints = [Tracepoint(family, hook, Generator(path).dump_tracepoint_structs()) for (family, hook, path) in TP_SCHEMAS]
   with open(BPF_OUTPUT, "w") as bpf_output:
-    bpf_output.write(BPF_TEMPLATE.render(modules=modules))
+    bpf_output.write(BPF_TEMPLATE.render(modules=modules, tracepoints=tracepoints))
   with open(USERSPACE_OUTPUT, "w") as bpf_output:
-    bpf_output.write(USERSPACE_TEMPLATE.render(modules=modules))
+    bpf_output.write(USERSPACE_TEMPLATE.render(modules=modules, tracepoints=tracepoints))
   with open(USERSPACE_HEADER_OUTPUT, "w") as bpf_output:
     bpf_output.write(USERSPACE_HEADER_TEMPLATE.render(modules=modules))
   with open(RUST_OUTPUT, "w") as bpf_output:

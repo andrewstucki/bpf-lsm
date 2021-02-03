@@ -122,6 +122,24 @@
       format: string
       type: long
       description: Thread ID.
+    - name: command_line
+      type: keyword
+      description: Full command line that started the process.
+      enrichment: true
+    - name: args
+      type: keyword
+      description: Array of process arguments.
+      override:
+        c:
+          type: char
+          suffix: "[64][128]"
+        rust: "[[c_char; 128]; 64]"
+        proto: repeated string
+        final: Vec<String>
+        transform:
+          method: "&mut convert_string_array"
+          extra: event.get_args_count()
+        setter: args.append
     - name: parent
       description: These fields contain information about a process.
       type: group
@@ -169,7 +187,8 @@
         rust: u32
         final: String
         proto: string
-        transform: int_to_string
+        transform:
+          method: int_to_string
     - name: name
       enrichment: true
       type: wildcard
@@ -186,7 +205,8 @@
             rust: u32
             final: String
             proto: string
-            transform: int_to_string
+            transform:
+              method: int_to_string
         - name: name
           enrichment: true
           type: keyword
@@ -203,7 +223,8 @@
             rust: u32
             final: String
             proto: string
-            transform: int_to_string
+            transform:
+              method: int_to_string
         - name: name
           enrichment: true
           type: wildcard
@@ -220,7 +241,8 @@
                 rust: u32
                 final: String
                 proto: string
-                transform: int_to_string
+                transform:
+                  method: int_to_string
             - name: name
               enrichment: true
               type: keyword

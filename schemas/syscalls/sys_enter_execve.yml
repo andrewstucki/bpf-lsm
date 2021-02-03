@@ -1,0 +1,3 @@
+---
+- int truncated
+- char args[128][64]

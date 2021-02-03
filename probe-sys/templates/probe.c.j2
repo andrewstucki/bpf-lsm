@@ -31,6 +31,10 @@ struct state {
   {% for module in modules -%}
   struct bpf_link *{{module.name}}_hook;
   {% endfor -%}
+  {% for tracepoint in tracepoints -%}
+  struct bpf_link *{{tracepoint.hook}}_hook;
+  {% endfor -%}
+  struct bpf_link *creds_hook;
 };
 
 int print_libbpf_log(enum libbpf_print_level lvl, const char *fmt, va_list args) {
@@ -136,6 +140,9 @@ struct state *new_state(struct state_configuration config) {
   {% for module in modules %}
   s->{{module.name}}_hook = NULL;
   {% endfor %}
+  {% for tracepoint in tracepoints %}
+  s->{{tracepoint.hook}}_hook = NULL;
+  {% endfor %}
   s->obj = probe_bpf__open();
   if (!s->obj) {
     goto cleanup;
@@ -168,6 +175,13 @@ struct state *new_state(struct state_configuration config) {
   }
   {% endfor %}
 
+  {% for tracepoint in tracepoints -%}
+  s->{{tracepoint.hook}}_hook = bpf_program__attach_tracepoint(s->obj->progs.{{tracepoint.hook}}_hook, "{{tracepoint.family}}", "{{tracepoint.hook}}");
+  if (!s->creds_hook) {
+    goto cleanup;
+  }
+  {% endfor -%}
+
   goto done;
 
 cleanup:
@@ -182,6 +196,11 @@ void destroy_state(struct state *s) {
     if (s->rb) {
       ring_buffer__free(s->rb);
     }
+    {% for tracepoint in tracepoints -%}
+    if (s->{{tracepoint.hook}}_hook) {
+      bpf_link__destroy(s->{{tracepoint.hook}}_hook);
+    }
+    {% endfor -%}
     {% for module in modules %}
     if (s->{{module.name}}_hook) {
       bpf_link__destroy(s->{{module.name}}_hook);

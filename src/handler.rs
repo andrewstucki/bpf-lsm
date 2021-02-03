@@ -48,6 +48,9 @@ impl TransformationHandler for Handler {
         event.set_provider("bprm-check-security".to_string());
 
         let process = e.process.get_mut_ref();
+        let command_line = process.args.join(" ");
+        process.set_command_line(command_line);
+        
         let executable = process.get_executable();
         // override the name of the process since we're capturing
         // an exec and the process is going to have the forking
