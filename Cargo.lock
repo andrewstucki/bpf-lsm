@@ -698,8 +698,7 @@ checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
 [[package]]
 name = "spmc"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02a8428da277a8e3a15271d79943e80ccc2ef254e78813a166a08d65e4c3ece5"
+source = "git+https://github.com/andrewstucki/spmc?rev=5b7c142#5b7c1428930d9acabfc72481c2d382716761c0e6"
 
 [[package]]
 name = "syn"

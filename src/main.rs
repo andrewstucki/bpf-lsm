@@ -1,6 +1,6 @@
 use log::error;
 use seahorse::{App, Context, Flag, FlagType};
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 
 mod batcher;
 mod errors;
@@ -28,6 +28,16 @@ fn main() {
             Flag::new("workers", FlagType::Int)
                 .description("Number of workers (default: #cores)")
                 .alias("w"),
+        )
+        .flag(
+            Flag::new("flush", FlagType::Int)
+                .description("Maximum seconds before a flush occurs (default: 30s)")
+                .alias("r"),
+        )
+        .flag(
+            Flag::new("batch", FlagType::Int)
+                .description("Maximum batch size before a flush occurs (default: 5)")
+                .alias("b"),
         );
 
     app.run(args)
@@ -54,8 +64,16 @@ fn run(c: &Context) {
         .int_flag("workers")
         .map_or(cores, |w| u32::try_from(w).unwrap_or(cores));
 
+    let batch_size = c
+        .int_flag("batch")
+        .map_or(5, |w| usize::try_from(w).unwrap_or(5));
+
+    let flush_rate = c
+        .int_flag("flush")
+        .map_or(30, |w| u64::try_from(w).unwrap_or(30));
+
     std::thread::spawn(move || loop {
-        batcher::Batcher::run(workers)
+        batcher::Batcher::run(flush_rate, batch_size, workers)
     });
 
     match probe_sys::Probe::new()
@@ -64,7 +82,7 @@ fn run(c: &Context) {
         .run(handler::Handler {})
     {
         Ok(probe) => loop {
-            probe.poll(-1);
+            probe.poll((flush_rate * 1000).try_into().unwrap());
         },
         Err(e) => {
             error!("error setting up probe: {}", e.to_string());
