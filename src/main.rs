@@ -1,15 +1,12 @@
-use log::{debug, error};
-use probe_sys::{Probe, Transformer};
+use log::error;
 use seahorse::{App, Context, Flag, FlagType};
-use sled::Config;
 use std::convert::TryFrom;
 
+mod batcher;
 mod errors;
 mod globals;
 mod handler;
 mod logging;
-
-use crate::globals::{global_database, initialize_global_database};
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -37,9 +34,9 @@ fn main() {
 }
 
 fn run(c: &Context) {
-    let config = Config::new().temporary(true);
+    let config = sled::Config::new().temporary(true);
     let db = config.open().expect("could not open database");
-    initialize_global_database(db);
+    globals::initialize_global_database(db);
 
     let debug = c.bool_flag("debug");
     logging::setup_logger(if debug {
@@ -57,52 +54,11 @@ fn run(c: &Context) {
         .int_flag("workers")
         .map_or(cores, |w| u32::try_from(w).unwrap_or(cores));
 
-    let (mut tx, rx) = spmc::channel();
-    for i in 0..workers {
-        let transformer = Transformer::new(handler::Handler {});
-        let rx = rx.clone();
-        std::thread::spawn(move || loop {
-            match rx.recv() {
-                Ok((key, data)) => {
-                    match transformer.transform(data) {
-                        Ok(json) => println!("{}", json),
-                        Err(e) => error!("worker {}: {:?}", i, e),
-                    };
-                    // batch the transformations up and then remove in a transaction
-                    match global_database().remove(key) {
-                        Ok(_) => debug!("worker {}: cleaned record", i),
-                        Err(e) => error!("worker {}: error removing record {:?}", i, e),
-                    }
-                }
-                Err(e) => error!("worker {}: {}", i, e.to_string()),
-            }
-        });
-    }
-
-    std::thread::spawn(move || {
-        let mut subscriber = global_database().watch_prefix(vec![]);
-        loop {
-            match subscriber.next() {
-                Some(event) => {
-                    for (_, key, data) in event.into_iter() {
-                        if data.is_some() {
-                            let value = data.clone().unwrap().to_vec();
-                            let result = tx.send((key.clone(), value));
-                            if result.is_err() {
-                                error!("sender: {}", result.unwrap_err().to_string());
-                            }
-                        }
-                    }
-                }
-                None => {
-                    debug!("subscriber closed");
-                    break;
-                }
-            }
-        }
+    std::thread::spawn(move || loop {
+        batcher::Batcher::run(workers)
     });
 
-    match Probe::new()
+    match probe_sys::Probe::new()
         .debug(debug)
         .filter(filtered_uid)
         .run(handler::Handler {})
