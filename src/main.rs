@@ -9,7 +9,7 @@ mod globals;
 mod handler;
 mod logging;
 
-use crate::globals::{initialize_global_database, global_database};
+use crate::globals::{global_database, initialize_global_database};
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -57,22 +57,6 @@ fn run(c: &Context) {
         .int_flag("workers")
         .map_or(cores, |w| u32::try_from(w).unwrap_or(cores));
 
-    std::thread::spawn(move || {
-        match Probe::new()
-            .debug(debug)
-            .filter(filtered_uid)
-            .run(handler::Handler {})
-        {
-            Ok(probe) => loop {
-                probe.poll(-1);
-            },
-            Err(e) => {
-                error!("error setting up probe: {}", e.to_string());
-                std::process::exit(1);
-            }
-        }
-    });
-
     let (mut tx, rx) = spmc::channel();
     for i in 0..workers {
         let transformer = Transformer::new(handler::Handler {});
@@ -95,24 +79,40 @@ fn run(c: &Context) {
         });
     }
 
-    let mut subscriber = global_database().watch_prefix(vec![]);
-    loop {
-        match subscriber.next() {
-            Some(event) => {
-                for (_, key, data) in event.into_iter() {
-                    if data.is_some() {
-                        let value = data.clone().unwrap().to_vec();
-                        let result = tx.send((key.clone(), value));
-                        if result.is_err() {
-                            error!("sender: {}", result.unwrap_err().to_string());
+    std::thread::spawn(move || {
+        let mut subscriber = global_database().watch_prefix(vec![]);
+        loop {
+            match subscriber.next() {
+                Some(event) => {
+                    for (_, key, data) in event.into_iter() {
+                        if data.is_some() {
+                            let value = data.clone().unwrap().to_vec();
+                            let result = tx.send((key.clone(), value));
+                            if result.is_err() {
+                                error!("sender: {}", result.unwrap_err().to_string());
+                            }
                         }
                     }
                 }
+                None => {
+                    debug!("subscriber closed");
+                    break;
+                }
             }
-            None => {
-                debug!("subscriber closed");
-                break;
-            }
+        }
+    });
+
+    match Probe::new()
+        .debug(debug)
+        .filter(filtered_uid)
+        .run(handler::Handler {})
+    {
+        Ok(probe) => loop {
+            probe.poll(-1);
+        },
+        Err(e) => {
+            error!("error setting up probe: {}", e.to_string());
+            std::process::exit(1);
         }
     }
 }

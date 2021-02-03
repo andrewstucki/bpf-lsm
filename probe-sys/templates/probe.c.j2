@@ -69,6 +69,7 @@ static int handle_event(void *ctx, void *data, unsigned long size) {
       return handle_{{module.name}}_event(handlers->{{module.name}}_handler, event->{{entry_point.name}});
   {% endfor %}
   }
+  return 0;
 }
 
 void destroy_handlers(struct handlers *h) {
@@ -168,7 +169,7 @@ struct state *new_state(struct state_configuration config) {
 
   {% for module in modules %}
   if (config.{{module.name}}_handler) {
-    s->{{module.name}}_hook = bpf_program__attach_lsm(s->obj->progs.{{module.name}}_hook);
+    s->{{module.name}}_hook = bpf_program__attach(s->obj->progs.{{module.name}}_hook);
     if (!s->{{module.name}}_hook) {
       goto cleanup;
     }
@@ -176,8 +177,8 @@ struct state *new_state(struct state_configuration config) {
   {% endfor %}
 
   {% for tracepoint in tracepoints -%}
-  s->{{tracepoint.hook}}_hook = bpf_program__attach_tracepoint(s->obj->progs.{{tracepoint.hook}}_hook, "{{tracepoint.family}}", "{{tracepoint.hook}}");
-  if (!s->creds_hook) {
+  s->{{tracepoint.hook}}_hook = bpf_program__attach(s->obj->progs.{{tracepoint.hook}}_hook);
+  if (!s->{{tracepoint.hook}}_hook) {
     goto cleanup;
   }
   {% endfor -%}
@@ -186,6 +187,7 @@ struct state *new_state(struct state_configuration config) {
 
 cleanup:
   destroy_state(s);
+  s = NULL;
 
 done:
   return s;
