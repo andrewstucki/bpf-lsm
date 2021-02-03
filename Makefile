@@ -1,11 +1,11 @@
 DIRECTORY := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CONTAINER := docker run --rm -v ${DIRECTORY}/.cargo:/cargo/registry -v ${DIRECTORY}/.cargo/git:/cargo/git -v ${DIRECTORY}:/src andrewstucki/libbpf-rust-builder:0.3
 
-build:
+build: generate
 	@echo "Compiling release binary"
 	@$(CONTAINER) /bin/sh -c "RUSTFLAGS=-Ctarget-feature=+crt-static cargo build --release && cp target/release/probe . && strip probe"
 
-debug:
+debug: generate
 	@echo "Compiling debug binary"
 	@$(CONTAINER) /bin/sh -c "RUSTFLAGS=-Ctarget-feature=+crt-static cargo build && cp target/debug/probe ."
 
