@@ -1,9 +1,9 @@
-use std::sync::Arc;
-use ureq::{Agent, AgentBuilder};
-use instant::Instant;
-use std::time::Duration;
-use backoff::{SystemClock, ExponentialBackoff};
 use backoff::backoff::Backoff;
+use backoff::{ExponentialBackoff, SystemClock};
+use instant::Instant;
+use std::sync::Arc;
+use std::time::Duration;
+use ureq::{Agent, AgentBuilder};
 
 pub struct SkipVerifier {}
 

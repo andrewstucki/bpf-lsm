@@ -11,6 +11,11 @@ debug:
 	@echo "Compiling debug binary"
 	@$(CONTAINER) /bin/sh -c "make -C probe-sys && RUSTFLAGS=-Ctarget-feature=+crt-static cargo build && cp target/debug/probe ."
 
+.PHONY: test
+test:
+	@echo "Running tests"
+	@$(CONTAINER) /bin/sh -c "make -C probe-sys && RUSTFLAGS=-Ctarget-feature=+crt-static cargo test"
+
 .PHONY: generate
 generate:
 	@$(CONTAINER) /bin/sh -c "make -C probe-sys generate"
