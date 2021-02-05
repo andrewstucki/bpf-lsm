@@ -111,37 +111,45 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
             _ => Err(format!("string field named {} not found in schema", path)),
         }
     }
+
+    fn flush<'a>(&mut self, _probe: &'a super::Probe<'a>) -> Result<(), String> {
+       Ok(())
+    }
 }
 {% endif -%}
 {% endfor %}
 
-pub struct BpfQueryWriter {
+pub struct BpfQueryWriter<'a> {
     table: String,
-    operation: Operation,
     {% for module in modules %}
     {% set entry_point = module.structures | last %}
     {% if entry_point.queryable -%}
     write_query_{{entry_point.name}}: InnerBpfQueryWriter<query_bpf_{{entry_point.name}}>,
     {% endif %}
     {%endfor%}
+    probe: Option<&'a super::Probe<'a>>,
 }
 
-impl BpfQueryWriter {
-    fn new(table: String, operation: Operation) -> Self {
+impl<'a> BpfQueryWriter<'a> {
+    fn new(probe: Option<&'a super::Probe>, table: String, operation: Operation) -> Self {
         Self {
             table: table,
-            operation: operation,
             {% for module in modules %}
             {% set entry_point = module.structures | last %}
             {% if entry_point.queryable -%}
-            write_query_{{entry_point.name}}: InnerBpfQueryWriter::<query_bpf_{{entry_point.name}}>::new(8),
+            write_query_{{entry_point.name}}: InnerBpfQueryWriter::<query_bpf_{{entry_point.name}}>::new(
+                "{{module.name}}".into(),
+                operation,
+                8,
+            ),
             {% endif %}
             {%endfor%}
+            probe: probe,
         }
     }
 }
 
-impl QueryWriter for BpfQueryWriter {
+impl<'b> QueryWriter for BpfQueryWriter<'b> {
     fn write_statement<'a>(
         &mut self,
         field: &'a String,
@@ -182,6 +190,22 @@ impl QueryWriter for BpfQueryWriter {
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
+
+    fn flush(&mut self) -> Result<(), String> {
+        match self.probe {
+            Some(probe) => match self.table.as_str() {
+                {% for module in modules %}
+                {% set entry_point = module.structures | last %}
+                {% if entry_point.queryable -%}
+                "{{module.name}}" => self.write_query_{{entry_point.name}}.flush_probe(probe),
+                {% endif %}
+                {%endfor%}
+                _ => Err(format!("invalid table name {}", self.table)),
+            },
+            _ => Ok(())
+        }
+
+    }
 }
 
 fn operator_to_constant(operator: Operator) -> u8 {
@@ -203,17 +227,26 @@ pub trait QueryStruct {
     fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String>;
     fn set_string(&mut self, path: String, operator: Operator, value: String)
         -> Result<(), String>;
+    fn flush<'a>(&mut self, probe: &'a super::Probe<'a>) -> Result<(), String>;
+}
+
+pub trait QueryFlusher {
+    fn apply_rule<T: QueryStruct>(&self, module: String, operation: Operation, rule: T);
 }
 
 struct InnerBpfQueryWriter<T: QueryStruct + Default + Copy> {
+    module: String,
+    operation: Operation,
     current: T,
     conditionals: Vec<T>,
     limit: usize,
 }
 
 impl<T: QueryStruct + Default + Copy> InnerBpfQueryWriter<T> {
-    fn new(limit: usize) -> Self {
+    fn new(module: String, operation: Operation, limit: usize) -> Self {
         Self {
+            module: module,
+            operation: operation,
             current: Default::default(),
             conditionals: vec![],
             limit: limit,
@@ -266,11 +299,37 @@ impl<T: QueryStruct + Default + Copy> QueryWriter for InnerBpfQueryWriter<T> {
         self.conditionals.push(self.current);
         Ok(())
     }
+
+    fn flush(&mut self) -> Result<(), String> { Ok(()) }
 }
 
-pub struct BpfQueryWriterFactory {}
-impl QueryWriterFactory<BpfQueryWriter> for BpfQueryWriterFactory {
-    fn create<'a>(&self, operation: Operation, table: &'a str) -> Result<BpfQueryWriter, String> {
-        Ok(BpfQueryWriter::new(table.to_string(), operation))
+impl<T: QueryStruct + Default + Copy> InnerBpfQueryWriter<T> {
+    fn flush_probe<'a>(&mut self, probe: &'a super::Probe<'a>) -> Result<(), String> {
+        self.conditionals.push(self.current);
+        for filter in &self.conditionals {
+            probe.apply_rule(self.module.clone(), self.operation, filter.clone())
+        }
+        Ok(())
+    }
+}
+
+
+pub struct BpfQueryWriterFactory<'b> {
+    probe: Option<&'b super::Probe<'b>>
+}
+
+impl<'b> BpfQueryWriterFactory<'b> {
+    pub fn empty() -> Self {
+        Self { probe: None }
+    }
+    
+    pub fn new(probe: &'b super::Probe<'b>) -> Self {
+        Self { probe: Some(probe) }
+    }
+}
+
+impl<'b> QueryWriterFactory<BpfQueryWriter<'b>> for BpfQueryWriterFactory<'b> {
+    fn create<'a>(&self, operation: Operation, table: &'a str) -> Result<BpfQueryWriter<'b>, String> {
+        Ok(BpfQueryWriter::new(self.probe.clone(), table.to_string(), operation))
     }
 }

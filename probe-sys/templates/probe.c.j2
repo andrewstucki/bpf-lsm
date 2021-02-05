@@ -149,7 +149,6 @@ struct state *new_state(struct state_configuration config) {
     goto cleanup;
   }
   s->obj->rodata->clock_adjustment = clock_adjustment;
-  s->obj->rodata->filtered_user = config.filtered_uid;
   {% for module in modules %}
   if (config.{{module.name}}_handler) {
     s->obj->rodata->{{module.name}}_enabled = 1;
@@ -228,6 +227,21 @@ void poll_state(struct state *s, int timeout) {
 {% for module in modules -%}
 {% set entry_point = module.structures | last %}
 {% if entry_point.queryable -%}
-void flush_{{module.name}}_rule(struct query_bpf_{{entry_point.name}} rule) {}
+static unsigned int {{module.name}}_rejections_size = 0;
+static unsigned int {{module.name}}_filters_size = 0;
+
+void flush_{{module.name}}_rejection_rule(struct state *s, struct query_bpf_{{entry_point.name}} rule) {
+  	bpf_map_update_elem(bpf_map__fd(s->obj->maps.{{module.name}}_rejections), &{{module.name}}_rejections_size, &rule, BPF_ANY);
+    {{module.name}}_rejections_size++;
+    unsigned int index = {{module.name}}_index;
+  	bpf_map_update_elem(bpf_map__fd(s->obj->maps.rejection_rule_sizes), &index, &{{module.name}}_rejections_size, BPF_ANY);
+}
+
+void flush_{{module.name}}_filter_rule(struct state *s, struct query_bpf_{{entry_point.name}} rule) {
+  	bpf_map_update_elem(bpf_map__fd(s->obj->maps.{{module.name}}_filters), &{{module.name}}_filters_size, &rule, BPF_ANY);
+    {{module.name}}_filters_size++;
+    unsigned int index = {{module.name}}_index;
+  	bpf_map_update_elem(bpf_map__fd(s->obj->maps.filter_rule_sizes), &index, &{{module.name}}_filters_size, BPF_ANY);
+}
 {%endif%}
 {%- endfor %}

@@ -8,10 +8,6 @@
 #include "probe.bpf.h"
 // clang-format on
 
-// change this to a bpf_map_lookup_elem to do dynamic
-// filtering while the process is running
-const volatile unsigned int filtered_user = 0xffffffff;
-
 //  Security hooks for program execution operations.
 
 #define MAX_ARGS 64
@@ -59,13 +55,20 @@ LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
     delete_tracepoint_event(sys_enter_execve);
   }
 
-  const char denied[] = "execution-denied";
-  const char allowed[] = "execution-allowed";
-  if (event->user.id == filtered_user) {
-    SET_STRING(event->event.action, denied);
-    reject(event)
-  }
+  // const char denied[] = "execution-denied";
+  // const char allowed[] = "execution-allowed";
 
-  SET_STRING(event->event.action, allowed);
-  accept(event)
+  // unsigned int index = bprm_check_security_index;
+  // unsigned int *size = bpf_map_lookup_elem(&rejection_rule_sizes, &index);
+  // if (size && *size > 0) {
+  //   if (___check_bprm_check_security(*size, &bprm_check_security_rejections, event)) {
+  //     SET_STRING(event->event.action, denied);
+  //     reject(event);
+  //   }
+  // }
+
+  submit(bprm_check_security, execution, event);
+
+  // SET_STRING(event->event.action, allowed);
+  // accept(event);
 }

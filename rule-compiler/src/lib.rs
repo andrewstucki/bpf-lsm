@@ -22,6 +22,8 @@ pub trait QueryWriter {
     fn start_new_clause(&mut self) -> Result<(), String>;
     // called if the logic is reduced to t/f
     fn write_absolute(&mut self, value: bool) -> Result<(), String>;
+    // called when the rule needs to get sent down to the probe
+    fn flush(&mut self) -> Result<(), String>;
 }
 
 pub trait QueryWriterFactory<T: QueryWriter> {
@@ -475,11 +477,15 @@ impl OrClause {
         T: QueryWriter,
     {
         if self.truthy {
-            encoder.write_absolute(self.value)
+            encoder.write_absolute(self.value)?;
+            encoder.flush()
         } else {
             for clause in &self.subclauses {
                 encoder.start_new_clause()?;
                 clause.encode(encoder)?
+            }
+            if self.subclauses.len() > 0 {
+                encoder.flush()?
             }
             Ok(())
         }

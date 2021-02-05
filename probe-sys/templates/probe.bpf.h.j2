@@ -7,6 +7,8 @@
 {% for module in modules %}
 // begin {{module.name}}
 
+#define {{module.name}}_index {{ loop.index0 }}
+
 {% for structure in module.structures -%}
 {% if not structure.enrichment -%}
 struct bpf_{{structure.name}} {
@@ -19,6 +21,10 @@ struct bpf_{{structure.name}} {
 
 {% if structure.queryable -%}
 struct query_bpf_{{structure.name}} {
+  {% set entry_point = module.structures | last %}
+  {% if entry_point.name == structure.name %}
+  char ___absolute;
+  {% endif %}
   {% for field in structure.fields -%}
   {% if field.queryable %}
     {% if not field.complex %}char {{field.name}}___operator;{% endif %}
@@ -78,6 +84,18 @@ struct tp_{{tracepoint.hook}}_event {
 
 #define SET_STRING(dest, src)                                                  \
   memcpy(dest, src, (sizeof(src) / sizeof(src[0]) + 1))
+
+// rules checks
+#define MAX_RULE_SIZE 8
+#define TRUE_ABSOLUTE 1
+#define FALSE_ABSOLUTE 2
+#define EQUAL_OPERATOR 1
+#define NOT_EQUAL_OPERATOR 2
+#define NUMBER_EQUALITY(first, second) first == second; bpf_printk("%d %d", first, second);
+#define NUMBER_INEQUALITY(first, second) first != second; bpf_printk("%d %d", first, second);
+// TODO
+#define STRING_EQUALITY(first, second) false
+#define STRING_INEQUALITY(first, second) false
 
 #define TRACEPOINT(family, module, arg)                                        \
   __attribute__((always_inline)) static int ____##module(                      \
@@ -167,8 +185,22 @@ struct tp_{{tracepoint.hook}}_event {
 #define initialize_event()                                                     \
   if (!event)                                                                  \
     return 0;
-#define reject(event) return -EPERM;
-#define accept(event) return 0;
+#define reject(event) return -EPERM
+#define accept(event) return 0
+#define submit(module, prefix, event)                                          \
+  const char denied[] = "" #prefix "-denied";                                  \
+  const char allowed[] = "" #prefix "-allowed";                                \
+  unsigned int index = module##_index;                                         \
+  unsigned int *size = bpf_map_lookup_elem(&rejection_rule_sizes, &index);     \
+  if (size && *size > 0) {                                                     \
+    if (___check_##module(*size, &module##_rejections, event)) {               \
+      SET_STRING(event->event.action, denied);                                 \
+      reject(event);                                                           \
+    }                                                                          \
+  }                                                                            \
+  SET_STRING(event->event.action, allowed);                                    \
+  accept(event);
+
 #define get_tracepoint_event(name) __get_tracepoint_event(current_task, (struct bpf_map *)&name##_events)
 #define delete_tracepoint_event(name) __delete_tracepoint_event(current_task, (struct bpf_map *)&name##_events)
 
@@ -195,8 +227,89 @@ struct {
   __uint(max_entries, 256 * 1024);
 } events SEC(".maps");
 
+struct {
+  __uint(type, BPF_MAP_TYPE_ARRAY);
+  __uint(key_size, sizeof(u32));
+  __uint(value_size, sizeof(u32));
+  __uint(max_entries, {{ modules | length }});
+} filter_rule_sizes SEC(".maps");
+
+struct {
+  __uint(type, BPF_MAP_TYPE_ARRAY);
+  __uint(key_size, sizeof(u32));
+  __uint(value_size, sizeof(u32));
+  __uint(max_entries, {{ modules | length }});
+} rejection_rule_sizes SEC(".maps");
+
 {% for module in modules %}
 const volatile unsigned char {{module.name}}_enabled = 0;
+
+{% set entry_point = module.structures | last %}
+{% if entry_point.queryable %}
+__attribute__((always_inline)) static int ___test_{{module.name}}(
+  struct bpf_{{entry_point.name}} *event,
+  struct query_bpf_{{entry_point.name}} *rule
+) {
+  int conditional_true = 1;
+  bpf_printk("___test_{{module.name}}");
+  if (rule && event) {
+    bpf_printk("___test_{{module.name}} rule check");
+    if (rule->___absolute == TRUE_ABSOLUTE) {
+      return 1;
+    } else if (rule->___absolute == FALSE_ABSOLUTE) {
+      return 0;
+    } else {
+      {% for structure in module.structures -%}
+      {% for field in structure.fields -%}
+      {% if field.queryable and not field.complex %}
+      bpf_printk("rule->{{field.path}}{{field.name}}___operator, EQUAL_OPERATOR(%d), NOT_EQUAL_OPERATOR(%d)", rule->{{field.path}}{{field.name}}___operator == EQUAL_OPERATOR, rule->{{field.path}}{{field.name}}___operator == NOT_EQUAL_OPERATOR);
+      if (rule->{{field.path}}{{field.name}}___operator == EQUAL_OPERATOR) {
+        bpf_printk("rule->{{field.path}}{{field.name}}___operator == EQUAL_OPERATOR");
+        conditional_true = conditional_true && {{field.queryable | upper }}_EQUALITY(event->{{field.path}}{{field.name}},rule->{{field.path}}{{field.name}});
+      } else if (rule->{{field.path}}{{field.name}}___operator == NOT_EQUAL_OPERATOR) {
+        bpf_printk("rule->{{field.path}}{{field.name}}___operator == NOT_EQUAL_OPERATOR");
+        conditional_true = conditional_true && {{field.queryable | upper }}_INEQUALITY(event->{{field.path}}{{field.name}}, rule->{{field.path}}{{field.name}});
+      }
+      {% endif -%}
+      {%- endfor -%}
+      {%- endfor -%}
+    }
+  }
+
+  return conditional_true;
+}
+
+__attribute__((always_inline)) static int ___check_{{module.name}}(
+  unsigned int size,
+  void *rule_map,
+  struct bpf_{{entry_point.name}} *event
+) {
+  int conditional_true = 0;
+  if (!rule_map) return conditional_true;
+  #pragma unroll
+  for (int i = 0; i < MAX_RULE_SIZE; i++) {
+    unsigned int index = i;
+    if (index > size) return conditional_true;
+    struct query_bpf_{{entry_point.name}} *rule = bpf_map_lookup_elem(rule_map, &index);
+    conditional_true = conditional_true || ___test_{{module.name}}(event, rule);
+  }
+  return conditional_true;
+}
+
+struct {
+  __uint(type, BPF_MAP_TYPE_ARRAY);
+  __uint(key_size, sizeof(u32));
+  __uint(value_size, sizeof(struct query_bpf_{{entry_point.name}}));
+  __uint(max_entries, 8);
+} {{module.name}}_filters SEC(".maps");
+
+struct {
+  __uint(type, BPF_MAP_TYPE_ARRAY);
+  __uint(key_size, sizeof(u32));
+  __uint(value_size, sizeof(struct query_bpf_{{entry_point.name}}));
+  __uint(max_entries, 8);
+} {{module.name}}_rejections SEC(".maps");
+{% endif %}
 {%- endfor -%}
 
 {% for tracepoint in tracepoints %}

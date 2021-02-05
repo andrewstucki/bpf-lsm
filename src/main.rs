@@ -19,8 +19,8 @@ fn main() {
         .version(env!("CARGO_PKG_VERSION"))
         .action(run)
         .flag(
-            Flag::new("filter", FlagType::Int)
-                .description("Deny execs from the given uid")
+            Flag::new("filter", FlagType::String)
+                .description("Apply filter to the probe")
                 .alias("f"),
         )
         .flag(
@@ -64,9 +64,11 @@ fn run(c: &Context) {
         log::LevelFilter::Info
     });
 
-    let filtered_uid = c.int_flag("filter").map_or(std::u32::MAX, |id| {
-        u32::try_from(id).unwrap_or(std::u32::MAX)
-    });
+    let mut filters: Vec<&str> = vec![];
+    let filter = c.string_flag("filter").unwrap_or(String::from(""));
+    if filter != "" {
+        filters = filter.split(';').collect();
+    }
 
     let cores = num_cpus::get() as u32;
     let workers = c
@@ -91,12 +93,19 @@ fn run(c: &Context) {
 
     match probe_sys::Probe::new()
         .debug(debug)
-        .filter(filtered_uid)
         .run(handler::Handler {})
     {
-        Ok(probe) => loop {
-            probe.poll((flush_rate * 1000).try_into().unwrap());
-        },
+        Ok(probe) => {
+            match probe.apply(filters) {
+                Err(e) => {
+                    error!("error setting up probe: {}", e.to_string());
+                    std::process::exit(1);
+                }
+                _ => loop {
+                    probe.poll((flush_rate * 1000).try_into().unwrap());
+                },
+            }
+        }
         Err(e) => {
             error!("error setting up probe: {}", e.to_string());
             std::process::exit(1);
