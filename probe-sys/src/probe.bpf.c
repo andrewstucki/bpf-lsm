@@ -51,7 +51,8 @@ LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm) {
   struct tp_sys_enter_execve_event *tp_event =
       get_tracepoint_event(sys_enter_execve);
   if (tp_event) {
-// best effort enrichment
+    // best effort enrichment
+
 #pragma unroll
     for (int i = 0; i < MAX_ARGS && i < event->process.args_count; i++) {
       memcpy(event->process.args[i], tp_event->args[i], ARGSIZE);
