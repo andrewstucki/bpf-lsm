@@ -1,18 +1,25 @@
+use byteorder::{BigEndian, WriteBytesExt};
 use nom::{
     branch::alt,
     bytes::complete::{escaped_transform, tag, tag_no_case, take_while},
-    character::complete::{
-        alphanumeric1 as alphanumeric, char, digit1, multispace0,
-    },
+    character::complete::{alphanumeric1 as alphanumeric, char, digit1, multispace0},
     combinator::{all_consuming, cut, flat_map, map, map_res, value},
     error::{context, VerboseError},
     multi::fold_many0,
     sequence::{preceded, terminated, tuple},
     IResult,
 };
-use byteorder::{WriteBytesExt, BigEndian};
 use probe_sys::QueryType;
 use std::fmt;
+
+pub trait QueryWriter {
+    fn write_statement<'a>(
+        &mut self,
+        field: &'a String,
+        operator: &'a Operator,
+        atom: &'a Atom,
+    ) -> Result<(), String>;
+}
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Operation {
@@ -37,12 +44,12 @@ impl fmt::Display for Operation {
 }
 
 impl Operation {
-  pub fn as_byte(&self) -> u8 {
-      match self {
-          Operation::Reject => 1,
-          Operation::Filter => 2,
-      }
-  }
+    pub fn as_byte(&self) -> u8 {
+        match self {
+            Operation::Reject => 1,
+            Operation::Filter => 2,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -61,20 +68,11 @@ impl fmt::Display for Table {
     }
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub struct Field(String);
-
-fn parse_field<'a>(i: &'a str) -> IResult<&'a str, Field, VerboseError<&'a str>> {
+fn parse_field<'a>(i: &'a str) -> IResult<&'a str, String, VerboseError<&'a str>> {
     map(
         take_while(|c: char| c == '_' || c == '.' || c.is_ascii_alphabetic()),
-        |field: &str| Field(field.to_string()),
+        |field: &str| field.to_string(),
     )(i)
-}
-
-impl fmt::Display for Field {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -84,12 +82,12 @@ pub enum Operator {
 }
 
 impl Operator {
-  pub fn as_byte(&self) -> u8 {
-      match self {
-          Operator::Equal => 1,
-          Operator::NotEqual => 2,
-      }
-  }
+    pub fn as_byte(&self) -> u8 {
+        match self {
+            Operator::Equal => 1,
+            Operator::NotEqual => 2,
+        }
+    }
 }
 
 fn parse_operator<'a>(i: &'a str) -> IResult<&'a str, Operator, VerboseError<&'a str>> {
@@ -112,14 +110,6 @@ impl fmt::Display for Operator {
 pub enum Atom {
     String(String),
     Number(u64),
-    Boolean(bool),
-}
-
-fn parse_boolean<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>> {
-    alt((
-        map(tag("true"), |_| Atom::Boolean(true)),
-        map(tag("false"), |_| Atom::Boolean(false)),
-    ))(i)
 }
 
 fn parse_number<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>> {
@@ -151,7 +141,7 @@ fn parse_string<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>>
 }
 
 fn parse_atom<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>> {
-    alt((parse_number, parse_boolean, parse_string))(i)
+    alt((parse_number, parse_string))(i)
 }
 
 impl fmt::Display for Atom {
@@ -159,19 +149,21 @@ impl fmt::Display for Atom {
         match self {
             Atom::String(s) => write!(f, "{:?}", s),
             Atom::Number(n) => write!(f, "{}", n),
-            Atom::Boolean(b) => write!(f, "{}", b),
         }
     }
 }
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Expression {
-    Constant(Atom),
-    Statement(Field, Operator, Atom),
+    Boolean(bool),
+    Statement(String, Operator, Atom),
 }
 
-fn parse_constant<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<&'a str>> {
-    map(parse_boolean, |atom| Expression::Constant(atom))(i)
+fn parse_boolean<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<&'a str>> {
+    alt((
+        map(tag("true"), |_| Expression::Boolean(true)),
+        map(tag("false"), |_| Expression::Boolean(false)),
+    ))(i)
 }
 
 fn parse_statement<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<&'a str>> {
@@ -186,13 +178,13 @@ fn parse_statement<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<
 }
 
 fn parse_expression<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<&'a str>> {
-    alt((parse_statement, parse_constant))(i)
+    alt((parse_statement, parse_boolean))(i)
 }
 
 impl fmt::Display for Expression {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Expression::Constant(atom) => write!(f, "{}", atom),
+            Expression::Boolean(b) => write!(f, "{}", b),
             Expression::Statement(field, operator, atom) => {
                 write!(f, "{} {} {}", field, operator, atom)
             }
@@ -239,7 +231,7 @@ impl AndClause {
             return self;
         }
         let (truthy, value) = match expression {
-            Expression::Constant(Atom::Boolean(b)) => (true, b),
+            Expression::Boolean(b) => (true, b),
             _ => (false, false),
         };
         if truthy {
@@ -328,36 +320,50 @@ impl AndClause {
         self.expressions = other.expressions.clone()
     }
 
-    pub fn encode(&self, fields: Vec<(String, QueryType)>) -> Vec<u8> {
-      // this should only be called after validation and by the parent or clause
-      let mut writer = Vec::new();
-      for (f, t) in &fields {
-        match (t, self.expressions.iter().find(|&e| match e {
-          Expression::Statement(Field(field), _, _) => field == f,
-          _ => false
-        })) {
-          (QueryType::Number, Some(Expression::Statement(_, operation, Atom::Number(n)))) => {
-              // number fields always have 72 bits
-              writer.write_u8(operation.as_byte()).unwrap();
-              // always encode as a 64 bit integer
-              writer.write_u64::<BigEndian>(*n).unwrap();
-          },
-          (QueryType::String(n), Some(Expression::Statement(_, operation, Atom::String(value)))) => {
-              // string fields always have 4 + n bits
-              writer.write_u8(operation.as_byte()).unwrap();
-              // number fields always have 72 bits
-              writer.append(&mut value.clone().into_bytes());
-              // pad the rest with nul values
-              for _ in value.len()..*n {
-                writer.write_u8(0).unwrap();
-              }
-          },
-          _ => {
-            writer.write_u8(0).unwrap(); // nul byte == no operation
-          },
+    // pub fn encode(&self, fields: Vec<(String, QueryType)>) -> Vec<u8> {
+    //   // this should only be called after validation and by the parent or clause
+    //   let mut writer = Vec::new();
+    //   for (f, t) in &fields {
+    //     match (t, self.expressions.iter().find(|&e| match e {
+    //       Expression::Statement(Field(field), _, _) => field == f,
+    //       _ => false
+    //     })) {
+    //       (QueryType::Number, Some(Expression::Statement(_, operation, Atom::Number(n)))) => {
+    //           // number fields always have 72 bits
+    //           writer.write_u8(operation.as_byte()).unwrap();
+    //           // always encode as a 64 bit integer
+    //           writer.write_u64::<BigEndian>(*n).unwrap();
+    //       },
+    //       (QueryType::String(n), Some(Expression::Statement(_, operation, Atom::String(value)))) => {
+    //           // string fields always have 4 + n bits
+    //           writer.write_u8(operation.as_byte()).unwrap();
+    //           // number fields always have 72 bits
+    //           writer.append(&mut value.clone().into_bytes());
+    //           // pad the rest with nul values
+    //           for _ in value.len()..*n {
+    //             writer.write_u8(0).unwrap();
+    //           }
+    //       },
+    //       _ => {
+    //         writer.write_u8(0).unwrap(); // nul byte == no operation
+    //       },
+    //     }
+    //   }
+    //   writer
+    // }
+    pub fn encode<'a, T>(&self, encoder: &'a mut T) -> Result<(), String>
+    where
+        T: QueryWriter,
+    {
+        for expression in &self.expressions {
+            match expression {
+                Expression::Statement(field, operator, atom) => {
+                    encoder.write_statement(field, operator, atom)?
+                }
+                _ => return Err(format!("invalid clause found: {}", expression)),
+            }
         }
-      }
-      writer
+        Ok(())
     }
 }
 
@@ -506,21 +512,31 @@ impl OrClause {
         self
     }
 
-    pub fn encode(&self, fields: Vec<(String, QueryType)>) -> (Vec<u8>, Vec<Vec<u8>>) { // (metadata, encoding)
-        let mut writer = Vec::new();
-        let mut meta = 0; // normal encoding
-        if self.truthy {
-          if self.value {
-            meta = 1;
-          } else {
-            meta = 2;
-          }
+    // pub fn encode(&self, fields: Vec<(String, QueryType)>) -> (Vec<u8>, Vec<Vec<u8>>) { // (metadata, encoding)
+    //     let mut writer = Vec::new();
+    //     let mut meta = 0; // normal encoding
+    //     if self.truthy {
+    //       if self.value {
+    //         meta = 1;
+    //       } else {
+    //         meta = 2;
+    //       }
+    //     }
+    //     writer.write_u8(meta).unwrap();
+    //     let size = self.subclauses.len() as u64;
+    //     writer.write_u64::<BigEndian>(size).unwrap();
+    //     // writer should always be 72 bits
+    //     return (writer, self.subclauses.iter().map(|s| s.encode(fields.clone())).collect())
+    // }
+
+    pub fn encode<'a, T>(&self, encoder: &'a mut T) -> Result<(), String>
+    where
+        T: QueryWriter,
+    {
+        for clause in &self.subclauses {
+            clause.encode(encoder)?
         }
-        writer.write_u8(meta).unwrap();
-        let size = self.subclauses.len() as u64;
-        writer.write_u64::<BigEndian>(size).unwrap();
-        // writer should always be 72 bits
-        return (writer, self.subclauses.iter().map(|s| s.encode(fields.clone())).collect())        
+        Ok(())
     }
 }
 
@@ -580,24 +596,24 @@ impl Rule {
                     .iter()
                     .find(|&expression| {
                         match expression {
-                            Expression::Statement(Field(field), _, Atom::String(value)) => {
+                            Expression::Statement(field, _, Atom::String(value)) => {
                                 for (f, t) in &fields {
                                     if f != field {
                                         continue;
                                     }
                                     match t {
                                         QueryType::String(n) => {
-                                          // include the nul byte
-                                          // so, due to inverted logic, constraint
-                                          // is query value length < allowed length (minus nul)
-                                          return value.len() >= *n
-                                        },
+                                            // include the nul byte
+                                            // so, due to inverted logic, constraint
+                                            // is query value length < allowed length (minus nul)
+                                            return value.len() >= *n;
+                                        }
                                         _ => return true,
                                     }
                                 }
                                 return true;
                             }
-                            Expression::Statement(Field(field), _, Atom::Number(_)) => {
+                            Expression::Statement(field, _, Atom::Number(_)) => {
                                 !fields.contains(&(field.to_string(), QueryType::Number))
                             }
                             _ => false,
@@ -608,14 +624,20 @@ impl Rule {
             .is_none()
     }
 
-    pub fn encode(&self, fields: Vec<(String, QueryType)>) -> Result<(Vec<u8>, Vec<Vec<u8>>), String> {
-        if !self.validate(fields.clone()) {
-          return Err(String::from("fields are invalid"))
-        }
-        let (mut metadata, clauses) = self.clause.encode(fields);
-        // append the operation type
-        metadata.write_u8(self.operation.as_byte()).unwrap();
-        Ok((metadata, clauses))
+    // pub fn encode(&self, fields: Vec<(String, QueryType)>) -> Result<(Vec<u8>, Vec<Vec<u8>>), String> {
+    //     if !self.validate(fields.clone()) {
+    //       return Err(String::from("fields are invalid"))
+    //     }
+    //     let (mut metadata, clauses) = self.clause.encode(fields);
+    //     // append the operation type
+    //     metadata.write_u8(self.operation.as_byte()).unwrap();
+    //     Ok((metadata, clauses))
+    // }
+    pub fn encode<'a, T>(&self, encoder: &'a mut T) -> Result<(), String>
+    where
+        T: QueryWriter,
+    {
+        self.clause.encode(encoder)
     }
 }
 
@@ -749,29 +771,67 @@ mod tests {
         );
     }
 
+    use probe_sys::QueryType;
+    struct TestQueryWriter {
+        schema: Vec<(String, QueryType)>,
+    }
+    impl QueryWriter for TestQueryWriter {
+        fn write_statement<'a>(
+            &mut self,
+            field: &'a String,
+            _operator: &'a Operator,
+            atom: &'a Atom,
+        ) -> Result<(), String> {
+            self.schema
+                .iter()
+                .find(|&(f, t)| match (field == f, &atom, t) {
+                    (true, Atom::Number(_), QueryType::Number) => true,
+                    (true, Atom::String(value), QueryType::String(size)) => value.len() < *size,
+                    _ => false,
+                })
+                .ok_or(format!("{} not found in schema", field))
+                .map(|_| ())
+        }
+    }
     #[test]
     fn test_encoding() {
         let rule = compile(r#"REJECT foo_bar_baz WHEN x==1 and y==2 AND z==3 OR x==1 AND y==2 OR x==1 and y==2 and z==3 and a=="2""#).unwrap();
-        assert!(rule.encode(vec!(
-            (String::from("x"), QueryType::Number),
-            (String::from("y"), QueryType::Number),
-            (String::from("z"), QueryType::Number),
-            (String::from("a"), QueryType::String(2))
-        )).is_ok());
-        assert!(rule.encode(vec!(
-            (String::from("x"), QueryType::Number),
-            (String::from("y"), QueryType::Number)
-        )).is_err());
-        assert!(rule.encode(vec!(
-            (String::from("x"), QueryType::Number),
-            (String::from("y"), QueryType::String(1)),
-            (String::from("z"), QueryType::Number),
-        )).is_err());
-        assert!(rule.encode(vec!(
-            (String::from("x"), QueryType::Number),
-            (String::from("y"), QueryType::Number),
-            (String::from("z"), QueryType::Number),
-            (String::from("a"), QueryType::String(0))
-        )).is_err());
+        assert!(rule
+            .encode(&mut TestQueryWriter {
+                schema: vec!(
+                    (String::from("x"), QueryType::Number),
+                    (String::from("y"), QueryType::Number),
+                    (String::from("z"), QueryType::Number),
+                    (String::from("a"), QueryType::String(2))
+                )
+            })
+            .is_ok());
+        assert!(rule
+            .encode(&mut TestQueryWriter {
+                schema: vec!(
+                    (String::from("x"), QueryType::Number),
+                    (String::from("y"), QueryType::Number)
+                )
+            })
+            .is_err());
+        assert!(rule
+            .encode(&mut TestQueryWriter {
+                schema: vec!(
+                    (String::from("x"), QueryType::Number),
+                    (String::from("y"), QueryType::String(1)),
+                    (String::from("z"), QueryType::Number),
+                )
+            })
+            .is_err());
+        assert!(rule
+            .encode(&mut TestQueryWriter {
+                schema: vec!(
+                    (String::from("x"), QueryType::Number),
+                    (String::from("y"), QueryType::Number),
+                    (String::from("z"), QueryType::Number),
+                    (String::from("a"), QueryType::String(0))
+                )
+            })
+            .is_err());
     }
 }
