@@ -16,6 +16,11 @@ test:
 	@echo "Running tests"
 	@$(CONTAINER) /bin/sh -c "make -C probe-sys && RUSTFLAGS=-Ctarget-feature=+crt-static cargo test"
 
+.PHONY: test-rule-compiler
+test-rule-compiler:
+	@echo "Running rule-compiler tests"
+	@$(CONTAINER) /bin/sh -c "cd rule-compiler && RUSTFLAGS=-Ctarget-feature=+crt-static cargo test"
+
 .PHONY: generate
 generate:
 	@$(CONTAINER) /bin/sh -c "make -C probe-sys generate"

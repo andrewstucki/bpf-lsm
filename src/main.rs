@@ -8,7 +8,6 @@ mod errors;
 mod globals;
 mod handler;
 mod logging;
-mod rules;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();

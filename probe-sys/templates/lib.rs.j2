@@ -22,6 +22,8 @@ use sysinfo::{System, SystemExt};
 use pnet::datalink::interfaces;
 
 mod struct_pb;
+mod compiler;
+
 pub use struct_pb::*;
 
 static USERS_CACHE: Lazy<Mutex<UsersCache>> = Lazy::new(|| Mutex::new(UsersCache::new()));
