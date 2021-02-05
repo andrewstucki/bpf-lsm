@@ -99,6 +99,7 @@
       description: Unique identifier for the process.
     - name: name
       type: wildcard
+      queryable: string
       description: Process name.
     - name: ppid
       format: string
@@ -182,6 +183,7 @@
     - name: id
       type: keyword
       description: Unique identifier of the user.
+      queryable: number
       override:
         c: unsigned int
         rust: u32

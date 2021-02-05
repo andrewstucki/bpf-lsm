@@ -1,0 +1,276 @@
+use rule_compiler::{Atom, Operation, Operator, QueryWriter, QueryWriterFactory};
+use std::convert::TryFrom;
+use std::ffi::CString;
+use std::fmt;
+use std::os::raw::c_char;
+
+const UNSET_OPERATOR: u8 = 0;
+const EQUAL_OPERATOR: u8 = 1;
+const NOT_EQUAL_OPERATOR: u8 = 2;
+
+const UNSET_ABSOLUTE: u8 = 0;
+const TRUE_ABSOLUTE: u8 = 1;
+const FALSE_ABSOLUTE: u8 = 2;
+
+{% for module in modules %}
+{% set entry_point = module.structures | last %}
+{% for structure in module.structures -%}
+
+{% if structure.queryable -%}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct query_bpf_{{structure.name}} {
+  {% if entry_point.name == structure.name %}
+    pub ___absolute: u8,
+  {% endif %}
+  {% for field in structure.fields -%}
+    {% if field.queryable %}
+      {% if not field.complex %}pub {{field.name}}___operator: u8,{% endif %}
+      pub {{field.name}}: {% if field.type.size is not none %}[{{field.type.rust}}; {{field.type.size}}]{% else %}{% if field.complex%}query_bpf_{%endif%}{{field.type.rust}}{% endif %}{% if field.type.lifetime %}<'a>{%endif%},
+    {% endif -%}
+  {% endfor %}
+}
+
+impl Default for query_bpf_{{structure.name}} {
+    fn default() -> Self {
+        Self {
+          {% if entry_point.name == structure.name %}___absolute: UNSET_ABSOLUTE,{% endif %}
+          {% for field in structure.fields -%}
+            {% if field.queryable %}
+            {% if not field.complex %}
+              {{field.name}}___operator: UNSET_OPERATOR,
+              {{field.name}}: {% if field.type.size is not none %}[0; {{field.type.size}}]{% else %}Default::default(){%endif%},
+            {% else %}
+              {{field.name}}: Default::default(),
+            {% endif -%}
+            {% endif -%}
+          {% endfor %}
+        }
+    }
+}
+{% endif -%}
+{% endfor %}
+
+{% if entry_point.queryable -%}
+impl QueryStruct for query_bpf_{{entry_point.name}} {
+    fn set_absolute(&mut self, value: u8) {
+        self.___absolute = value;
+    }
+
+    fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String> {
+      match path.as_str() {
+        {% for structure in module.structures -%}
+        {% for field in structure.fields -%}
+          {% if field.queryable == "number" %}
+          "{{field.path}}{{field.name}}" => {
+              if self.{{field.path}}{{field.name}}___operator != UNSET_OPERATOR {
+                  // we can only hold a single condition per variable for now
+                  return Err(format!("{} already in condition", path));
+              }
+              let v = {{field.type.rust}}::try_from(value)
+                  .map_err(|_| String::from("{{field.path}}{{field.name}} must be a {{field.type.rust}}"))?;
+              self.{{field.path}}{{field.name}} = v;
+              self.{{field.path}}{{field.name}}___operator = operator_to_constant(operator);
+              Ok(())
+          },
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+          _ => Err(format!("numeric field named {} not found in schema", path)),
+      }
+    }
+
+    fn set_string(
+        &mut self,
+        path: String,
+        operator: Operator,
+        value: String,
+    ) -> Result<(), String> {
+        match path.as_str() {
+            {% for structure in module.structures -%}
+            {% for field in structure.fields -%}
+            {% if field.queryable == "string" %}
+            "{{field.path}}{{field.name}}" => {
+                if self.{{field.path}}{{field.name}}___operator != UNSET_OPERATOR {
+                    // we can only hold a single condition per variable for now
+                    return Err(format!("{} already in condition", path));
+                }
+                if value.len() < {{field.type.size}} {
+                  for (dest, src) in self.{{field.path}}{{field.name}}.iter_mut().zip(value.as_bytes().iter()) {
+                      *dest = *src as _;
+                  }
+                  self.{{field.path}}{{field.name}}___operator = operator_to_constant(operator);
+                  Ok(())
+                } else {
+                  Err(format!("{{field.path}}{{field.name}} is too long, maximum {{field.type.size}} characters, given value is {} characters", value.len()))
+                }
+            },
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            _ => Err(format!("string field named {} not found in schema", path)),
+        }
+    }
+}
+{% endif -%}
+{% endfor %}
+
+pub struct BpfQueryWriter {
+    table: String,
+    operation: Operation,
+    {% for module in modules %}
+    {% set entry_point = module.structures | last %}
+    {% if entry_point.queryable -%}
+    write_query_{{entry_point.name}}: InnerBpfQueryWriter<query_bpf_{{entry_point.name}}>,
+    {% endif %}
+    {%endfor%}
+}
+
+impl BpfQueryWriter {
+    fn new(table: String, operation: Operation) -> Self {
+        Self {
+            table: table,
+            operation: operation,
+            {% for module in modules %}
+            {% set entry_point = module.structures | last %}
+            {% if entry_point.queryable -%}
+            write_query_{{entry_point.name}}: InnerBpfQueryWriter::<query_bpf_{{entry_point.name}}>::new(8),
+            {% endif %}
+            {%endfor%}
+        }
+    }
+}
+
+impl QueryWriter for BpfQueryWriter {
+    fn write_statement<'a>(
+        &mut self,
+        field: &'a String,
+        operator: &'a Operator,
+        atom: &'a Atom,
+    ) -> Result<(), String> {
+        match self.table.as_str() {
+            {% for module in modules %}
+            {% set entry_point = module.structures | last %}
+            {% if entry_point.queryable -%}
+            "{{module.name}}" => self.write_query_{{entry_point.name}}.write_statement(field, operator, atom),
+            {% endif %}
+            {%endfor%}
+            _ => Err(format!("invalid table name {}", self.table)),
+        }
+    }
+
+    fn start_new_clause(&mut self) -> Result<(), String> {
+        match self.table.as_str() {
+            {% for module in modules %}
+            {% set entry_point = module.structures | last %}
+            {% if entry_point.queryable -%}
+            "{{module.name}}" => self.write_query_{{entry_point.name}}.start_new_clause(),
+            {% endif %}
+            {%endfor%}
+            _ => Err(format!("invalid table name {}", self.table)),
+        }
+    }
+
+    fn write_absolute(&mut self, value: bool) -> Result<(), String> {
+        match self.table.as_str() {
+            {% for module in modules %}
+            {% set entry_point = module.structures | last %}
+            {% if entry_point.queryable -%}
+            "{{module.name}}" => self.write_query_{{entry_point.name}}.write_absolute(value),
+            {% endif %}
+            {%endfor%}
+            _ => Err(format!("invalid table name {}", self.table)),
+        }
+    }
+}
+
+fn operator_to_constant(operator: Operator) -> u8 {
+    match operator {
+        Operator::Equal => EQUAL_OPERATOR,
+        Operator::NotEqual => NOT_EQUAL_OPERATOR,
+    }
+}
+
+fn absolute_to_constant(absolute: bool) -> u8 {
+    match absolute {
+        true => TRUE_ABSOLUTE,
+        false => FALSE_ABSOLUTE,
+    }
+}
+
+pub trait QueryStruct {
+    fn set_absolute(&mut self, value: u8);
+    fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String>;
+    fn set_string(&mut self, path: String, operator: Operator, value: String)
+        -> Result<(), String>;
+}
+
+struct InnerBpfQueryWriter<T: QueryStruct + Default + Copy> {
+    current: T,
+    conditionals: Vec<T>,
+    limit: usize,
+}
+
+impl<T: QueryStruct + Default + Copy> InnerBpfQueryWriter<T> {
+    fn new(limit: usize) -> Self {
+        Self {
+            current: Default::default(),
+            conditionals: vec![],
+            limit: limit,
+        }
+    }
+}
+
+impl<T: QueryStruct + Default + Copy> QueryWriter for InnerBpfQueryWriter<T> {
+    fn write_statement<'a>(
+        &mut self,
+        field: &'a String,
+        operator: &'a Operator,
+        atom: &'a Atom,
+    ) -> Result<(), String> {
+        match atom {
+            Atom::Number(value) => self
+                .current
+                .set_number(field.to_string(), *operator, *value)?,
+            Atom::String(value) => {
+                self.current
+                    .set_string(field.to_string(), *operator, value.to_string())?
+            }
+        };
+        Ok(())
+    }
+
+    fn start_new_clause(&mut self) -> Result<(), String> {
+        if self.conditionals.len() > self.limit {
+            return Err(format!(
+                "cannot add any more OR statements, max is {}",
+                self.limit
+            ));
+        }
+        if self.conditionals.len() == 0 {
+            self.conditionals.push(self.current);
+        }
+        self.current = Default::default();
+        Ok(())
+    }
+
+    fn write_absolute(&mut self, value: bool) -> Result<(), String> {
+        if self.conditionals.len() > self.limit {
+            return Err(format!(
+                "cannot add any more OR statements, max is {}",
+                self.limit
+            ));
+        }
+        self.current = Default::default();
+        self.current.set_absolute(absolute_to_constant(value));
+        self.conditionals.push(self.current);
+        Ok(())
+    }
+}
+
+pub struct BpfQueryWriterFactory {}
+impl QueryWriterFactory<BpfQueryWriter> for BpfQueryWriterFactory {
+    fn create<'a>(&self, operation: Operation, table: &'a str) -> Result<BpfQueryWriter, String> {
+        Ok(BpfQueryWriter::new(table.to_string(), operation))
+    }
+}

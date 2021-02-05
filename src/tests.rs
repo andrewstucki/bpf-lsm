@@ -15,9 +15,17 @@ mod compiler {
     }
 
     #[test]
+    fn test_error_repeated() {
+        let rule = compile(r#"REJECT bprm_check_security WHEN user.id == "a" and user.id != "b""#)
+            .unwrap();
+        assert!(rule.encode(&BpfQueryWriterFactory {}).is_err());
+    }
+
+    #[test]
     fn test_ok() {
         let rule =
-            compile(r#"REJECT bprm_check_security WHEN process.name == "ls" and user.id == 1"#).unwrap();
+            compile(r#"REJECT bprm_check_security WHEN process.name == "ls" and user.id == 1"#)
+                .unwrap();
         assert!(rule.encode(&BpfQueryWriterFactory {}).is_ok());
     }
 }

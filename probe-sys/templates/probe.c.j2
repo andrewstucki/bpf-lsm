@@ -224,3 +224,10 @@ void poll_state(struct state *s, int timeout) {
     ring_buffer__poll(s->rb, timeout);
   }
 }
+
+{% for module in modules -%}
+{% set entry_point = module.structures | last %}
+{% if entry_point.queryable -%}
+void flush_{{module.name}}_rule(struct query_bpf_{{entry_point.name}} rule) {}
+{%endif%}
+{%- endfor %}

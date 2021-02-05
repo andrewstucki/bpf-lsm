@@ -29,6 +29,8 @@ USERSPACE_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.c")
 USERSPACE_HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.h")
 RUST_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "lib.rs.j2")).read())
 RUST_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "lib.rs")
+COMPILER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "compiler.rs.j2")).read())
+COMPILER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "compiler.rs")
 PROTO_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "struct.proto.j2")).read())
 PROTO_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "struct.proto")
 
@@ -49,6 +51,7 @@ class Field(NamedTuple):
   name: str
   original: str
   complex: bool
+  queryable: Any
   path: str
 
 class FieldStructure(NamedTuple):
@@ -57,6 +60,7 @@ class FieldStructure(NamedTuple):
   enrichment: bool
   lifetime: bool
   fields: list
+  queryable: bool
 
 class ModuleStructures(NamedTuple):
   final: str
@@ -109,6 +113,7 @@ class Generator:
     data = child if child else self.data
     structures = []
     fields = []
+    parent_queryable = False
     for field in data:
       field_enrichment = field.get('enrichment', enrichment)
       name = field.get('name')
@@ -116,15 +121,25 @@ class Generator:
       normalized_name = normalize_name(name)
       rust_name = rustify(normalized_name)
       complex = False
+      queryable = False
       if field_type == 'group':
         complex = True
         child_namespaces = namespaces + [normalized_name]
         child_lifetime = field.get('lifetime', False)
         if child_lifetime:
           lifetime = True
+        child_structures = self._build_structs(types, child_lifetime, field_enrichment, child_namespaces, field.get('fields'))
+        for c in child_structures:
+          if c.queryable:
+            queryable = True
+            parent_queryable = True
+            break
         field_type = FieldType(None, self._rusty_name(child_namespaces), self._rusty_name(child_namespaces), self._structure_name(child_namespaces), self._structure_name(child_namespaces), None, child_lifetime, None)
-        structures += self._build_structs(types, child_lifetime, field_enrichment, child_namespaces, field.get('fields'))
+        structures += child_structures
       else:
+        queryable = field.get('queryable', False)
+        if queryable:
+          parent_queryable = True
         if 'override' in field:
           field_type = FieldType(field['override'].get('transform', None), field['override']['final'], field['override']['proto'], field['override']['rust'], field['override']['c'], None, False, field['override'].get('setter', None))
         else:
@@ -132,8 +147,8 @@ class Generator:
       field_path = ".".join(namespaces)
       if len(namespaces) > 0:
         field_path += "."
-      fields.append(Field(field_type, field_enrichment, rust_name, normalized_name, name, complex, field_path))
-    structure = FieldStructure(self._rusty_name(namespaces), self._structure_name(namespaces), enrichment, lifetime, fields)
+      fields.append(Field(field_type, field_enrichment, rust_name, normalized_name, name, complex, queryable, field_path))
+    structure = FieldStructure(self._rusty_name(namespaces), self._structure_name(namespaces), enrichment, lifetime, fields, parent_queryable)
     structures.append(structure)
     return structures
 
@@ -158,6 +173,8 @@ if __name__ == "__main__":
     bpf_output.write(USERSPACE_HEADER_TEMPLATE.render(modules=modules))
   with open(RUST_OUTPUT, "w") as bpf_output:
     bpf_output.write(RUST_TEMPLATE.render(modules=modules))
+  with open(COMPILER_OUTPUT, "w") as bpf_output:
+    bpf_output.write(COMPILER_TEMPLATE.render(modules=modules))
   with open(PROTO_OUTPUT, "w") as bpf_output:
     bpf_output.write(PROTO_TEMPLATE.render(modules=modules))
   subprocess.run(["clang-format", "-i", BPF_OUTPUT], check=True)

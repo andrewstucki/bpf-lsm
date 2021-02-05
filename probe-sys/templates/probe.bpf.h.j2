@@ -15,7 +15,17 @@ struct bpf_{{structure.name}} {
   {% endif -%}
   {%- endfor -%}
 };
+{% endif -%}
 
+{% if structure.queryable -%}
+struct query_bpf_{{structure.name}} {
+  {% for field in structure.fields -%}
+  {% if field.queryable %}
+    {% if not field.complex %}char {{field.name}}___operator;{% endif %}
+    {% if field.complex %}struct query_bpf_{% endif %}{%if field.type.name.type %}{{field.type.name.type}}{% else %}{{field.type.name}}{% endif %} {{field.name}}{%if field.type.name.suffix %}{{field.type.name.suffix}}{% elif field.type.size is not none %}[{{field.type.size}}]{% endif %};
+  {% endif -%}
+  {%- endfor -%}
+};
 {% endif -%}
 {% endfor -%}
 

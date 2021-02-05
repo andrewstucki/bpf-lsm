@@ -18,6 +18,10 @@ struct state;
 {% set entry_point = module.structures | last %}
 typedef void {{module.name}}_event_handler(void *ctx, struct bpf_{{entry_point.name}} e);
 
+{% if entry_point.queryable -%}
+void flush_{{module.name}}_rule(struct query_bpf_{{entry_point.name}} rule);
+{%endif%}
+
 // end {{module.name}}
 {%- endfor %}
 

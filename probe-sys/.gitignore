@@ -4,3 +4,4 @@ probe.h
 struct_pb.rs
 struct.proto
 lib.rs
+compiler.rs
