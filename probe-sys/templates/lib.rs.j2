@@ -450,7 +450,8 @@ impl<'a> Probe<'a> {
                     ffi::flush_{{module.name}}_filter_rule(ctx, std::mem::transmute_copy(&rule));
                 },
                 ("{{module.name}}", rule_compiler::Operation::Reject) => unsafe { 
-                    ffi::flush_{{module.name}}_rejection_rule(ctx, std::mem::transmute_copy(&rule));
+                    let rule = std::mem::transmute_copy(&rule);
+                    ffi::flush_{{module.name}}_rejection_rule(ctx, rule);
                 },
                 {% endif %}
                 {%endfor%}

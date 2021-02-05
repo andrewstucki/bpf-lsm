@@ -35,10 +35,10 @@ TRACEPOINT(syscalls, sys_enter_execve, struct trace_event_raw_sys_enter* ctx) {
 	event->truncated = 1;
 
 done:
-  accept(event);
+  submit(event);
 }
 
-LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
+LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm) {
   initialize_event();
 
   // override the process fields since we're execing a new process
@@ -55,20 +55,5 @@ LSM_HOOK(bprm_check_security, struct linux_binprm *bprm) {
     delete_tracepoint_event(sys_enter_execve);
   }
 
-  // const char denied[] = "execution-denied";
-  // const char allowed[] = "execution-allowed";
-
-  // unsigned int index = bprm_check_security_index;
-  // unsigned int *size = bpf_map_lookup_elem(&rejection_rule_sizes, &index);
-  // if (size && *size > 0) {
-  //   if (___check_bprm_check_security(*size, &bprm_check_security_rejections, event)) {
-  //     SET_STRING(event->event.action, denied);
-  //     reject(event);
-  //   }
-  // }
-
-  submit(bprm_check_security, execution, event);
-
-  // SET_STRING(event->event.action, allowed);
-  // accept(event);
+  submit(event);
 }

@@ -3,6 +3,7 @@ use std::convert::TryFrom;
 use std::ffi::CString;
 use std::fmt;
 use std::os::raw::c_char;
+use std::fmt::Debug;
 
 const UNSET_OPERATOR: u8 = 0;
 const EQUAL_OPERATOR: u8 = 1;
@@ -18,7 +19,7 @@ const FALSE_ABSOLUTE: u8 = 2;
 
 {% if structure.queryable -%}
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct query_bpf_{{structure.name}} {
   {% if entry_point.name == structure.name %}
     pub ___absolute: u8,
@@ -234,7 +235,7 @@ pub trait QueryFlusher {
     fn apply_rule<T: QueryStruct>(&self, module: String, operation: Operation, rule: T);
 }
 
-struct InnerBpfQueryWriter<T: QueryStruct + Default + Copy> {
+struct InnerBpfQueryWriter<T: QueryStruct + Default + Copy + Debug + PartialEq> {
     module: String,
     operation: Operation,
     current: T,
@@ -242,7 +243,7 @@ struct InnerBpfQueryWriter<T: QueryStruct + Default + Copy> {
     limit: usize,
 }
 
-impl<T: QueryStruct + Default + Copy> InnerBpfQueryWriter<T> {
+impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T> {
     fn new(module: String, operation: Operation, limit: usize) -> Self {
         Self {
             module: module,
@@ -254,7 +255,7 @@ impl<T: QueryStruct + Default + Copy> InnerBpfQueryWriter<T> {
     }
 }
 
-impl<T: QueryStruct + Default + Copy> QueryWriter for InnerBpfQueryWriter<T> {
+impl<T: QueryStruct + Default + Copy + Debug + PartialEq> QueryWriter for InnerBpfQueryWriter<T> {
     fn write_statement<'a>(
         &mut self,
         field: &'a String,
@@ -303,11 +304,14 @@ impl<T: QueryStruct + Default + Copy> QueryWriter for InnerBpfQueryWriter<T> {
     fn flush(&mut self) -> Result<(), String> { Ok(()) }
 }
 
-impl<T: QueryStruct + Default + Copy> InnerBpfQueryWriter<T> {
+impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T> {
     fn flush_probe<'a>(&mut self, probe: &'a super::Probe<'a>) -> Result<(), String> {
+        let uninitialized: T = Default::default(); 
         self.conditionals.push(self.current);
         for filter in &self.conditionals {
-            probe.apply_rule(self.module.clone(), self.operation, filter.clone())
+            if *filter != uninitialized {
+                probe.apply_rule(self.module.clone(), self.operation, filter.clone())
+            }
         }
         Ok(())
     }
