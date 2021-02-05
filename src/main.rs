@@ -95,17 +95,15 @@ fn run(c: &Context) {
         .debug(debug)
         .run(handler::Handler {})
     {
-        Ok(probe) => {
-            match probe.apply(filters) {
-                Err(e) => {
-                    error!("error setting up probe: {}", e.to_string());
-                    std::process::exit(1);
-                }
-                _ => loop {
-                    probe.poll((flush_rate * 1000).try_into().unwrap());
-                },
+        Ok(probe) => match probe.apply(filters) {
+            Err(e) => {
+                error!("error setting up probe: {}", e.to_string());
+                std::process::exit(1);
             }
-        }
+            _ => loop {
+                probe.poll((flush_rate * 1000).try_into().unwrap());
+            },
+        },
         Err(e) => {
             error!("error setting up probe: {}", e.to_string());
             std::process::exit(1);
