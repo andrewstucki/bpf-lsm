@@ -587,6 +587,7 @@ dependencies = [
  "num_cpus",
  "once_cell",
  "probe-sys",
+ "rule-compiler",
  "rustls",
  "seahorse",
  "sled",

@@ -9,6 +9,9 @@ mod globals;
 mod handler;
 mod logging;
 
+#[cfg(test)]
+mod tests;
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     let app = App::new(env!("CARGO_PKG_NAME"))

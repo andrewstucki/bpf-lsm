@@ -18,12 +18,14 @@ pub trait QueryWriter {
         operator: &'a Operator,
         atom: &'a Atom,
     ) -> Result<(), String>;
-    // // called to start a new and clause
+    // called to start a new and clause
     fn start_new_clause(&mut self) -> Result<(), String>;
-    // // called if the logic is reduced to t/f
+    // called if the logic is reduced to t/f
     fn write_absolute(&mut self, value: bool) -> Result<(), String>;
-    // // called to begin a new rule
-    fn start_new_rule<'a>(&mut self, operation: Operation, table: &'a str) -> Result<(), String>;
+}
+
+pub trait QueryWriterFactory<T: QueryWriter> {
+    fn create<'a>(&self, operation: Operation, table: &'a str) -> Result<T, String>;
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -530,12 +532,13 @@ impl fmt::Display for Rule<'_> {
 }
 
 impl<'a> Rule<'a> {
-    pub fn encode<T>(&self, encoder: &'a mut T) -> Result<(), String>
+    pub fn encode<T, U>(&self, factory: &'a T) -> Result<(), String>
     where
-        T: QueryWriter,
+        T: QueryWriterFactory<U>,
+        U: QueryWriter,
     {
-        encoder.start_new_rule(self.operation, self.table)?;
-        self.clause.encode(encoder)
+        self.clause
+            .encode(&mut factory.create(self.operation, self.table)?)
     }
 }
 
@@ -667,85 +670,5 @@ mod tests {
                 "REJECT foo_bar_baz WHEN x == 1 AND y == 2 AND z == 3"
             ))
         );
-    }
-
-    enum QueryType {
-        Number,
-        String(usize),
-    }
-    struct TestQueryWriter {
-        schema: Vec<(String, QueryType)>,
-    }
-    impl QueryWriter for TestQueryWriter {
-        fn write_statement<'a>(
-            &mut self,
-            field: &'a String,
-            _operator: &'a Operator,
-            atom: &'a Atom,
-        ) -> Result<(), String> {
-            self.schema
-                .iter()
-                .find(|&(f, t)| match (field == f, &atom, t) {
-                    (true, Atom::Number(_), QueryType::Number) => true,
-                    (true, Atom::String(value), QueryType::String(size)) => value.len() < *size,
-                    _ => false,
-                })
-                .ok_or(format!("{} not found in schema", field))
-                .map(|_| ())
-        }
-        fn start_new_clause(&mut self) -> Result<(), String> {
-            Ok(())
-        }
-        fn write_absolute(&mut self, _value: bool) -> Result<(), String> {
-            Ok(())
-        }
-        fn start_new_rule<'a>(
-            &mut self,
-            _operation: Operation,
-            _table: &'a str,
-        ) -> Result<(), String> {
-            Ok(())
-        }
-    }
-    #[test]
-    fn test_encoding() {
-        let rule = compile(r#"REJECT foo_bar_baz WHEN x==1 and y==2 AND z==3 OR x==1 AND y==2 OR x==1 and y==2 and z==3 and a=="2""#).unwrap();
-        assert!(rule
-            .encode(&mut TestQueryWriter {
-                schema: vec!(
-                    (String::from("x"), QueryType::Number),
-                    (String::from("y"), QueryType::Number),
-                    (String::from("z"), QueryType::Number),
-                    (String::from("a"), QueryType::String(2))
-                )
-            })
-            .is_ok());
-        assert!(rule
-            .encode(&mut TestQueryWriter {
-                schema: vec!(
-                    (String::from("x"), QueryType::Number),
-                    (String::from("y"), QueryType::Number)
-                )
-            })
-            .is_err());
-        assert!(rule
-            .encode(&mut TestQueryWriter {
-                schema: vec!(
-                    (String::from("x"), QueryType::Number),
-                    (String::from("y"), QueryType::String(1)),
-                    (String::from("z"), QueryType::Number),
-                )
-            })
-            .is_err());
-        assert!(rule
-            .encode(&mut TestQueryWriter {
-                schema: vec!(
-                    (String::from("x"), QueryType::Number),
-                    (String::from("y"), QueryType::Number),
-                    (String::from("z"), QueryType::Number),
-                    (String::from("a"), QueryType::String(0))
-                )
-            })
-            .is_err());
     }
 }

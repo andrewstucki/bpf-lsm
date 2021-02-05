@@ -8,6 +8,7 @@ description = "Example BPF LSM in C/Rust"
 
 [dependencies]
 probe-sys = { path = "./probe-sys" }
+rule-compiler = { path = "./rule-compiler" }
 seahorse = "1.1"
 ureq = "2.0.1"
 ajson = "0.2"
