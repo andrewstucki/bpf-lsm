@@ -33,7 +33,15 @@ TRACEPOINT(syscalls, sys_enter_execve, struct trace_event_raw_sys_enter *ctx) {
   if (!cached)
     return 0;
   const char *argp;
+
+  const char *executable = (const char *)(ctx->args[0]);
   const char **args = (const char **)(ctx->args[1]);
+  if (executable) {
+    bpf_probe_read_user_str(&cached->executable, MAX_PATH_SIZE, executable);
+    set_basename(cached->name, cached->executable, MAX_PATH_SIZE);
+  }
+
+  unsigned long argc = 0;
 
 #pragma unroll
   for (int i = 0; i < MAX_ARGS; i++) {
@@ -43,6 +51,7 @@ TRACEPOINT(syscalls, sys_enter_execve, struct trace_event_raw_sys_enter *ctx) {
     if (!argp)
       goto done;
     bpf_probe_read_user_str(&cached->args[i], ARGSIZE, argp);
+    argc++;
   }
   /* try to read one more argument to check if there is one */
   bpf_probe_read_user(&argp, sizeof(argp), &args[MAX_ARGS]);
@@ -53,30 +62,8 @@ TRACEPOINT(syscalls, sys_enter_execve, struct trace_event_raw_sys_enter *ctx) {
   cached->truncated = 1;
 
 done:
+  cached->args_count = argc;
   return 0;
-}
-
-LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm) {
-  initialize_event();
-
-  // override the process fields since we're execing a new process
-  bpf_probe_read_kernel_str(&event->process.executable,
-                            sizeof(event->process.executable), bprm->filename);
-  event->process.args_count = bprm->argc;
-  struct cached_process *cached = get_or_create_cached_process(current_task);
-  if (cached) {
-    // update with the found executable
-    memcpy(cached->executable, event->process.executable, MAX_PATH_SIZE);
-
-#pragma unroll
-    for (int i = 0; i < MAX_ARGS && i < event->process.args_count; i++) {
-      memcpy(event->process.args[i], cached->args[i], ARGSIZE);
-    }
-
-    update_cached_process(current_task, cached);
-  }
-
-  submit(event);
 }
 
 TRACEPOINT(sched, sched_process_free, void *ctx) {
@@ -85,3 +72,5 @@ TRACEPOINT(sched, sched_process_free, void *ctx) {
   delete_cached_process(current_task);
   return 0;
 }
+
+COMPLETE_LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm)

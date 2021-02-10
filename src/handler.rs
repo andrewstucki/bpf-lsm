@@ -2,7 +2,6 @@ use probe_sys::{
     BprmCheckSecurityEvent, ProbeHandler, SerializableEvent, SerializableResult,
     TransformationHandler,
 };
-use std::path::Path;
 use uuid::Uuid;
 
 use crate::errors::Error;
@@ -53,17 +52,6 @@ impl TransformationHandler for Handler {
         let process = e.process.get_mut_ref();
         let command_line = process.args.join(" ");
         process.set_command_line(command_line);
-
-        let executable = process.get_executable();
-        // override the name of the process since we're capturing
-        // an exec and the process is going to have the forking
-        // process name initially
-        for name in Path::new(executable)
-            .file_name()
-            .map(|f| f.to_string_lossy().to_string())
-        {
-            process.set_name(name);
-        }
 
         Ok(e)
     }

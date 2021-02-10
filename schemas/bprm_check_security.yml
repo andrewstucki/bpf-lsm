@@ -160,6 +160,23 @@
         - name: name
           type: wildcard
           description: Process name.
+        - name: args_count
+          type: long
+          description: Length of the process.args array.
+        - name: args
+          type: keyword
+          description: Array of process arguments.
+          override:
+            c:
+              type: char
+              suffix: "[64][128]"
+            rust: "[[c_char; 128]; 64]"
+            proto: repeated string
+            final: Vec<String>
+            transform:
+              method: "&mut convert_string_array"
+              extra: event.get_args_count()
+            setter: args.append
         - name: ppid
           format: string
           type: long

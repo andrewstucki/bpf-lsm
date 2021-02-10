@@ -59,6 +59,7 @@ struct cached_process {
   char name[MAX_PATH_SIZE];
   char executable[MAX_PATH_SIZE];
   char args[ARGSIZE][MAX_ARGS];
+  unsigned long args_count;
   int truncated;
 };
 

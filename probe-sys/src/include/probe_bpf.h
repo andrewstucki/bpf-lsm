@@ -72,12 +72,12 @@ __delete_cached_process(struct task_struct *task) {
   int module##_hook(void *ctx) { return ____##module(ctx); }                   \
   static int ____##module(arg)
 
-#define LSM_HOOK(module, prefix, args...)                                      \
+#define LSM_HOOK(module, prefix, ARGS...)                                      \
   __attribute__((always_inline)) static int ____##module(                      \
-      unsigned long long *ctx, ##args, struct bpf_##module##_event_t *event,   \
+      unsigned long long *ctx, ##ARGS, struct bpf_##module##_event_t *event,   \
       struct task_struct *current_task);                                       \
   SEC("lsm/" #module)                                                          \
-  int BPF_PROG(module##_hook, ##args) {                                        \
+  int BPF_PROG(module##_hook, ##ARGS) {                                        \
     struct bpf_event_t *event = bpf_ringbuf_reserve(                           \
         &events, sizeof(struct bpf_event_t), RINGBUFFER_FLAGS);                \
     if (event)                                                                 \
@@ -122,16 +122,31 @@ __delete_cached_process(struct task_struct *task) {
                                                                                \
       struct cached_process *cached = get_cached_process(current_task);        \
       if (cached) {                                                            \
+        event->module##_event_t.process.args_count = cached->args_count;       \
         memcpy(event->module##_event_t.process.executable, cached->executable, \
                MAX_PATH_SIZE);                                                 \
+        memcpy(event->module##_event_t.process.name, cached->name,             \
+               MAX_PATH_SIZE);                                                 \
+        _Pragma("unroll") for (int i = 0;                                      \
+                               i < MAX_ARGS && i < cached->args_count; i++)    \
+            memcpy(event->module##_event_t.process.args[i], cached->args[i],   \
+                   ARGSIZE);                                                   \
       }                                                                        \
       cached = get_cached_process(BPF_CORE_READ(current_task, real_parent));   \
       if (cached) {                                                            \
+        event->module##_event_t.process.parent.args_count =                    \
+            cached->args_count;                                                \
         memcpy(event->module##_event_t.process.parent.executable,              \
                cached->executable, MAX_PATH_SIZE);                             \
+        memcpy(event->module##_event_t.process.parent.name, cached->name,      \
+               MAX_PATH_SIZE);                                                 \
+        _Pragma("unroll") for (int i = 0;                                      \
+                               i < MAX_ARGS && i < cached->args_count; i++)    \
+            memcpy(event->module##_event_t.process.parent.args[i],             \
+                   cached->args[i], ARGSIZE);                                  \
       }                                                                        \
                                                                                \
-      __ret = ____##module(___bpf_ctx_cast(args), &event->module##_event_t,    \
+      __ret = ____##module(___bpf_ctx_cast(ARGS), &event->module##_event_t,    \
                            current_task);                                      \
       const char denied[] = "" #prefix "-denied";                              \
       const char allowed[] = "" #prefix "-allowed";                            \
@@ -158,7 +173,7 @@ __delete_cached_process(struct task_struct *task) {
       bpf_ringbuf_submit(event, RINGBUFFER_FLAGS);                             \
     return __ret;                                                              \
   }                                                                            \
-  static int ____##module(unsigned long long *ctx, ##args,                     \
+  static int ____##module(unsigned long long *ctx, ##ARGS,                     \
                           struct bpf_##module##_event_t *event,                \
                           struct task_struct *current_task)
 
@@ -166,5 +181,40 @@ __delete_cached_process(struct task_struct *task) {
   if (!event)                                                                  \
     return 0;
 #define submit(event) return 0
+
+#define COMPLETE_LSM_HOOK(module, prefix, ARGS...)                             \
+  LSM_HOOK(module, prefix, ##ARGS) {                                           \
+    initialize_event();                                                        \
+    submit(event);                                                             \
+  }
+
+__attribute__((always_inline)) static int
+last_index(const char *x, const char y, unsigned int len) {
+  const char *a = x;
+  int current_index = -1;
+#pragma unroll
+  for (unsigned int i = 0; i < len; i++) {
+    if (!*a)
+      return current_index; // return whatever our current is at the end of the
+                            // string
+    if (*a == y)
+      current_index = i;
+    a++;
+  }
+  return current_index;
+}
+
+__attribute__((always_inline)) static void set_basename(char *x, const char *y,
+                                                        unsigned int len) {
+  int last_slash = last_index(y, '/', len) % len;
+  if (last_slash < 0)
+    return;
+  last_slash++;
+  int end = len - last_slash;
+#pragma unroll
+  for (int i = 0; i < len && i < end; i++) {
+    x[i] = y[i + last_slash];
+  }
+}
 
 #endif // __PROBE_BPF_H
