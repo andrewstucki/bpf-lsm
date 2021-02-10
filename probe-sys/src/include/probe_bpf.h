@@ -33,7 +33,7 @@ struct {
   __type(value, struct cached_process);
 } processes SEC(".maps");
 
-#define get_or_create_cached_process(task)                                          \
+#define get_or_create_cached_process(task)                                     \
   (struct cached_process *)__get_or_create_cached_process(task)
 __attribute__((always_inline)) static void *
 __get_or_create_cached_process(struct task_struct *task) {
@@ -42,7 +42,7 @@ __get_or_create_cached_process(struct task_struct *task) {
   return bpf_map_lookup_elem(&processes, &pid);
 }
 
-#define get_cached_process(task)                                          \
+#define get_cached_process(task)                                               \
   (struct cached_process *)__get_cached_process(task)
 __attribute__((always_inline)) static void *
 __get_cached_process(struct task_struct *task) {
@@ -50,16 +50,16 @@ __get_cached_process(struct task_struct *task) {
   return bpf_map_lookup_elem(&processes, &pid);
 }
 
-#define update_cached_process(task, process)                                          \
+#define update_cached_process(task, process)                                   \
   __update_cached_process(task, process)
 __attribute__((always_inline)) static void
-__update_cached_process(struct task_struct *task, const struct cached_process *process) {
+__update_cached_process(struct task_struct *task,
+                        const struct cached_process *process) {
   pid_t pid = BPF_CORE_READ(task, tgid);
   bpf_map_update_elem(&processes, &pid, process, BPF_ANY);
 }
 
-#define delete_cached_process(task)                                          \
-  __delete_cached_process(task)
+#define delete_cached_process(task) __delete_cached_process(task)
 __attribute__((always_inline)) static void
 __delete_cached_process(struct task_struct *task) {
   pid_t pid = BPF_CORE_READ(task, tgid);
@@ -120,17 +120,15 @@ __delete_cached_process(struct task_struct *task) {
       event->module##_event_t.user.effective.group.id =                        \
           BPF_CORE_READ(current_task, cred, gid.val);                          \
                                                                                \
-      struct cached_process *cached =                                \
-          get_cached_process(current_task);                               \
-      if (cached) {                                                       \
-        memcpy(event->module##_event_t.process.executable, cached->executable,  \
+      struct cached_process *cached = get_cached_process(current_task);        \
+      if (cached) {                                                            \
+        memcpy(event->module##_event_t.process.executable, cached->executable, \
                MAX_PATH_SIZE);                                                 \
       }                                                                        \
-      cached =                                                            \
-          get_cached_process(BPF_CORE_READ(current_task, real_parent));   \
-      if (cached) {                                                       \
+      cached = get_cached_process(BPF_CORE_READ(current_task, real_parent));   \
+      if (cached) {                                                            \
         memcpy(event->module##_event_t.process.parent.executable,              \
-               cached->executable, MAX_PATH_SIZE);                              \
+               cached->executable, MAX_PATH_SIZE);                             \
       }                                                                        \
                                                                                \
       __ret = ____##module(___bpf_ctx_cast(args), &event->module##_event_t,    \

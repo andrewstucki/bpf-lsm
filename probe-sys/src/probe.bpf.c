@@ -5,9 +5,11 @@
 __attribute__((always_inline)) int fork_trace(void *ctx) {
   // this is to handle programs which fork multiple times
   // without ever calling exec
-  struct task_struct *current_task = (struct task_struct *)bpf_get_current_task();
+  struct task_struct *current_task =
+      (struct task_struct *)bpf_get_current_task();
   struct cached_process *child = get_cached_process(current_task);
-  struct cached_process *parent = get_cached_process(BPF_CORE_READ(current_task, real_parent));
+  struct cached_process *parent =
+      get_cached_process(BPF_CORE_READ(current_task, real_parent));
   if (parent && !child) { // we are in the child process
     // update the current task with the parent information
     update_cached_process(current_task, parent);
@@ -15,30 +17,24 @@ __attribute__((always_inline)) int fork_trace(void *ctx) {
   return 0;
 }
 
-TRACEPOINT(syscalls, sys_exit_fork, void *ctx) {
-  return fork_trace(ctx);
-}
+TRACEPOINT(syscalls, sys_exit_fork, void *ctx) { return fork_trace(ctx); }
 
-TRACEPOINT(syscalls, sys_exit_vfork, void *ctx) {
-  return fork_trace(ctx);
-}
+TRACEPOINT(syscalls, sys_exit_vfork, void *ctx) { return fork_trace(ctx); }
 
-TRACEPOINT(syscalls, sys_exit_clone, void *ctx) {
-  return fork_trace(ctx);
-}
+TRACEPOINT(syscalls, sys_exit_clone, void *ctx) { return fork_trace(ctx); }
 
-TRACEPOINT(syscalls, sys_exit_clone3, void *ctx) {
-  return fork_trace(ctx);
-}
+TRACEPOINT(syscalls, sys_exit_clone3, void *ctx) { return fork_trace(ctx); }
 
 TRACEPOINT(syscalls, sys_enter_execve, struct trace_event_raw_sys_enter *ctx) {
-  struct task_struct *current_task = (struct task_struct *)bpf_get_current_task();
+  struct task_struct *current_task =
+      (struct task_struct *)bpf_get_current_task();
 
   struct cached_process *cached = get_or_create_cached_process(current_task);
-  if (!cached) return 0;
+  if (!cached)
+    return 0;
   const char *argp;
   const char **args = (const char **)(ctx->args[1]);
-  
+
 #pragma unroll
   for (int i = 0; i < MAX_ARGS; i++) {
     // get the args from userspace since we can't retrieve
@@ -72,7 +68,7 @@ LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm) {
     // update with the found executable
     memcpy(cached->executable, event->process.executable, MAX_PATH_SIZE);
 
-    #pragma unroll
+#pragma unroll
     for (int i = 0; i < MAX_ARGS && i < event->process.args_count; i++) {
       memcpy(event->process.args[i], cached->args[i], ARGSIZE);
     }
@@ -84,7 +80,8 @@ LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm) {
 }
 
 TRACEPOINT(sched, sched_process_free, void *ctx) {
-  struct task_struct *current_task = (struct task_struct *)bpf_get_current_task();
+  struct task_struct *current_task =
+      (struct task_struct *)bpf_get_current_task();
   delete_cached_process(current_task);
   return 0;
 }
