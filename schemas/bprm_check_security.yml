@@ -99,7 +99,6 @@
       description: Unique identifier for the process.
     - name: name
       type: wildcard
-      queryable: string
       description: Process name.
     - name: ppid
       format: string
@@ -112,6 +111,7 @@
         final: u32
     - name: executable
       type: wildcard
+      queryable: string
       description: Absolute path to the process executable.
     - name: args_count
       type: long

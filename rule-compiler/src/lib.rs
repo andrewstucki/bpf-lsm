@@ -1,7 +1,7 @@
 use nom::{
     branch::alt,
-    bytes::complete::{escaped_transform, tag, tag_no_case, take_while},
-    character::complete::{alphanumeric1 as alphanumeric, char, digit1, multispace0},
+    bytes::complete::{escaped_transform, tag, tag_no_case, take_while, take_while1},
+    character::complete::{char, digit1, multispace0},
     combinator::{all_consuming, cut, flat_map, map, map_res, value},
     error::{context, VerboseError},
     multi::fold_many0,
@@ -111,7 +111,7 @@ fn parse_number<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>>
 
 fn parse_escape<'a>(i: &'a str) -> IResult<&'a str, String, VerboseError<&'a str>> {
     escaped_transform(
-        alphanumeric,
+        take_while1(|c: char| c == '_' || c == '/' || c.is_alphanumeric()),
         '\\',
         alt((
             value("\\", tag("\\")),
