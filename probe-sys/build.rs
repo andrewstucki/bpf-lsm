@@ -21,6 +21,10 @@ fn main() {
         assert!(status.success());
 
         println!(
+            "cargo:include={}",
+            src_dir.join("src").join("include").to_str().unwrap()
+        );
+        println!(
             "cargo:rustc-link-search=native={}",
             src_dir.join("src").join(".output").to_str().unwrap()
         );

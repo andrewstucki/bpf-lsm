@@ -10,7 +10,6 @@
 #include <time.h>
 
 #include "probe.h"
-#include "probe.bpf.h"
 #include "probe.skel.h"
 
 struct handle_event_wrapper {
@@ -30,9 +29,6 @@ struct state {
   struct handlers *handlers;
   {% for module in modules -%}
   struct bpf_link *{{module.name}}_hook;
-  {% endfor -%}
-  {% for tracepoint in simple_tracepoints -%}
-  struct bpf_link *{{tracepoint.hook}}_hook;
   {% endfor -%}
   {% for tracepoint in tracepoints -%}
   struct bpf_link *{{tracepoint.hook}}_hook;
@@ -144,9 +140,6 @@ struct state *new_state(struct state_configuration config) {
   {% for module in modules %}
   s->{{module.name}}_hook = NULL;
   {% endfor %}
-  {% for tracepoint in simple_tracepoints %}
-  s->{{tracepoint.hook}}_hook = NULL;
-  {% endfor %}
   {% for tracepoint in tracepoints %}
   s->{{tracepoint.hook}}_hook = NULL;
   {% endfor %}
@@ -157,7 +150,6 @@ struct state *new_state(struct state_configuration config) {
   s->obj->rodata->clock_adjustment = clock_adjustment;
   {% for module in modules %}
   if (config.{{module.name}}_handler) {
-    s->obj->rodata->{{module.name}}_enabled = 1;
     s->handlers->{{module.name}}_handler->ctx = config.{{module.name}}_ctx;
     s->handlers->{{module.name}}_handler->handler = config.{{module.name}}_handler;
   }
@@ -173,13 +165,6 @@ struct state *new_state(struct state_configuration config) {
   }
 
   {% for tracepoint in tracepoints -%}
-  s->{{tracepoint.hook}}_hook = bpf_program__attach(s->obj->progs.{{tracepoint.hook}}_hook);
-  if (!s->{{tracepoint.hook}}_hook) {
-    goto cleanup;
-  }
-  {% endfor -%}
-
-  {% for tracepoint in simple_tracepoints -%}
   s->{{tracepoint.hook}}_hook = bpf_program__attach(s->obj->progs.{{tracepoint.hook}}_hook);
   if (!s->{{tracepoint.hook}}_hook) {
     goto cleanup;
@@ -220,11 +205,6 @@ void destroy_state(struct state *s) {
       bpf_link__destroy(s->{{module.name}}_hook);
     }
     {% endfor %}
-    {% for tracepoint in simple_tracepoints %}
-    if (s->{{tracepoint.hook}}_hook) {
-      bpf_link__destroy(s->{{tracepoint.hook}}_hook);
-    }
-    {% endfor %}
     if (s->obj) {
       probe_bpf__destroy(s->obj);
     }
@@ -243,9 +223,9 @@ void poll_state(struct state *s, int timeout) {
 }
 
 void set_process_path(struct state *s, pid_t pid, const char *file_path) {
-  struct cached_process_path cached_path = {};
-  strncpy(cached_path.path, file_path, sizeof(cached_path.path));
-  bpf_map_update_elem(bpf_map__fd(s->obj->maps.process_paths), &pid, &cached_path, BPF_ANY);
+  struct cached_process cached = {};
+  strncpy(cached.executable, file_path, sizeof(cached.executable));
+  bpf_map_update_elem(bpf_map__fd(s->obj->maps.processes), &pid, &cached, BPF_ANY);
 }
 
 {% for module in modules -%}

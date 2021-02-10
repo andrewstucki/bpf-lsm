@@ -2,13 +2,13 @@ OUTPUT := src/.output
 CLANG ?= clang
 LLVM_STRIP ?= llvm-strip
 BPFTOOL ?= /usr/bin/bpftool
-INCLUDES := -I$(OUTPUT)
+INCLUDES := -I$(OUTPUT) -Isrc/include
 CFLAGS := -O3 -Os -fdata-sections -ffunction-sections -fvisibility=hidden
 BPFFLAGS := -g -O2 -DBPF -D__TARGET_ARCH_x86 -D__KERNEL__ -target bpf
 LIB = libprobe.a
 SOURCES = src/probe.c
 BPF_SOURCES = src/probe.bpf.c
-GENERATED_SOURCES = src/lib.rs src/compiler.rs src/probe.bpf.h src/probe.c src/probe.h src/struct.proto
+GENERATED_SOURCES = src/lib.rs src/compiler.rs src/include/probe_bpf.generated.h src/include/probe_common.generated.h src/probe.c src/include/probe.generated.h src/struct.proto
 GENERATOR_SCRIPT = scripts/generate-structures
 GENERATOR_TEMPLATES = $(GENERATED_SOURCES:src/%=templates/%.j2)
 OBJECTS = $(SOURCES:src/%.c=$(OUTPUT)/%.o)

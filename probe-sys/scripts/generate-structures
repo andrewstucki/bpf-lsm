@@ -12,26 +12,39 @@ from jinja2 import Template
 class Tracepoint(NamedTuple):
   family: str
   hook: str
-  fields: Any
 
 BPF_MODULES = ["bprm_check_security"]
-SIMPLE_TP = [("syscalls", "sys_exit_fork"), ("syscalls", "sys_exit_vfork"), ("syscalls", "sys_exit_clone"), ("syscalls", "sys_exit_clone3")]
-TP_MODULES = [("syscalls", "sys_enter_execve")]
+TRACEPOINTS = [
+  ("syscalls", "sys_enter_execve"),
+  ("syscalls", "sys_exit_fork"),
+  ("syscalls", "sys_exit_vfork"),
+  ("syscalls", "sys_exit_clone"),
+  ("syscalls", "sys_exit_clone3"),
+  ("sched", "sched_process_free"),
+]
 
 CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
 SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "..", "schemas"))
 BPF_SCHEMA_FILES = [path.join(SCHEMAS_DIRECTORY, "%s.yml" % f) for f in BPF_MODULES]
-TP_SCHEMAS = [(family, p, path.join(SCHEMAS_DIRECTORY, "%s/%s.yml" % (family, p))) for (family, p) in TP_MODULES]
-BPF_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.bpf.h.j2")).read())
+
+BPF_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "include", "probe_bpf.generated.h.j2")).read())
+BPF_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "include", "probe_bpf.generated.h")
+
 USERSPACE_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.c.j2")).read())
-USERSPACE_HEADER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.h.j2")).read())
-BPF_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.bpf.h")
 USERSPACE_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.c")
-USERSPACE_HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.h")
+
+COMMON_HEADER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "include", "probe_common.generated.h.j2")).read())
+COMMON_HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "include", "probe_common.generated.h")
+
+USERSPACE_HEADER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "include", "probe.generated.h.j2")).read())
+USERSPACE_HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "include", "probe.generated.h")
+
 RUST_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "lib.rs.j2")).read())
 RUST_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "lib.rs")
+
 COMPILER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "compiler.rs.j2")).read())
 COMPILER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "compiler.rs")
+
 PROTO_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "struct.proto.j2")).read())
 PROTO_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "struct.proto")
 
@@ -165,14 +178,15 @@ class Generator:
 if __name__ == "__main__":
   generators = [Generator(filename) for filename in BPF_SCHEMA_FILES]
   modules = [generator.dump_bpf_structs() for generator in generators]
-  tracepoints = [Tracepoint(family, hook, Generator(path).dump_tracepoint_structs()) for (family, hook, path) in TP_SCHEMAS]
-  simple_tracepoints = [Tracepoint(family, hook, None) for (family, hook) in SIMPLE_TP]
+  tracepoints = [Tracepoint(family, hook) for (family, hook) in TRACEPOINTS]
   with open(BPF_OUTPUT, "w") as bpf_output:
-    bpf_output.write(BPF_TEMPLATE.render(modules=modules, tracepoints=tracepoints))
+    bpf_output.write(BPF_TEMPLATE.render(modules=modules))
   with open(USERSPACE_OUTPUT, "w") as bpf_output:
-    bpf_output.write(USERSPACE_TEMPLATE.render(simple_tracepoints=simple_tracepoints, modules=modules, tracepoints=tracepoints))
+    bpf_output.write(USERSPACE_TEMPLATE.render(modules=modules, tracepoints=tracepoints))
   with open(USERSPACE_HEADER_OUTPUT, "w") as bpf_output:
     bpf_output.write(USERSPACE_HEADER_TEMPLATE.render(modules=modules))
+  with open(COMMON_HEADER_OUTPUT, "w") as bpf_output:
+    bpf_output.write(COMMON_HEADER_TEMPLATE.render(modules=modules))
   with open(RUST_OUTPUT, "w") as bpf_output:
     bpf_output.write(RUST_TEMPLATE.render(modules=modules))
   with open(COMPILER_OUTPUT, "w") as bpf_output:

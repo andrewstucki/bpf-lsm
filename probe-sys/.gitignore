@@ -1,6 +1,5 @@
-probe.bpf.h
 probe.c
-probe.h
+*.generated.h
 struct_pb.rs
 struct.proto
 lib.rs
