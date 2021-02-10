@@ -176,6 +176,9 @@
           format: string
           type: long
           description: Thread ID.
+        - name: executable
+          type: wildcard
+          description: Absolute path to the process executable.
 - name: user
   description: Fields to describe the user relevant to the event.
   type: group

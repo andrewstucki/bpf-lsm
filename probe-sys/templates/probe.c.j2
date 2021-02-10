@@ -31,6 +31,9 @@ struct state {
   {% for module in modules -%}
   struct bpf_link *{{module.name}}_hook;
   {% endfor -%}
+  {% for tracepoint in simple_tracepoints -%}
+  struct bpf_link *{{tracepoint.hook}}_hook;
+  {% endfor -%}
   {% for tracepoint in tracepoints -%}
   struct bpf_link *{{tracepoint.hook}}_hook;
   {% endfor -%}
@@ -141,6 +144,9 @@ struct state *new_state(struct state_configuration config) {
   {% for module in modules %}
   s->{{module.name}}_hook = NULL;
   {% endfor %}
+  {% for tracepoint in simple_tracepoints %}
+  s->{{tracepoint.hook}}_hook = NULL;
+  {% endfor %}
   {% for tracepoint in tracepoints %}
   s->{{tracepoint.hook}}_hook = NULL;
   {% endfor %}
@@ -166,6 +172,20 @@ struct state *new_state(struct state_configuration config) {
     goto cleanup;
   }
 
+  {% for tracepoint in tracepoints -%}
+  s->{{tracepoint.hook}}_hook = bpf_program__attach(s->obj->progs.{{tracepoint.hook}}_hook);
+  if (!s->{{tracepoint.hook}}_hook) {
+    goto cleanup;
+  }
+  {% endfor -%}
+
+  {% for tracepoint in simple_tracepoints -%}
+  s->{{tracepoint.hook}}_hook = bpf_program__attach(s->obj->progs.{{tracepoint.hook}}_hook);
+  if (!s->{{tracepoint.hook}}_hook) {
+    goto cleanup;
+  }
+  {% endfor -%}
+
   {% for module in modules %}
   if (config.{{module.name}}_handler) {
     s->{{module.name}}_hook = bpf_program__attach(s->obj->progs.{{module.name}}_hook);
@@ -174,13 +194,6 @@ struct state *new_state(struct state_configuration config) {
     }
   }
   {% endfor %}
-
-  {% for tracepoint in tracepoints -%}
-  s->{{tracepoint.hook}}_hook = bpf_program__attach(s->obj->progs.{{tracepoint.hook}}_hook);
-  if (!s->{{tracepoint.hook}}_hook) {
-    goto cleanup;
-  }
-  {% endfor -%}
 
   goto done;
 
@@ -207,6 +220,11 @@ void destroy_state(struct state *s) {
       bpf_link__destroy(s->{{module.name}}_hook);
     }
     {% endfor %}
+    {% for tracepoint in simple_tracepoints %}
+    if (s->{{tracepoint.hook}}_hook) {
+      bpf_link__destroy(s->{{tracepoint.hook}}_hook);
+    }
+    {% endfor %}
     if (s->obj) {
       probe_bpf__destroy(s->obj);
     }
@@ -222,6 +240,12 @@ void poll_state(struct state *s, int timeout) {
   if (s->rb) {
     ring_buffer__poll(s->rb, timeout);
   }
+}
+
+void set_process_path(struct state *s, pid_t pid, const char *file_path) {
+  struct cached_process_path cached_path = {};
+  strncpy(cached_path.path, file_path, sizeof(cached_path.path));
+  bpf_map_update_elem(bpf_map__fd(s->obj->maps.process_paths), &pid, &cached_path, BPF_ANY);
 }
 
 {% for module in modules -%}

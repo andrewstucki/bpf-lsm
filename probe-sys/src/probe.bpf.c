@@ -40,6 +40,33 @@ done:
   submit(event);
 }
 
+__attribute__((always_inline)) int fork_trace(void *ctx) {
+  struct task_struct *current_task = (struct task_struct *)bpf_get_current_task();
+  struct cached_process_path *child = get_cached_process_path(current_task);
+  struct cached_process_path *parent = get_cached_process_path(BPF_CORE_READ(current_task, real_parent));
+  if (!child && parent) { // we are in the child process
+    // update the path of the process
+    set_cached_process_path(parent->path);
+  }
+  return 0;
+}
+
+SIMPLE_TRACEPOINT(syscalls, sys_exit_fork, void *ctx) {
+  return fork_trace(ctx);
+}
+
+SIMPLE_TRACEPOINT(syscalls, sys_exit_vfork, void *ctx) {
+  return fork_trace(ctx);
+}
+
+SIMPLE_TRACEPOINT(syscalls, sys_exit_clone, void *ctx) {
+  return fork_trace(ctx);
+}
+
+SIMPLE_TRACEPOINT(syscalls, sys_exit_clone3, void *ctx) {
+  return fork_trace(ctx);
+}
+
 LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm) {
   initialize_event();
 
@@ -47,6 +74,7 @@ LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm) {
   bpf_probe_read_kernel_str(&event->process.executable,
                             sizeof(event->process.executable), bprm->filename);
   event->process.args_count = bprm->argc;
+  set_cached_process_path(event->process.executable);
 
   struct tp_sys_enter_execve_event *tp_event =
       get_tracepoint_event(sys_enter_execve);

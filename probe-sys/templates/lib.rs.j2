@@ -18,8 +18,11 @@ use protobuf::json::{PrintError, print_to_string};
 use protobuf::{ProtobufError, Message};
 use machine_uid;
 use sha2::Digest;
-use sysinfo::{System, SystemExt};
+use sysinfo::{System, SystemExt, ProcessExt};
 use pnet::datalink::interfaces;
+use std::os::unix::ffi::OsStrExt;
+use std::ffi::CString;
+use std::path::Path;
 
 mod struct_pb;
 mod compiler;
@@ -68,6 +71,8 @@ pub mod ffi {
         pub fn new_state(config: state_configuration) -> *mut state;
         pub fn poll_state(_self: *mut state, timeout: c_int);
         pub fn destroy_state(_self: *mut state);
+        pub fn set_process_path(_self: *mut state, pid: i32, file_path: *const c_char);
+
         {% for module in modules -%}
         {% set entry_point = module.structures | last %}
         {% if entry_point.queryable -%}
@@ -432,6 +437,17 @@ impl<'a> Probe<'a> {
         let state = unsafe { ffi::new_state(state_config) };
         if state.is_null() {
             return Err(Error::InitializationError);
+        }
+        let mut system = System::new();
+        system.refresh_processes();
+        let empty_path = Path::new("");
+        for (pid, process) in system.get_processes() {
+            let exe = process.exe();
+            if exe == empty_path {
+                continue;
+            }
+            let path = CString::new(exe.as_os_str().as_bytes()).unwrap();
+            unsafe { ffi::set_process_path(state, *pid as i32, path.as_ptr()) };
         }
         self.ctx = Some(state);
         {% for module in modules -%}

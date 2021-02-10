@@ -15,6 +15,7 @@ class Tracepoint(NamedTuple):
   fields: Any
 
 BPF_MODULES = ["bprm_check_security"]
+SIMPLE_TP = [("syscalls", "sys_exit_fork"), ("syscalls", "sys_exit_vfork"), ("syscalls", "sys_exit_clone"), ("syscalls", "sys_exit_clone3")]
 TP_MODULES = [("syscalls", "sys_enter_execve")]
 
 CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
@@ -165,10 +166,11 @@ if __name__ == "__main__":
   generators = [Generator(filename) for filename in BPF_SCHEMA_FILES]
   modules = [generator.dump_bpf_structs() for generator in generators]
   tracepoints = [Tracepoint(family, hook, Generator(path).dump_tracepoint_structs()) for (family, hook, path) in TP_SCHEMAS]
+  simple_tracepoints = [Tracepoint(family, hook, None) for (family, hook) in SIMPLE_TP]
   with open(BPF_OUTPUT, "w") as bpf_output:
     bpf_output.write(BPF_TEMPLATE.render(modules=modules, tracepoints=tracepoints))
   with open(USERSPACE_OUTPUT, "w") as bpf_output:
-    bpf_output.write(USERSPACE_TEMPLATE.render(modules=modules, tracepoints=tracepoints))
+    bpf_output.write(USERSPACE_TEMPLATE.render(simple_tracepoints=simple_tracepoints, modules=modules, tracepoints=tracepoints))
   with open(USERSPACE_HEADER_OUTPUT, "w") as bpf_output:
     bpf_output.write(USERSPACE_HEADER_TEMPLATE.render(modules=modules))
   with open(RUST_OUTPUT, "w") as bpf_output:

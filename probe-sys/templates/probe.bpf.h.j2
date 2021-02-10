@@ -8,6 +8,7 @@
 // begin {{module.name}}
 
 #define {{module.name}}_index {{ loop.index0 }}
+#define MAX_PATH_SIZE 256
 
 {% for structure in module.structures -%}
 {% if not structure.enrichment -%}
@@ -37,6 +38,10 @@ struct query_bpf_{{structure.name}} {
 
 // end {{module.name}}
 {% endfor -%}
+
+struct cached_process_path {
+  char path[MAX_PATH_SIZE];
+};
 
 enum event_type {
   {% for module in modules %}
@@ -83,7 +88,7 @@ struct tp_{{tracepoint.hook}}_event {
 #endif
 
 #define SET_STRING(dest, src)                                                  \
-  memcpy(dest, src, (sizeof(src) / sizeof(src[0]) + 1))
+  memcpy(dest, src, (sizeof(dest) / sizeof(dest[0]) + 1))
 
 // rules checks
 #define MAX_RULE_SIZE 8
@@ -100,7 +105,7 @@ struct tp_{{tracepoint.hook}}_event {
 #define TRACEPOINT(family, module, arg)                                        \
   __attribute__((always_inline)) static int ____##module(                      \
       struct tp_##module##_event *event, arg);                                 \
-  SEC("tp/" #family "/" #module)                                       \
+  SEC("tp/" #family "/" #module)                                               \
   int module##_hook(void *ctx) {                                               \
     pid_t pid = (pid_t)bpf_get_current_pid_tgid();                             \
     if (bpf_map_update_elem(&module##_events, &pid, &empty_##module##_event,   \
@@ -113,6 +118,14 @@ struct tp_{{tracepoint.hook}}_event {
     return ____##module(event, ctx);                                           \
   }                                                                            \
   static int ____##module(struct tp_##module##_event *event, arg)
+
+#define SIMPLE_TRACEPOINT(family, module, arg)                                 \
+  __attribute__((always_inline)) static int ____##module(arg);                 \
+  SEC("tp/" #family "/" #module)                                               \
+  int module##_hook(void *ctx) {                                               \
+    return ____##module(ctx);                                                  \
+  }                                                                            \
+  static int ____##module(arg)
 
 #define LSM_HOOK(module, prefix, args...)                                      \
   __attribute__((always_inline)) static int ____##module(                      \
@@ -136,32 +149,26 @@ struct tp_{{tracepoint.hook}}_event {
       event->module##_event_t.__timestamp =                                    \
           adjust_timestamp(bpf_ktime_get_boot_ns());                           \
                                                                                \
-      event->module##_event_t.process.pid = BPF_CORE_READ(current_task, pid);  \
+      event->module##_event_t.process.pid = BPF_CORE_READ(current_task, tgid); \
       event->module##_event_t.process.thread__id =                             \
-          BPF_CORE_READ(current_task, tgid);                                   \
+          BPF_CORE_READ(current_task, pid);                                    \
       event->module##_event_t.process.ppid =                                   \
-          BPF_CORE_READ(current_task, real_parent, pid);                       \
+          BPF_CORE_READ(current_task, real_parent, tgid);                      \
       event->module##_event_t.process.start =                                  \
           adjust_timestamp(BPF_CORE_READ(current_task, start_time));           \
       BPF_CORE_READ_INTO(&event->module##_event_t.process.name, current_task,  \
                          comm);                                                \
-      /* blocked on d_path resolution for executable name by                   \
-       * https://lwn.net/Articles/827938/ essentially d_path of                \
-       * current_task->mm->exe_file->f_path kernel 5.11 */                     \
                                                                                \
       event->module##_event_t.process.parent.pid =                             \
-          BPF_CORE_READ(current_task, real_parent, pid);                       \
-      event->module##_event_t.process.parent.thread__id =                      \
           BPF_CORE_READ(current_task, real_parent, tgid);                      \
+      event->module##_event_t.process.parent.thread__id =                      \
+          BPF_CORE_READ(current_task, real_parent, pid);                       \
       event->module##_event_t.process.parent.ppid =                            \
-          BPF_CORE_READ(current_task, real_parent, real_parent, pid);          \
+          BPF_CORE_READ(current_task, real_parent, real_parent, tgid);         \
       event->module##_event_t.process.parent.start = adjust_timestamp(         \
           BPF_CORE_READ(current_task, real_parent, start_time));               \
       BPF_CORE_READ_INTO(&event->module##_event_t.process.parent.name,         \
                          current_task, real_parent, comm);                     \
-      /* blocked on d_path resolution for executable name by                   \
-       * https://lwn.net/Articles/827938/ essentially d_path of                \
-       * current_task->real_parent->mm->exe_file->f_path  kernel 5.11 */       \
                                                                                \
       event->module##_event_t.user.id =                                        \
           BPF_CORE_READ(current_task, real_cred, uid.val);                     \
@@ -171,6 +178,20 @@ struct tp_{{tracepoint.hook}}_event {
           BPF_CORE_READ(current_task, cred, uid.val);                          \
       event->module##_event_t.user.effective.group.id =                        \
           BPF_CORE_READ(current_task, cred, gid.val);                          \
+                                                                               \
+      struct cached_process_path *cached_path =                                \
+          get_cached_process_path(current_task);                               \
+      if (cached_path) {                                                       \
+        memcpy(event->module##_event_t.process.executable, cached_path->path,  \
+               MAX_PATH_SIZE);                                                 \
+      }                                                                        \
+      cached_path =                                                            \
+          get_cached_process_path(BPF_CORE_READ(current_task, real_parent));   \
+      if (cached_path) {                                                       \
+        memcpy(event->module##_event_t.process.parent.executable,              \
+               cached_path->path, MAX_PATH_SIZE);                              \
+      }                                                                        \
+                                                                               \
       __ret = ____##module(___bpf_ctx_cast(args), &event->module##_event_t,    \
                            current_task);                                      \
       const char denied[] = "" #prefix "-denied";                              \
@@ -326,6 +347,36 @@ struct {
 
 const struct tp_{{tracepoint.hook}}_event empty_{{tracepoint.hook}}_event = {};
 {% endfor %}
+
+struct {
+  __uint(type, BPF_MAP_TYPE_HASH);
+  __uint(max_entries, 10240);
+  __type(key, pid_t);
+  __type(value, struct cached_process_path);
+} process_paths SEC(".maps");
+
+__attribute__((always_inline)) static void *
+__get_cached_process_path(struct task_struct *task) {
+  pid_t pid = BPF_CORE_READ(task, tgid);
+  return bpf_map_lookup_elem(&process_paths, &pid);
+}
+
+const struct cached_process_path empty_cached_process_path = {};
+
+__attribute__((always_inline)) static void
+__set_cached_process_path(struct task_struct *task, const char *path) {
+  pid_t pid = BPF_CORE_READ(task, tgid);
+  // initialize if things don't exist
+  bpf_map_update_elem(&process_paths, &pid, &empty_cached_process_path, BPF_NOEXIST);
+  struct cached_process_path *p = bpf_map_lookup_elem(&process_paths, &pid);
+  if (p) {
+    memcpy(p->path, path, MAX_PATH_SIZE);
+    bpf_map_update_elem(&process_paths, &pid, p, BPF_ANY);
+  }
+}
+
+#define get_cached_process_path(task) (struct cached_process_path *)__get_cached_process_path(task)
+#define set_cached_process_path(path) __set_cached_process_path(current_task, path)
 
 char _license[] SEC("license") = "GPL";
 #endif
