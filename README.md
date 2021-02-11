@@ -31,9 +31,9 @@ In the first terminal you should see an event that looks like:
 
 ```json
 {
-  "@timestamp": "1612972701",
+  "@timestamp": "1613078719",
   "event": {
-    "id": "d920dd2a-13e1-4ad7-80f2-e9318b99b21a",
+    "id": "f0790fc3-9fd5-4cd7-8c21-46bf6a69cf58",
     "kind": "event",
     "category": "process",
     "action": "execution-denied",
@@ -51,7 +51,7 @@ In the first terminal you should see an event that looks like:
     "mac": [
       "02:45:b3:9e:e7:35"
     ],
-    "uptime": "152672",
+    "uptime": "214423",
     "os": {
       "type": "linux",
       "name": "Ubuntu",
@@ -59,26 +59,30 @@ In the first terminal you should see an event that looks like:
     }
   },
   "process": {
-    "pid": 136978,
-    "entity_id": "7705686eca79aca811ef02dce446dc0c7de2f100ee55dafdada25f318e554023",
+    "pid": 194007,
+    "entity_id": "38bdfcbbce162ca8b2c8cb2e7de9c2d37c36c149ede53ef73d9befec4bcae7ca",
     "name": "ls",
-    "ppid": 118774,
+    "ppid": 194007,
     "executable": "/usr/bin/ls",
     "args_count": "2",
-    "start": "1612972701",
-    "thread.id": "136978",
+    "start": "1613078719",
+    "thread.id": "194007",
     "command_line": "ls --color=auto",
     "args": [
       "ls",
       "--color=auto"
     ],
     "parent": {
-      "pid": 118774,
-      "entity_id": "bdb2d4ae705b5a33ecadde0047ab8e333e351cef0118ef52bb6777198b262b74",
+      "pid": 185070,
+      "entity_id": "df23d2f4a718fb3c2a1ca5ea1ad1c1c6f792b601aa43aa4db2fd774d39d808cf",
       "name": "bash",
-      "ppid": 118773,
-      "start": "1612952897",
-      "thread.id": "118774",
+      "args_count": "1",
+      "args": [
+        "-bash"
+      ],
+      "ppid": 185070,
+      "start": "1613074686",
+      "thread.id": "185070",
       "executable": "/usr/bin/bash"
     }
   },
