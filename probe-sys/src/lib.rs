@@ -1,6 +1,6 @@
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case)]
-#![allow(unused_imports)]
+use once_cell::sync::Lazy;
+use std::sync::Mutex;
+use users::UsersCache;
 
 mod constants;
 mod errors;
@@ -10,7 +10,11 @@ mod traits;
 
 // import all of the generated modules
 mod struct_pb;
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
 mod compiler_generated;
+#[allow(non_camel_case_types)]
+#[allow(non_snake_case)]
 mod ffi_generated;
 mod probe_generated;
 mod serial_generated;

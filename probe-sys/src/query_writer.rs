@@ -94,6 +94,7 @@ pub struct BpfQueryWriterFactory<'b> {
 }
 
 impl<'b> BpfQueryWriterFactory<'b> {
+    #[allow(dead_code)]
     pub fn empty() -> Self {
         Self { probe: None }
     }

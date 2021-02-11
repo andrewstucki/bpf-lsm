@@ -1,35 +1,32 @@
 use super::compiler_generated::*;
-use std::os::raw::{c_char, c_int, c_uint, c_void};
+use std::os::raw::{c_char, c_int, c_void};
 
-{% for module in modules %}
-// begin {{module.name}}
-
-{% for structure in module.structures -%}
-{% if not structure.enrichment -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}
+{% for structure in module.structures %}
+{% if not structure.enrichment %}
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct {{structure.name}}{% if structure.lifetime %}<'a>{% endif %} {
-  {% for field in structure.fields -%}
-  {% if not field.enrichment %}pub {{field.name}}: {% if field.type.size is not none %}[{{field.type.rust}}; {{field.type.size}}]{% else %}{{field.type.rust}}{% endif %}{% if field.type.lifetime %}<'a>{%endif%},
-  {% endif -%}
-  {%- endfor -%}
+pub struct {{structure.name}} {
+{% for field in structure.fields %}
+{% if not field.enrichment %}
+    pub {{field.name}}: {% if field.type.size is not none %}[{{field.type.rust}}; {{field.type.size}}]{% else %}{{field.type.rust}}{% endif %},
+{% endif %}
+{% endfor %}
 }
 {% endif %}
 {% endfor %}
 
-{% set entry_point = module.structures | last %}
 pub type {{module.name}}_event_handler = extern "C" fn(ctx: *mut c_void, e: {{entry_point.name}});
-
 {% endfor %}
 
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct state_configuration {
-  pub debug: bool,
-  {% for module in modules -%}
-  pub {{module.name}}_ctx: *mut c_void,
-  pub {{module.name}}_handler: {{module.name}}_event_handler,
-  {% endfor %}
+    pub debug: bool,
+{% for module in modules %}
+    pub {{module.name}}_ctx: *mut c_void,
+    pub {{module.name}}_handler: {{module.name}}_event_handler,
+{% endfor %}
 }
 pub enum state {}
 extern "C" {
@@ -37,18 +34,13 @@ extern "C" {
     pub fn poll_state(_self: *mut state, timeout: c_int);
     pub fn destroy_state(_self: *mut state);
     pub fn set_process_path(_self: *mut state, pid: i32, file_path: *const c_char);
-
-    {% for module in modules -%}
-    {% set entry_point = module.structures | last %}
-    {% if entry_point.queryable -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
     pub fn flush_{{module.name}}_filter_rule(_self: *mut state, rule: query_bpf_{{entry_point.name}});
     pub fn flush_{{module.name}}_rejection_rule(_self: *mut state, rule: query_bpf_{{entry_point.name}});
-    {%endif%}
-  {% endfor %}   
+{% endif %}{% endfor %}
 }
 
-{% for module in modules -%}
-{% set entry_point = module.structures | last %}
+{% for module in modules %}{% set entry_point = module.structures | last %}
 pub unsafe fn unpack_{{module.name}}_closure<F>(closure: &mut F) -> (*mut c_void, {{module.name}}_event_handler)
 where
     F: FnMut({{entry_point.name}}),
@@ -60,7 +52,6 @@ where
         let closure: &mut F = unsafe { &mut *(data as *mut F) };
         (*closure)(e);
     }
-
     (closure as *mut F as *mut c_void, trampoline::<F>)
 }
 {% endfor %}

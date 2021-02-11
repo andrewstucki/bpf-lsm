@@ -5,23 +5,23 @@ package probe.protobuf;
 option (rustproto.carllerche_bytes_for_bytes_all) = true;
 option (rustproto.carllerche_bytes_for_string_all) = true;
 option optimize_for = SPEED;
-{% for module in modules %}
-{% for structure in module.structures -%}
+
+{% for module in modules %}{% for structure in module.structures %}
 message {{structure.final}} {
-{%- for field in structure.fields %}
+{% for field in structure.fields %}
   {% if not field.type.proto.startswith('repeated ') %}optional {% endif %}{{field.type.proto}} {{field.final}} = {{loop.index}} [json_name="{{field.original}}"];
-{%- endfor %}
-}
 {% endfor %}
-{%- endfor %}
+}
+{% endfor %}{% endfor %}
+
 message Event {
   enum EventType {
-  {%- for module in modules %}
+{% for module in modules %}
     {% set entry_point = module.structures | last %}{{ entry_point.final | upper }} = {{loop.index0}};
-  {%- endfor %}
+{% endfor %}
   }
   required EventType event_type = 1;
-{%- for module in modules %}
+{% for module in modules %}
   {% set entry_point = module.structures | last %}optional {{ entry_point.final }} {{ entry_point.name }} = {{loop.index + 1}};
-{%- endfor %}
+{% endfor %}
 }

@@ -18,9 +18,7 @@ pub struct Probe<'a> {
     ctx: Option<*mut ffi::state>,
     // store the closures so that we make sure it has
     // the same lifetime as the state wrapper
-{% for module in modules %}{% set entry_point = module.structures | last %}
-    _{{module.name}}_handler: Option<Box<dyn 'a + Fn(ffi::{{entry_point.name}})>>,
-{% endfor %}
+    _bprm_check_security_handler: Option<Box<dyn 'a + Fn(ffi::bprm_check_security_event_t)>>,
     debug: bool,
 }
 
@@ -28,9 +26,7 @@ impl<'a> Probe<'a> {
     pub fn new() -> Self {
         Self {
             ctx: None,
-{% for module in modules %}
-            _{{module.name}}_handler: None,
-{% endfor %}
+            _bprm_check_security_handler: None,
             debug: false,
         }
     }
@@ -54,24 +50,20 @@ impl<'a> Probe<'a> {
         F: 'a + ProbeHandler<U> + panic::RefUnwindSafe,
         U: std::fmt::Display
     {
-{% for module in modules %}{% set entry_point = module.structures | last %}
-        let mut {{module.name}}_wrapper = move |e: ffi::{{entry_point.name}}| {
+        let mut bprm_check_security_wrapper = move |e: ffi::bprm_check_security_event_t| {
             let result = panic::catch_unwind(|| {
-                handler.enqueue(&mut struct_pb::{{entry_point.final}}::from(e))
+                handler.enqueue(&mut struct_pb::BprmCheckSecurityEvent::from(e))
                     .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
             });
             if result.is_err() {
                 debug!("panic while handling event");
             }
         };
-        let ({{module.name}}_closure, {{module.name}}_callback) = unsafe { ffi::unpack_{{module.name}}_closure(&mut {{module.name}}_wrapper) };
-{% endfor %}
+        let (bprm_check_security_closure, bprm_check_security_callback) = unsafe { ffi::unpack_bprm_check_security_closure(&mut bprm_check_security_wrapper) };
         let state_config = ffi::state_configuration {
             debug: self.debug,
-{% for module in modules %}
-            {{module.name}}_ctx: {{module.name}}_closure,
-            {{module.name}}_handler: {{module.name}}_callback,
-{% endfor %}
+            bprm_check_security_ctx: bprm_check_security_closure,
+            bprm_check_security_handler: bprm_check_security_callback,
         };
         let state = unsafe { ffi::new_state(state_config) };
         if state.is_null() {
@@ -89,24 +81,20 @@ impl<'a> Probe<'a> {
             unsafe { ffi::set_process_path(state, *pid as i32, path.as_ptr()) };
         }
         self.ctx = Some(state);
-        {% for module in modules -%}
-        self._{{module.name}}_handler = Some(Box::new({{module.name}}_wrapper));
-        {% endfor %}
-        Ok(self)
+        self._bprm_check_security_handler = Some(Box::new(bprm_check_security_wrapper));
+                Ok(self)
     }
 
     pub fn apply_rule<T: QueryStruct>(&self, module: String, operation: Operation, rule: T) {
         match self.ctx {
             Some(ctx) => match (module.as_str(), operation) {
-{% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
-                ("{{module.name}}", Operation::Filter) => unsafe { 
-                    ffi::flush_{{module.name}}_filter_rule(ctx, transmute_copy(&rule));
+                ("bprm_check_security", Operation::Filter) => unsafe { 
+                    ffi::flush_bprm_check_security_filter_rule(ctx, transmute_copy(&rule));
                 },
-                ("{{module.name}}", Operation::Reject) => unsafe { 
+                ("bprm_check_security", Operation::Reject) => unsafe { 
                     let rule = transmute_copy(&rule);
-                    ffi::flush_{{module.name}}_rejection_rule(ctx, rule);
+                    ffi::flush_bprm_check_security_rejection_rule(ctx, rule);
                 },
-{% endif %}{% endfor %}
                 _ => return,
             },
             _ => return,

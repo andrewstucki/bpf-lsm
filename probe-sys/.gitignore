@@ -1,4 +1,0 @@
-*.generated.h
-struct_pb.rs
-struct.proto
-*_generated.rs

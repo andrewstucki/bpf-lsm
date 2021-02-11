@@ -13,10 +13,95 @@ use crate::ffi_generated as ffi;
 use crate::errors::{SerializationError, SerializableResult};
 use crate::traits::SerializableEvent;
 
-{% for module in modules %}{% set entry_point = module.structures | last %}
-{{ module.render_rust_from_ffi() }}
+impl From<ffi::bprm_check_security_event_event_t> for BprmCheckSecurityEventEvent {
+    fn from(e: ffi::bprm_check_security_event_event_t) -> Self {
+        let mut event = Self::default();
+        event.set_action(transform_string(e.action.into()));
+        event
+    }
+}
 
-impl SerializableEvent for {{entry_point.final}} {
+impl From<ffi::bprm_check_security_event_process_parent_t> for BprmCheckSecurityEventProcessParent {
+    fn from(e: ffi::bprm_check_security_event_process_parent_t) -> Self {
+        let mut event = Self::default();
+        event.set_pid(e.pid);
+        event.set_entity_id(transform_string(e.entity_id.into()));
+        event.set_name(transform_string(e.name.into()));
+        event.set_args_count(e.args_count);
+        event.args.append(&mut convert_string_array(event.get_args_count(), e.args.into()));
+        event.set_ppid(e.ppid);
+        event.set_start(e.start);
+        event.set_thread_id(e.thread__id);
+        event.set_executable(transform_string(e.executable.into()));
+        event
+    }
+}
+
+impl From<ffi::bprm_check_security_event_process_t> for BprmCheckSecurityEventProcess {
+    fn from(e: ffi::bprm_check_security_event_process_t) -> Self {
+        let mut event = Self::default();
+        event.set_pid(e.pid);
+        event.set_entity_id(transform_string(e.entity_id.into()));
+        event.set_name(transform_string(e.name.into()));
+        event.set_ppid(e.ppid);
+        event.set_executable(transform_string(e.executable.into()));
+        event.set_args_count(e.args_count);
+        event.set_start(e.start);
+        event.set_thread_id(e.thread__id);
+        event.args.append(&mut convert_string_array(event.get_args_count(), e.args.into()));
+        event.parent = Some(e.parent.into()).into();
+        event
+    }
+}
+
+impl From<ffi::bprm_check_security_event_user_group_t> for BprmCheckSecurityEventUserGroup {
+    fn from(e: ffi::bprm_check_security_event_user_group_t) -> Self {
+        let mut event = Self::default();
+        event.set_id(int_to_string(e.id.into()));
+        event
+    }
+}
+
+impl From<ffi::bprm_check_security_event_user_effective_group_t> for BprmCheckSecurityEventUserEffectiveGroup {
+    fn from(e: ffi::bprm_check_security_event_user_effective_group_t) -> Self {
+        let mut event = Self::default();
+        event.set_id(int_to_string(e.id.into()));
+        event
+    }
+}
+
+impl From<ffi::bprm_check_security_event_user_effective_t> for BprmCheckSecurityEventUserEffective {
+    fn from(e: ffi::bprm_check_security_event_user_effective_t) -> Self {
+        let mut event = Self::default();
+        event.set_id(int_to_string(e.id.into()));
+        event.group = Some(e.group.into()).into();
+        event
+    }
+}
+
+impl From<ffi::bprm_check_security_event_user_t> for BprmCheckSecurityEventUser {
+    fn from(e: ffi::bprm_check_security_event_user_t) -> Self {
+        let mut event = Self::default();
+        event.set_id(int_to_string(e.id.into()));
+        event.group = Some(e.group.into()).into();
+        event.effective = Some(e.effective.into()).into();
+        event
+    }
+}
+
+impl From<ffi::bprm_check_security_event_t> for BprmCheckSecurityEvent {
+    fn from(e: ffi::bprm_check_security_event_t) -> Self {
+        let mut event = Self::default();
+        event.set_timestamp(e.__timestamp);
+        event.event = Some(e.event.into()).into();
+        event.host = Some(Default::default()).into();
+        event.process = Some(e.process.into()).into();
+        event.user = Some(e.user.into()).into();
+        event
+    }
+}
+
+impl SerializableEvent for BprmCheckSecurityEvent {
     fn to_json(&self) -> SerializableResult<String> {
         match print_to_string(self) {
             Ok(result) => Ok(result),
@@ -26,8 +111,8 @@ impl SerializableEvent for {{entry_point.final}} {
 
     fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
         let mut event = Event::new();
-        event.{{entry_point.name}} = Some(self.clone()).into();
-        event.set_event_type(event::EventType::{{entry_point.final | upper}});
+        event.bprm_check_security_event_t = Some(self.clone()).into();
+        event.set_event_type(event::EventType::BPRMCHECKSECURITYEVENT);
         match event.write_to_bytes() {
           Ok(result) => Ok(result),
           Err(e) => Err(SerializationError::Bytes(e)),
@@ -49,7 +134,7 @@ impl SerializableEvent for {{entry_point.final}} {
     }
 
     fn suffix(&self) -> &'static str {
-        "{{module.name}}"
+        "bprm_check_security"
     }
 
     fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self> {        
@@ -126,4 +211,3 @@ impl SerializableEvent for {{entry_point.final}} {
         Ok(self)
     }
 }
-{% endfor %}

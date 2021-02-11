@@ -5,9 +5,7 @@ use crate::errors::SerializableResult;
 use crate::traits::SerializableEvent;
 
 pub trait TransformationHandler {
-{% for module in modules %}{% set entry_point = module.structures | last %}
-    fn enrich_{{module.name}}<'a>(&self, e: &'a mut {{entry_point.final}}) -> SerializableResult<&'a mut {{entry_point.final}}>;
-{% endfor %}
+    fn enrich_bprm_check_security<'a>(&self, e: &'a mut BprmCheckSecurityEvent) -> SerializableResult<&'a mut BprmCheckSecurityEvent>;
 }
 
 pub struct Transformer<T> {
@@ -24,11 +22,9 @@ impl<T: TransformationHandler> Transformer<T> {
   pub fn transform(&self, data: Vec<u8>) -> SerializableResult<String> {
       let e = Event::parse_from_bytes(&data).unwrap();
       match e.get_event_type() {
-{% for module in modules %}{% set entry_point = module.structures | last %}
-          event::EventType::{{entry_point.final | upper}} => {
-              self.handler.enrich_{{module.name}}((&mut e.{{entry_point.name}}.unwrap()).enrich_common()?)?.to_json()
+          event::EventType::BPRMCHECKSECURITYEVENT => {
+              self.handler.enrich_bprm_check_security((&mut e.bprm_check_security_event_t.unwrap()).enrich_common()?)?.to_json()
           },
-{% endfor %}
       }
   }  
 }
