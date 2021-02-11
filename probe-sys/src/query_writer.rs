@@ -1,12 +1,9 @@
 use rule_compiler::{Atom, Operation, Operator, QueryWriter, QueryWriterFactory};
-use std::convert::TryFrom;
-use std::ffi::CString;
-use std::fmt;
-use std::os::raw::c_char;
 use std::fmt::Debug;
 
-use crate::traits::QueryStruct;
+use crate::compiler_generated::BpfQueryWriter;
 use crate::helpers::absolute_to_constant;
+use crate::traits::QueryStruct;
 
 pub(crate) struct InnerBpfQueryWriter<T: QueryStruct + Default + Copy + Debug + PartialEq> {
     module: String,
@@ -74,12 +71,14 @@ impl<T: QueryStruct + Default + Copy + Debug + PartialEq> QueryWriter for InnerB
         Ok(())
     }
 
-    fn flush(&mut self) -> Result<(), String> { Ok(()) }
+    fn flush(&mut self) -> Result<(), String> {
+        Ok(())
+    }
 }
 
 impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T> {
     pub fn flush_probe<'a>(&mut self, probe: &'a super::Probe<'a>) -> Result<(), String> {
-        let uninitialized: T = Default::default(); 
+        let uninitialized: T = Default::default();
         self.conditionals.push(self.current);
         for filter in &self.conditionals {
             if *filter != uninitialized {
@@ -91,21 +90,29 @@ impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T>
 }
 
 pub struct BpfQueryWriterFactory<'b> {
-    probe: Option<&'b super::Probe<'b>>
+    probe: Option<&'b super::Probe<'b>>,
 }
 
 impl<'b> BpfQueryWriterFactory<'b> {
     pub fn empty() -> Self {
         Self { probe: None }
     }
-    
+
     pub fn new(probe: &'b super::Probe<'b>) -> Self {
         Self { probe: Some(probe) }
     }
 }
 
-impl<'b> QueryWriterFactory<crate::compiler::BpfQueryWriter<'b>> for BpfQueryWriterFactory<'b> {
-    fn create<'a>(&self, operation: Operation, table: &'a str) -> Result<crate::compiler::BpfQueryWriter<'b>, String> {
-        Ok(crate::compiler::BpfQueryWriter::new(self.probe.clone(), table.to_string(), operation))
+impl<'b> QueryWriterFactory<BpfQueryWriter<'b>> for BpfQueryWriterFactory<'b> {
+    fn create<'a>(
+        &self,
+        operation: Operation,
+        table: &'a str,
+    ) -> Result<BpfQueryWriter<'b>, String> {
+        Ok(BpfQueryWriter::new(
+            self.probe.clone(),
+            table.to_string(),
+            operation,
+        ))
     }
 }

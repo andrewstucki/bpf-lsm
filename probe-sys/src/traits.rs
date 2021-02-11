@@ -1,6 +1,12 @@
-use rule_compiler::{Operator, Operation};
+use rule_compiler::{Operation, Operator};
 
 use crate::errors::SerializableResult;
+
+pub trait ProbeHandler<U> {
+    fn enqueue<T>(&self, event: &mut T) -> Result<(), U>
+    where
+        T: SerializableEvent + std::fmt::Debug;
+}
 
 pub trait SerializableEvent {
     fn to_json(&self) -> SerializableResult<String>;

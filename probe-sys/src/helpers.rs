@@ -1,20 +1,18 @@
+use rule_compiler::Operator;
 use std::ffi::CStr;
 use std::os::raw::c_char;
-use rule_compiler::{Atom, Operation, Operator, QueryWriter, QueryWriterFactory};
-use std::convert::TryFrom;
-use std::ffi::CString;
-use std::fmt;
-use std::fmt::Debug;
 
-use crate::constants::{EQUAL_OPERATOR, NOT_EQUAL_OPERATOR, TRUE_ABSOLUTE, FALSE_ABSOLUTE};
+use crate::constants::{EQUAL_OPERATOR, FALSE_ABSOLUTE, NOT_EQUAL_OPERATOR, TRUE_ABSOLUTE};
 
 pub(crate) fn transform_string(val: Vec<c_char>) -> String {
-  unsafe { CStr::from_ptr(val.as_ptr()).to_string_lossy().into_owned() }
+    unsafe { CStr::from_ptr(val.as_ptr()).to_string_lossy().into_owned() }
 }
 
 pub(crate) fn convert_string_array<T>(size: u64, arr: Vec<T>) -> Vec<String>
-where T: Into<Vec<c_char>> + Copy {
-    unsafe { 
+where
+    T: Into<Vec<c_char>> + Copy,
+{
+    unsafe {
         let mut strings = vec![];
         for x in 0..size {
             let ptr: Vec<c_char> = arr[x as usize].into();
@@ -27,7 +25,7 @@ where T: Into<Vec<c_char>> + Copy {
 }
 
 pub(crate) fn int_to_string(v: u32) -> String {
-  v.to_string()
+    v.to_string()
 }
 
 pub(crate) fn operator_to_constant(operator: Operator) -> u8 {

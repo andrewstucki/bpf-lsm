@@ -1,5 +1,5 @@
 use protobuf::json::PrintError;
-use protobuf::{ProtobufError, Message};
+use protobuf::ProtobufError;
 use std::{error, fmt};
 
 #[derive(Debug, Clone)]
@@ -27,9 +27,9 @@ pub enum SerializationError {
 impl fmt::Display for SerializationError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-          Self::Json(_e) => write!(f, "json serialization failed"),
-          Self::Bytes(e) => std::fmt::Display::fmt(&e, f),
-          Self::Transform(e) => std::fmt::Display::fmt(&e, f),
+            Self::Json(_e) => write!(f, "json serialization failed"),
+            Self::Bytes(e) => std::fmt::Display::fmt(&e, f),
+            Self::Transform(e) => std::fmt::Display::fmt(&e, f),
         }
     }
 }
@@ -37,9 +37,9 @@ impl fmt::Display for SerializationError {
 impl error::Error for SerializationError {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         match self {
-          Self::Json(_) => None,
-          Self::Bytes(e) => Some(e),
-          Self::Transform(_) => None,
+            Self::Json(_) => None,
+            Self::Bytes(e) => Some(e),
+            Self::Transform(_) => None,
         }
     }
 }

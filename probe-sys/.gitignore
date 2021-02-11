@@ -1,5 +1,4 @@
 *.generated.h
 struct_pb.rs
 struct.proto
-lib.rs
-compiler.rs
+*_generated.rs

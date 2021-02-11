@@ -1,0 +1,130 @@
+use sha2::Digest;
+use machine_uid;
+use pnet::datalink::interfaces;
+use protobuf::Message;
+use protobuf::json::print_to_string;
+use sysinfo::{System, SystemExt};
+use users::{Groups, Users};
+
+use crate::struct_pb::*;
+use crate::helpers::*;
+use crate::ffi_generated as ffi;
+
+use crate::errors::{SerializationError, SerializableResult};
+use crate::traits::SerializableEvent;
+
+{% for module in modules -%}
+{{ module.render_rust_from_ffi() }}
+
+{% set entry_point = module.structures | last %}
+impl SerializableEvent for {{entry_point.final}} {
+    fn to_json(&self) -> SerializableResult<String> {
+        match print_to_string(self) {
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Json(e)),
+        }
+    }
+
+    fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
+        let mut event = Event::new();
+        event.{{entry_point.name}} = Some(self.clone()).into();
+        event.set_event_type(event::EventType::{{entry_point.final | upper}});
+        match event.write_to_bytes() {
+          Ok(result) => Ok(result),
+          Err(e) => Err(SerializationError::Bytes(e)),
+        }
+    }
+
+    fn update_id(&mut self, id: &mut str) {
+      self.event.as_mut().and_then(|e| {
+        e.set_id(id.to_string().to_owned());
+        Some(e)
+      });
+    }
+
+    fn update_sequence(&mut self, seq: u64) {
+      self.event.as_mut().and_then(|e| {
+        e.set_sequence(seq);
+        Some(e)
+      });
+    }
+
+    fn suffix(&self) -> &'static str {
+        "{{module.name}}"
+    }
+
+    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self> {        
+        {
+            let cache = super::USERS_CACHE.lock().unwrap();
+            // real enrichments
+            let user = self.user.get_mut_ref();
+            let uid = user.get_id().parse::<u32>().unwrap();
+            let group = user.group.get_mut_ref();
+            let gid = group.get_id().parse::<u32>().unwrap();
+
+            for enriched_group in cache.get_group_by_gid(gid) {
+                group.set_name(enriched_group.name().to_string_lossy().to_string());
+            }
+            for enriched_user in cache.get_user_by_uid(uid) {
+                user.set_name(enriched_user.name().to_string_lossy().to_string());
+            }
+
+            // effective enrichments
+            let effective_user = user.effective.get_mut_ref();
+            let effective_uid = effective_user.get_id().parse::<u32>().unwrap();
+            let effective_group = effective_user.group.get_mut_ref();
+            let effective_gid = effective_group.get_id().parse::<u32>().unwrap();
+            for enriched_group in cache.get_group_by_gid(effective_gid) {
+                effective_group.set_name(enriched_group.name().to_string_lossy().to_string());
+            }
+            for enriched_user in cache.get_user_by_uid(effective_uid) {
+                effective_user.set_name(enriched_user.name().to_string_lossy().to_string());
+            }
+        }
+
+        // entity id enrichments
+        let machine_id = machine_uid::get().unwrap(); // this should probably be error checked
+
+        let process = self.process.get_mut_ref();
+        let pid = process.get_pid();
+        let process_start = process.get_start();
+        let process_entity_id = format!("{}{}{}", machine_id, format!("{:01$}", pid, 5), process_start);          
+        process.set_entity_id(format!("{:x}", sha2::Sha256::digest(process_entity_id.as_bytes())));
+
+        let parent = process.parent.get_mut_ref();
+        let ppid = parent.get_pid();
+        let parent_start = parent.get_start();
+        let parent_entity_id = format!("{}{}{}", machine_id, format!("{:01$}", ppid, 5), parent_start);  
+        parent.set_entity_id(format!("{:x}", sha2::Sha256::digest(parent_entity_id.as_bytes())));
+
+        let system = System::new();
+        let host = self.host.get_mut_ref();
+        host.set_uptime(system.get_uptime());
+        for hostname in system.get_host_name() {
+           host.set_hostname(hostname);
+        }
+        let all_interfaces = interfaces();
+        let active_interfaces = all_interfaces.iter().filter(|e| e.is_up() && !e.is_loopback() && !e.ips.is_empty());
+        for interface in active_interfaces {
+            if interface.mac.is_some() {
+                host.mac.push(interface.mac.unwrap().to_string());
+            }
+            for ip in &interface.ips {
+                host.ip.push(ip.ip().to_string());
+            }
+        }
+        host.os = Some(Default::default()).into();
+
+        let os = host.os.get_mut_ref();
+        os.set_field_type("linux".to_string());
+        for os_name in system.get_name() {
+          os.set_name(os_name);
+        }        
+        for kernel_version in system.get_kernel_version() {
+          os.set_kernel(kernel_version);
+        }        
+        
+        Ok(self)
+    }
+}
+{% endfor %}

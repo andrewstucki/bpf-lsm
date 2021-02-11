@@ -24,8 +24,11 @@ TRACEPOINTS = [
 ]
 TEMPLATES = [
   ["include", "probe.generated.h.j2"],
-  ["lib.rs.j2"],
-  ["compiler.rs.j2"],
+  ["ffi_generated.rs.j2"],
+  ["probe_generated.rs.j2"],
+  ["serial_generated.rs.j2"],
+  ["transform_generated.rs.j2"],
+  ["compiler_generated.rs.j2"],
   ["struct.proto.j2"],
 ]
 

@@ -1,9 +1,7 @@
-use rule_compiler::{Atom, Operation, Operator, QueryWriter, QueryWriterFactory};
+use rule_compiler::{Atom, Operation, Operator, QueryWriter};
 use std::convert::TryFrom;
-use std::ffi::CString;
-use std::fmt;
 use std::os::raw::c_char;
-use std::fmt::Debug;
+
 use crate::traits::QueryStruct;
 use crate::query_writer::InnerBpfQueryWriter;
 use crate::constants::{UNSET_ABSOLUTE, UNSET_OPERATOR};

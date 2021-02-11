@@ -1,0 +1,137 @@
+use std::ffi::CString;
+use std::mem::transmute_copy;
+use std::os::raw::c_int;
+use std::os::unix::ffi::OsStrExt;
+use std::panic;
+use std::path::Path;
+use log::{debug, warn};
+use rule_compiler::{compile, Operation};
+use sysinfo::{System, ProcessExt, SystemExt};
+
+use crate::ffi_generated as ffi;
+use crate::errors::Error;
+use crate::query_writer::BpfQueryWriterFactory;
+use crate::traits::{ProbeHandler, QueryStruct};
+use crate::struct_pb;
+
+pub struct Probe<'a> {
+    ctx: Option<*mut ffi::state>,
+    // store the closures so that we make sure it has
+    // the same lifetime as the state wrapper
+    {% for module in modules -%}
+    {% set entry_point = module.structures | last %}
+    _{{module.name}}_handler: Option<Box<dyn 'a + Fn(ffi::{{entry_point.name}})>>,
+    {% endfor %}
+    debug: bool,
+}
+
+impl<'a> Probe<'a> {
+    pub fn new() -> Self {
+        Self {
+            ctx: None,
+            {% for module in modules -%}
+            _{{module.name}}_handler: None,
+            {% endfor %}
+            debug: false,
+        }
+    }
+
+    pub fn apply(&mut self, rules: Vec<&str>) -> Result<(), String> {
+        for rule in &rules {
+            let compiled = compile(rule)?;
+            let query_writer = &BpfQueryWriterFactory::new(self);
+            compiled.encode(query_writer)?
+        } 
+        Ok(())
+    }
+
+    pub fn debug(&mut self, debug: bool) -> &mut Self {
+      self.debug = debug;
+      self
+    }
+
+    pub fn run<F: 'a, U>(&mut self, handler: F) -> Result<&mut Self, Error>
+    where
+        F: 'a + ProbeHandler<U> + panic::RefUnwindSafe,
+        U: std::fmt::Display
+    {
+        {% for module in modules -%}
+        {% set entry_point = module.structures | last %}
+        let mut {{module.name}}_wrapper = move |e: ffi::{{entry_point.name}}| {
+            let result = panic::catch_unwind(|| {
+                handler.enqueue(&mut struct_pb::{{entry_point.final}}::from(e))
+                    .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
+            });
+            if result.is_err() {
+              debug!("panic while handling event");
+            }
+        };
+        let ({{module.name}}_closure, {{module.name}}_callback) = unsafe { ffi::unpack_{{module.name}}_closure(&mut {{module.name}}_wrapper) };
+        {% endfor %}
+  
+        let state_config = ffi::state_configuration {
+          debug: self.debug,
+          {% for module in modules -%}
+          {{module.name}}_ctx: {{module.name}}_closure,
+          {{module.name}}_handler: {{module.name}}_callback,
+          {% endfor %}
+        };
+        let state = unsafe { ffi::new_state(state_config) };
+        if state.is_null() {
+            return Err(Error::InitializationError);
+        }
+        let mut system = System::new();
+        system.refresh_processes();
+        let empty_path = Path::new("");
+        for (pid, process) in system.get_processes() {
+            let exe = process.exe();
+            if exe == empty_path {
+                continue;
+            }
+            let path = CString::new(exe.as_os_str().as_bytes()).unwrap();
+            unsafe { ffi::set_process_path(state, *pid as i32, path.as_ptr()) };
+        }
+        self.ctx = Some(state);
+        {% for module in modules -%}
+        self._{{module.name}}_handler = Some(Box::new({{module.name}}_wrapper));
+        {% endfor %}
+        Ok(self)
+    }
+
+    pub fn apply_rule<T: QueryStruct>(&self, module: String, operation: Operation, rule: T) {
+        match self.ctx {
+            Some(ctx) => match (module.as_str(), operation) {
+                {% for module in modules %}
+                {% set entry_point = module.structures | last %}
+                {% if entry_point.queryable -%}
+                ("{{module.name}}", Operation::Filter) => unsafe { 
+                    ffi::flush_{{module.name}}_filter_rule(ctx, transmute_copy(&rule));
+                },
+                ("{{module.name}}", Operation::Reject) => unsafe { 
+                    let rule = transmute_copy(&rule);
+                    ffi::flush_{{module.name}}_rejection_rule(ctx, rule);
+                },
+                {% endif %}
+                {%endfor%}
+                _ => return,
+            },
+            _ => return,
+        }
+    }
+
+    pub fn poll(&self, timeout: i32) {
+        match self.ctx {
+            Some(ctx) => unsafe { ffi::poll_state(ctx, timeout as c_int) },
+            _ => return,
+        }
+    }
+}
+
+impl<'a> Drop for Probe<'a> {
+    fn drop(&mut self) {
+        match self.ctx {
+            Some(ctx) => unsafe { ffi::destroy_state(ctx) },
+            _ => return,
+        }
+    }
+}
