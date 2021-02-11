@@ -130,17 +130,14 @@ INLINE_STATIC void delete_cached_process(struct task_struct *task) {
                           struct bpf_##module##_event_t *event,                \
                           struct task_struct *current_task)
 
+#define COMPLETE_LSM_HOOK(module, prefix, ...)                                 \
+  LSM_HOOK(module, prefix, ##__VA_ARGS__) { return 0; }
+
+// call this at the beginning of a hook to make the verifier happy
 #define initialize_event()                                                     \
   if (!event)                                                                  \
     return 0;
-#define submit(event) return 0
-
-#define COMPLETE_LSM_HOOK(module, prefix, ...)                                 \
-  LSM_HOOK(module, prefix, ##__VA_ARGS__) {                                    \
-    initialize_event();                                                        \
-    submit(event);                                                             \
-  }
-
+    
 INLINE_STATIC int __last_index_of(const char *x, const char y, size_t len) {
   const char *a = x;
   int current_index = -1;
