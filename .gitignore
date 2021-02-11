@@ -6,3 +6,4 @@ probe
 rpms
 .cargo
 venv
+.vscode
