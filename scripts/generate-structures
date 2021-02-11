@@ -32,12 +32,13 @@ TEMPLATES = [
 ]
 
 
-def get_template_path(project, path):
-    return path.join(CURRENT_DIRECTORY, "..", project, "templates", *path)
+def get_template_path(project, filepath):
+    return path.join(CURRENT_DIRECTORY, "..", project, "templates", *filepath)
 
 
-def get_output_path(project, path):
-    return path.join(CURRENT_DIRECTORY, "..", project, "src", *path)
+def get_output_path(project, filepath):
+    output_name = path.join(CURRENT_DIRECTORY, "..", project, "src", *filepath)
+    return path.splitext(output_name)[0]
 
 
 def render(all_hooks, event_hooks, modules, tracepoints):

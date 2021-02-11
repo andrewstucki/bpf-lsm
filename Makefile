@@ -1,4 +1,5 @@
 DIRECTORY := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+GENERATOR_SCRIPT = scripts/generate-structures
 CONTAINER := docker run --rm -v ${DIRECTORY}/.cargo:/cargo/registry -v ${DIRECTORY}/.cargo/git:/cargo/git -v ${DIRECTORY}:/src andrewstucki/bpf-lsm-builder:latest
 
 .DEFAULT_GOAL := build
@@ -26,6 +27,9 @@ test-rule-compiler:
 	@echo "Running rule-compiler tests"
 	@$(CONTAINER) /bin/sh -c "cd rule-compiler && RUSTFLAGS=-Ctarget-feature=+crt-static cargo test"
 
+venv:
+	@$(CONTAINER) /bin/sh -c "python3 -m venv ./venv && source ./venv/bin/activate && pip install -r requirements.txt"
+
 .PHONY: generate
-generate:
-	@$(CONTAINER) /bin/sh -c "make -C probe-sys generate"
+generate: venv
+	@$(CONTAINER) /bin/sh -c "source ./venv/bin/activate && $(GENERATOR_SCRIPT)"
