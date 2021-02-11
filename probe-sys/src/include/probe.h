@@ -13,14 +13,6 @@
 #include "probe.skel.h"
 #include "probe_macros.h"
 
-struct state {
-  struct probe_bpf *obj;
-  struct ring_buffer *rb;
-  struct handlers *handlers;
-  DECLARE_HOOKS(ALL_HOOKS);
-  struct bpf_link *creds_hook;
-};
-
 struct handle_event_wrapper {
   void *ctx;
   void *handler;
@@ -34,6 +26,14 @@ struct handlers {
 struct state_configuration {
   unsigned char debug;
   DECLARE_HANDLER_CONFIGURATIONS(EVENT_HOOKS);
+};
+
+struct state {
+  struct probe_bpf *obj;
+  struct ring_buffer *rb;
+  struct handlers *handlers;
+  DECLARE_HOOKS(ALL_HOOKS);
+  struct bpf_link *creds_hook;
 };
 
 struct state *new_state(struct state_configuration config);
