@@ -10,45 +10,48 @@ use crate::helpers::operator_to_constant;
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct query_bpf_bprm_check_security_event_process_t {
-          pub executable___operator: u8,      pub executable: [c_char; 256],
-    }
+    pub executable___operator: u8,
+    pub executable: [c_char; 256],
+}
 
 impl Default for query_bpf_bprm_check_security_event_process_t {
     fn default() -> Self {
         Self {
-                                              executable___operator: UNSET_OPERATOR,
+              executable___operator: UNSET_OPERATOR,
               executable: [0; 256],
-                    }
+        }
     }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct query_bpf_bprm_check_security_event_user_t {
-          pub id___operator: u8,      pub id: u32,
-    }
+    pub id___operator: u8,
+    pub id: u32,
+}
 
 impl Default for query_bpf_bprm_check_security_event_user_t {
     fn default() -> Self {
         Self {
-                                              id___operator: UNSET_OPERATOR,
+              id___operator: UNSET_OPERATOR,
               id: Default::default(),
-                    }
+        }
     }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct query_bpf_bprm_check_security_event_t {
-      pub ___absolute: u8,
-                pub process: query_bpf_bprm_check_security_event_process_t,
-                pub user: query_bpf_bprm_check_security_event_user_t,
-    }
+    pub ___absolute: u8,
+    pub process: query_bpf_bprm_check_security_event_process_t,
+    pub user: query_bpf_bprm_check_security_event_user_t,
+}
 
 impl Default for query_bpf_bprm_check_security_event_t {
     fn default() -> Self {
         Self {
-          ___absolute: UNSET_ABSOLUTE,                                    process: Default::default(),
-                                      user: Default::default(),
-                    }
+            ___absolute: UNSET_ABSOLUTE,
+              process: Default::default(),
+              user: Default::default(),
+        }
     }
 }
 
@@ -59,7 +62,7 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
 
     fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String> {
       match path.as_str() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          "user.id" => {
+          "user.id" => {
               if self.user.id___operator != UNSET_OPERATOR {
                   // we can only hold a single condition per variable for now
                   return Err(format!("{} already in condition", path));
@@ -70,7 +73,7 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
               self.user.id___operator = operator_to_constant(operator);
               Ok(())
           },
-                                                                                                                                  _ => Err(format!("numeric field named {} not found in schema", path)),
+          _ => Err(format!("numeric field named {} not found in schema", path)),
       }
     }
 
@@ -81,7 +84,7 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
         value: String,
     ) -> Result<(), String> {
         match path.as_str() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                "process.executable" => {
+            "process.executable" => {
                 if self.process.executable___operator != UNSET_OPERATOR {
                     // we can only hold a single condition per variable for now
                     return Err(format!("{} already in condition", path));
@@ -96,7 +99,7 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
                   Err(format!("process.executable is too long, maximum 256 characters, given value is {} characters", value.len()))
                 }
             },
-                                                                                                                                                                                                                                                                                                                                                                                    _ => Err(format!("string field named {} not found in schema", path)),
+            _ => Err(format!("string field named {} not found in schema", path)),
         }
     }
 
@@ -107,20 +110,20 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
 
 pub struct BpfQueryWriter<'a> {
     table: String,
-            write_query_bprm_check_security_event_t: InnerBpfQueryWriter<query_bpf_bprm_check_security_event_t>,
-            probe: Option<&'a super::Probe<'a>>,
+    write_query_bprm_check_security_event_t: InnerBpfQueryWriter<query_bpf_bprm_check_security_event_t>,
+    probe: Option<&'a super::Probe<'a>>,
 }
 
 impl<'a> BpfQueryWriter<'a> {
     pub fn new(probe: Option<&'a super::Probe>, table: String, operation: Operation) -> Self {
         Self {
             table: table,
-                                    write_query_bprm_check_security_event_t: InnerBpfQueryWriter::<query_bpf_bprm_check_security_event_t>::new(
+            write_query_bprm_check_security_event_t: InnerBpfQueryWriter::<query_bpf_bprm_check_security_event_t>::new(
                 "bprm_check_security".into(),
                 operation,
                 8,
             ),
-                                    probe: probe,
+            probe: probe,
         }
     }
 }
@@ -133,30 +136,30 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
         atom: &'a Atom,
     ) -> Result<(), String> {
         match self.table.as_str() {
-                                    "bprm_check_security" => self.write_query_bprm_check_security_event_t.write_statement(field, operator, atom),
-                                    _ => Err(format!("invalid table name {}", self.table)),
+            "bprm_check_security" => self.write_query_bprm_check_security_event_t.write_statement(field, operator, atom),
+            _ => Err(format!("invalid table name {}", self.table)),
         }
     }
 
     fn start_new_clause(&mut self) -> Result<(), String> {
         match self.table.as_str() {
-                                    "bprm_check_security" => self.write_query_bprm_check_security_event_t.start_new_clause(),
-                                    _ => Err(format!("invalid table name {}", self.table)),
+            "bprm_check_security" => self.write_query_bprm_check_security_event_t.start_new_clause(),
+            _ => Err(format!("invalid table name {}", self.table)),
         }
     }
 
     fn write_absolute(&mut self, value: bool) -> Result<(), String> {
         match self.table.as_str() {
-                                    "bprm_check_security" => self.write_query_bprm_check_security_event_t.write_absolute(value),
-                                    _ => Err(format!("invalid table name {}", self.table)),
+            "bprm_check_security" => self.write_query_bprm_check_security_event_t.write_absolute(value),
+            _ => Err(format!("invalid table name {}", self.table)),
         }
     }
 
     fn flush(&mut self) -> Result<(), String> {
         match self.probe {
             Some(probe) => match self.table.as_str() {
-                                                "bprm_check_security" => self.write_query_bprm_check_security_event_t.flush_probe(probe),
-                                                _ => Err(format!("invalid table name {}", self.table)),
+                "bprm_check_security" => self.write_query_bprm_check_security_event_t.flush_probe(probe),
+                _ => Err(format!("invalid table name {}", self.table)),
             },
             _ => Ok(())
         }

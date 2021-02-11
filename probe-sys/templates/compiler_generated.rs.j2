@@ -7,46 +7,42 @@ use crate::query_writer::InnerBpfQueryWriter;
 use crate::constants::{UNSET_ABSOLUTE, UNSET_OPERATOR};
 use crate::helpers::operator_to_constant;
 
-{% for module in modules %}
-{% set entry_point = module.structures | last %}
-{% for structure in module.structures -%}
-
-{% if structure.queryable -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}
+{% for structure in module.structures %}{% if structure.queryable %}
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct query_bpf_{{structure.name}} {
-  {% if entry_point.name == structure.name %}
+{% if entry_point.name == structure.name %}
     pub ___absolute: u8,
-  {% endif %}
-  {% for field in structure.fields -%}
-    {% if field.queryable %}
-      {% if not field.complex %}pub {{field.name}}___operator: u8,{% endif %}
-      pub {{field.name}}: {% if field.type.size is not none %}[{{field.type.rust}}; {{field.type.size}}]{% else %}{% if field.complex%}query_bpf_{%endif%}{{field.type.rust}}{% endif %}{% if field.type.lifetime %}<'a>{%endif%},
-    {% endif -%}
-  {% endfor %}
+{% endif %}
+{% for field in structure.fields %}{% if field.queryable %}
+{% if not field.complex %}
+    pub {{field.name}}___operator: u8,
+{% endif %}
+    pub {{field.name}}: {% if field.type.size is not none %}[{{field.type.rust}}; {{field.type.size}}]{% else %}{% if field.complex%}query_bpf_{%endif%}{{field.type.rust}}{% endif %}{% if field.type.lifetime %}<'a>{%endif%},
+{% endif %}{% endfor %}
 }
 
 impl Default for query_bpf_{{structure.name}} {
     fn default() -> Self {
         Self {
-          {% if entry_point.name == structure.name %}___absolute: UNSET_ABSOLUTE,{% endif %}
-          {% for field in structure.fields -%}
-            {% if field.queryable %}
-            {% if not field.complex %}
+{% if entry_point.name == structure.name %}
+            ___absolute: UNSET_ABSOLUTE,
+{% endif %}
+{% for field in structure.fields %}{% if field.queryable %}
+{% if not field.complex %}
               {{field.name}}___operator: UNSET_OPERATOR,
               {{field.name}}: {% if field.type.size is not none %}[0; {{field.type.size}}]{% else %}Default::default(){%endif%},
-            {% else %}
+{% else %}
               {{field.name}}: Default::default(),
-            {% endif -%}
-            {% endif -%}
-          {% endfor %}
+{% endif %}
+{% endif %}{% endfor %}
         }
     }
 }
-{% endif -%}
-{% endfor %}
+{% endif %}{% endfor %}
 
-{% if entry_point.queryable -%}
+{% if entry_point.queryable %}
 impl QueryStruct for query_bpf_{{entry_point.name}} {
     fn set_absolute(&mut self, value: u8) {
         self.___absolute = value;
@@ -54,9 +50,9 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
 
     fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String> {
       match path.as_str() {
-        {% for structure in module.structures -%}
-        {% for field in structure.fields -%}
-          {% if field.queryable == "number" %}
+{% for structure in module.structures %}
+{% for field in structure.fields %}
+{% if field.queryable == "number" %}
           "{{field.path}}{{field.name}}" => {
               if self.{{field.path}}{{field.name}}___operator != UNSET_OPERATOR {
                   // we can only hold a single condition per variable for now
@@ -68,9 +64,9 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
               self.{{field.path}}{{field.name}}___operator = operator_to_constant(operator);
               Ok(())
           },
-          {% endif %}
-          {% endfor %}
-          {% endfor %}
+{% endif %}
+{% endfor %}
+{% endfor %}
           _ => Err(format!("numeric field named {} not found in schema", path)),
       }
     }
@@ -82,9 +78,9 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
         value: String,
     ) -> Result<(), String> {
         match path.as_str() {
-            {% for structure in module.structures -%}
-            {% for field in structure.fields -%}
-            {% if field.queryable == "string" %}
+{% for structure in module.structures %}
+{% for field in structure.fields %}
+{% if field.queryable == "string" %}
             "{{field.path}}{{field.name}}" => {
                 if self.{{field.path}}{{field.name}}___operator != UNSET_OPERATOR {
                     // we can only hold a single condition per variable for now
@@ -100,9 +96,9 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
                   Err(format!("{{field.path}}{{field.name}} is too long, maximum {{field.type.size}} characters, given value is {} characters", value.len()))
                 }
             },
-            {% endif %}
-            {% endfor %}
-            {% endfor %}
+{% endif %}
+{% endfor %}
+{% endfor %}
             _ => Err(format!("string field named {} not found in schema", path)),
         }
     }
@@ -111,17 +107,13 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
        Ok(())
     }
 }
-{% endif -%}
-{% endfor %}
+{% endif %}{% endfor %}
 
 pub struct BpfQueryWriter<'a> {
     table: String,
-    {% for module in modules %}
-    {% set entry_point = module.structures | last %}
-    {% if entry_point.queryable -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
     write_query_{{entry_point.name}}: InnerBpfQueryWriter<query_bpf_{{entry_point.name}}>,
-    {% endif %}
-    {%endfor%}
+{% endif %}{% endfor %}
     probe: Option<&'a super::Probe<'a>>,
 }
 
@@ -129,16 +121,13 @@ impl<'a> BpfQueryWriter<'a> {
     pub fn new(probe: Option<&'a super::Probe>, table: String, operation: Operation) -> Self {
         Self {
             table: table,
-            {% for module in modules %}
-            {% set entry_point = module.structures | last %}
-            {% if entry_point.queryable -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
             write_query_{{entry_point.name}}: InnerBpfQueryWriter::<query_bpf_{{entry_point.name}}>::new(
                 "{{module.name}}".into(),
                 operation,
                 8,
             ),
-            {% endif %}
-            {%endfor%}
+{% endif %}{% endfor %}
             probe: probe,
         }
     }
@@ -152,36 +141,27 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
         atom: &'a Atom,
     ) -> Result<(), String> {
         match self.table.as_str() {
-            {% for module in modules %}
-            {% set entry_point = module.structures | last %}
-            {% if entry_point.queryable -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
             "{{module.name}}" => self.write_query_{{entry_point.name}}.write_statement(field, operator, atom),
-            {% endif %}
-            {%endfor%}
+{% endif %}{%endfor%}
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
 
     fn start_new_clause(&mut self) -> Result<(), String> {
         match self.table.as_str() {
-            {% for module in modules %}
-            {% set entry_point = module.structures | last %}
-            {% if entry_point.queryable -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
             "{{module.name}}" => self.write_query_{{entry_point.name}}.start_new_clause(),
-            {% endif %}
-            {%endfor%}
+{% endif %}{%endfor%}
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
 
     fn write_absolute(&mut self, value: bool) -> Result<(), String> {
         match self.table.as_str() {
-            {% for module in modules %}
-            {% set entry_point = module.structures | last %}
-            {% if entry_point.queryable -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
             "{{module.name}}" => self.write_query_{{entry_point.name}}.write_absolute(value),
-            {% endif %}
-            {%endfor%}
+{% endif %}{%endfor%}
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
@@ -189,12 +169,9 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
     fn flush(&mut self) -> Result<(), String> {
         match self.probe {
             Some(probe) => match self.table.as_str() {
-                {% for module in modules %}
-                {% set entry_point = module.structures | last %}
-                {% if entry_point.queryable -%}
+{% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
                 "{{module.name}}" => self.write_query_{{entry_point.name}}.flush_probe(probe),
-                {% endif %}
-                {%endfor%}
+{% endif %}{%endfor%}
                 _ => Err(format!("invalid table name {}", self.table)),
             },
             _ => Ok(())
