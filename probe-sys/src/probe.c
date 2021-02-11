@@ -27,7 +27,7 @@ INLINE_STATIC unsigned long get_clock_offset() {
   return current_ns - boot_ns;
 }
 
-void destroy_handlers(struct handlers *h) {
+INLINE_STATIC void destroy_handlers(struct handlers *h) {
   if (h) {
     DESTROY_HANDLERS(h, EVENT_HOOKS);
     free((void *)h);
@@ -35,7 +35,7 @@ void destroy_handlers(struct handlers *h) {
   h = NULL;
 }
 
-struct handlers *new_handlers() {
+INLINE_STATIC struct handlers *new_handlers() {
   struct handlers *h = (struct handlers *)malloc(sizeof(struct handlers));
   if (!h) {
     goto cleanup;
@@ -98,6 +98,21 @@ done:
   return s;
 }
 
+void poll_state(struct state *s, int timeout) {
+  if (s->rb) {
+    ring_buffer__poll(s->rb, timeout);
+  }
+}
+
+void set_process_path(struct state *s, pid_t pid, const char *file_path) {
+  struct cached_process cached = {};
+  strncpy(cached.executable, file_path, sizeof(cached.executable));
+  bpf_map_update_elem(bpf_map__fd(s->obj->maps.processes), &pid, &cached,
+                      BPF_ANY);
+}
+
+DECLARE_RULE_FLUSHERS(EVENT_HOOKS);
+
 void destroy_state(struct state *s) {
   if (s) {
     if (s->rb) {
@@ -114,18 +129,3 @@ void destroy_state(struct state *s) {
   }
   s = NULL;
 }
-
-void poll_state(struct state *s, int timeout) {
-  if (s->rb) {
-    ring_buffer__poll(s->rb, timeout);
-  }
-}
-
-void set_process_path(struct state *s, pid_t pid, const char *file_path) {
-  struct cached_process cached = {};
-  strncpy(cached.executable, file_path, sizeof(cached.executable));
-  bpf_map_update_elem(bpf_map__fd(s->obj->maps.processes), &pid, &cached,
-                      BPF_ANY);
-}
-
-DECLARE_RULE_FLUSHERS(EVENT_HOOKS);

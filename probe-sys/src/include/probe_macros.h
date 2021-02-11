@@ -98,8 +98,7 @@
  * macros for management of bpf event handlers
  */
 #define DECLARE_HANDLER_WRAPPER(name)                                          \
-  struct handle_event_wrapper *name##_handler;                                 \
-  ;
+  struct handle_event_wrapper *name##_handler;
 #define DECLARE_HANDLER(name)                                                  \
   typedef void name##_event_handler(void *ctx, struct bpf_##name##_event_t e); \
   static int handle_##name##_event(void *ctx,                                  \
