@@ -25,7 +25,7 @@ struct {
 {% for module in modules %}
 {% set entry_point = module.structures | last %}
 {% if entry_point.queryable %}
-__attribute__((always_inline)) static int ___test_{{module.name}}(
+INLINE_STATIC int ___test_{{module.name}}(
   struct bpf_{{entry_point.name}} *event,
   struct query_bpf_{{entry_point.name}} *rule
 ) {
@@ -53,7 +53,7 @@ __attribute__((always_inline)) static int ___test_{{module.name}}(
   return conditional_true;
 }
 
-__attribute__((always_inline)) static int ___check_{{module.name}}(
+INLINE_STATIC int ___check_{{module.name}}(
   unsigned int size,
   void *rule_map,
   struct bpf_{{entry_point.name}} *event

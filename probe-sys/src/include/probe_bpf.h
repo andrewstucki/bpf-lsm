@@ -14,8 +14,7 @@ char _license[] SEC("license") = "GPL";
 
 const volatile unsigned long clock_adjustment = 0;
 
-__attribute__((always_inline)) static unsigned long
-adjust_timestamp(unsigned long timestamp) {
+INLINE_STATIC unsigned long adjust_timestamp(unsigned long timestamp) {
   return (timestamp + clock_adjustment) / 1000000000l;
 }
 
@@ -33,147 +32,101 @@ struct {
   __type(value, struct cached_process);
 } processes SEC(".maps");
 
-#define get_or_create_cached_process(task)                                     \
-  (struct cached_process *)__get_or_create_cached_process(task)
-__attribute__((always_inline)) static void *
-__get_or_create_cached_process(struct task_struct *task) {
+INLINE_STATIC struct cached_process *
+get_or_create_cached_process(struct task_struct *task) {
   pid_t pid = BPF_CORE_READ(task, tgid);
   bpf_map_update_elem(&processes, &pid, &empty_cached_process, BPF_NOEXIST);
   return bpf_map_lookup_elem(&processes, &pid);
 }
 
-#define get_cached_process(task)                                               \
-  (struct cached_process *)__get_cached_process(task)
-__attribute__((always_inline)) static void *
-__get_cached_process(struct task_struct *task) {
+INLINE_STATIC struct cached_process *
+get_cached_process(struct task_struct *task) {
   pid_t pid = BPF_CORE_READ(task, tgid);
   return bpf_map_lookup_elem(&processes, &pid);
 }
 
-#define update_cached_process(task, process)                                   \
-  __update_cached_process(task, process)
-__attribute__((always_inline)) static void
-__update_cached_process(struct task_struct *task,
-                        const struct cached_process *process) {
+INLINE_STATIC void update_cached_process(struct task_struct *task,
+                                         const struct cached_process *p) {
   pid_t pid = BPF_CORE_READ(task, tgid);
-  bpf_map_update_elem(&processes, &pid, process, BPF_ANY);
+  bpf_map_update_elem(&processes, &pid, p, BPF_ANY);
 }
 
-#define delete_cached_process(task) __delete_cached_process(task)
-__attribute__((always_inline)) static void
-__delete_cached_process(struct task_struct *task) {
+INLINE_STATIC void delete_cached_process(struct task_struct *task) {
   pid_t pid = BPF_CORE_READ(task, tgid);
   bpf_map_delete_elem(&processes, &pid);
 }
 
-#define TRACEPOINT(family, module, arg)                                        \
-  __attribute__((always_inline)) static int ____##module(arg);                 \
+#define TRACEPOINT(family, module, ctx)                                        \
   SEC("tp/" #family "/" #module)                                               \
-  int module##_hook(void *ctx) { return ____##module(ctx); }                   \
-  static int ____##module(arg)
+  static int module##_hook(ctx)
 
-#define LSM_HOOK(module, prefix, ARGS...)                                      \
-  __attribute__((always_inline)) static int ____##module(                      \
-      unsigned long long *ctx, ##ARGS, struct bpf_##module##_event_t *event,   \
-      struct task_struct *current_task);                                       \
-  SEC("lsm/" #module)                                                          \
-  int BPF_PROG(module##_hook, ##ARGS) {                                        \
-    struct bpf_event_t *event = bpf_ringbuf_reserve(                           \
-        &events, sizeof(struct bpf_event_t), RINGBUFFER_FLAGS);                \
-    if (event)                                                                 \
-      event->type = type_##module##_event_t;                                   \
-    int __ret = 0;                                                             \
-    if (event) {                                                               \
-      struct task_struct *current_task =                                       \
-          (struct task_struct *)bpf_get_current_task();                        \
-                                                                               \
-      event->module##_event_t.__timestamp =                                    \
-          adjust_timestamp(bpf_ktime_get_boot_ns());                           \
-                                                                               \
-      event->module##_event_t.process.pid = BPF_CORE_READ(current_task, tgid); \
-      event->module##_event_t.process.thread__id =                             \
-          BPF_CORE_READ(current_task, pid);                                    \
-      event->module##_event_t.process.ppid =                                   \
-          BPF_CORE_READ(current_task, real_parent, tgid);                      \
-      event->module##_event_t.process.start =                                  \
-          adjust_timestamp(BPF_CORE_READ(current_task, start_time));           \
-      BPF_CORE_READ_INTO(&event->module##_event_t.process.name, current_task,  \
-                         comm);                                                \
-                                                                               \
-      event->module##_event_t.process.parent.pid =                             \
-          BPF_CORE_READ(current_task, real_parent, tgid);                      \
-      event->module##_event_t.process.parent.thread__id =                      \
-          BPF_CORE_READ(current_task, real_parent, pid);                       \
-      event->module##_event_t.process.parent.ppid =                            \
-          BPF_CORE_READ(current_task, real_parent, real_parent, tgid);         \
-      event->module##_event_t.process.parent.start = adjust_timestamp(         \
-          BPF_CORE_READ(current_task, real_parent, start_time));               \
-      BPF_CORE_READ_INTO(&event->module##_event_t.process.parent.name,         \
-                         current_task, real_parent, comm);                     \
-                                                                               \
-      event->module##_event_t.user.id =                                        \
-          BPF_CORE_READ(current_task, real_cred, uid.val);                     \
-      event->module##_event_t.user.group.id =                                  \
-          BPF_CORE_READ(current_task, real_cred, gid.val);                     \
-      event->module##_event_t.user.effective.id =                              \
-          BPF_CORE_READ(current_task, cred, uid.val);                          \
-      event->module##_event_t.user.effective.group.id =                        \
-          BPF_CORE_READ(current_task, cred, gid.val);                          \
-                                                                               \
-      struct cached_process *cached = get_cached_process(current_task);        \
-      if (cached) {                                                            \
-        event->module##_event_t.process.args_count = cached->args_count;       \
-        memcpy(event->module##_event_t.process.executable, cached->executable, \
-               MAX_PATH_SIZE);                                                 \
-        memcpy(event->module##_event_t.process.name, cached->name,             \
-               MAX_PATH_SIZE);                                                 \
-        _Pragma("unroll") for (int i = 0;                                      \
-                               i < MAX_ARGS && i < cached->args_count; i++)    \
-            memcpy(event->module##_event_t.process.args[i], cached->args[i],   \
-                   ARGSIZE);                                                   \
-      }                                                                        \
-      cached = get_cached_process(BPF_CORE_READ(current_task, real_parent));   \
-      if (cached) {                                                            \
-        event->module##_event_t.process.parent.args_count =                    \
-            cached->args_count;                                                \
-        memcpy(event->module##_event_t.process.parent.executable,              \
-               cached->executable, MAX_PATH_SIZE);                             \
-        memcpy(event->module##_event_t.process.parent.name, cached->name,      \
-               MAX_PATH_SIZE);                                                 \
-        _Pragma("unroll") for (int i = 0;                                      \
-                               i < MAX_ARGS && i < cached->args_count; i++)    \
-            memcpy(event->module##_event_t.process.parent.args[i],             \
-                   cached->args[i], ARGSIZE);                                  \
-      }                                                                        \
-                                                                               \
-      __ret = ____##module(___bpf_ctx_cast(ARGS), &event->module##_event_t,    \
-                           current_task);                                      \
-      const char denied[] = "" #prefix "-denied";                              \
-      const char allowed[] = "" #prefix "-allowed";                            \
-      if (__ret == 0) { /* don't override what the user has set */             \
-        unsigned int index = module##_index;                                   \
-        unsigned int *size =                                                   \
-            bpf_map_lookup_elem(&rejection_rule_sizes, &index);                \
-        if (size && *size > 0) {                                               \
-          if (___check_##module(*size, &module##_rejections,                   \
-                                &event->module##_event_t)) {                   \
-            SET_STRING(event->module##_event_t.event.action, denied);          \
-            __ret = -EPERM;                                                    \
-          } else {                                                             \
-            SET_STRING(event->module##_event_t.event.action, allowed);         \
-          }                                                                    \
-        } else {                                                               \
-          SET_STRING(event->module##_event_t.event.action, allowed);           \
-        }                                                                      \
-      } else {                                                                 \
-        SET_STRING(event->module##_event_t.event.action, allowed);             \
+#define __check_rejection_filter(m, p, e, r)                                   \
+  const char denied[] = "" #p "-denied";                                       \
+  const char allowed[] = "" #p "-allowed";                                     \
+  if (r == 0) { /* don't override what the user has set */                     \
+    unsigned int index = m##_index;                                            \
+    unsigned int *size = bpf_map_lookup_elem(&rejection_rule_sizes, &index);   \
+    if (size && *size > 0) {                                                   \
+      if (___check_##m(*size, &m##_rejections, &event->m##_event_t)) {         \
+        SET_STRING(e->event.action, denied);                                   \
+        r = -EPERM;                                                            \
       }                                                                        \
     }                                                                          \
-    if (event)                                                                 \
+  }                                                                            \
+  if (r == 0)                                                                  \
+    SET_STRING(e->event.action, allowed);
+
+#define __basic_process_info_for_task(x, task, ...)                            \
+  x.pid = BPF_CORE_READ(task, ##__VA_ARGS__, tgid);                            \
+  x.thread__id = BPF_CORE_READ(task, ##__VA_ARGS__, pid);                      \
+  x.ppid = BPF_CORE_READ(task, ##__VA_ARGS__, tgid);                           \
+  x.start = adjust_timestamp(BPF_CORE_READ(task, ##__VA_ARGS__, start_time))
+
+#define __copy_cached_process(x, cached)                                       \
+  x.args_count = cached->args_count;                                           \
+  memcpy(x.executable, cached->executable, MAX_PATH_SIZE);                     \
+  memcpy(x.name, cached->name, MAX_PATH_SIZE);                                 \
+  _Pragma("unroll") for (int i = 0; i < MAX_ARGS && i < cached->args_count;    \
+                         i++) memcpy(x.args[i], cached->args[i], ARGSIZE)
+
+#define LSM_HOOK(module, prefix, ...)                                          \
+  INLINE_STATIC int ____##module(unsigned long long *ctx, ##__VA_ARGS__,       \
+                                 struct bpf_##module##_event_t *event,         \
+                                 struct task_struct *current_task);            \
+  SEC("lsm/" #module)                                                          \
+  int BPF_PROG(module##_hook, ##__VA_ARGS__) {                                 \
+    int __ret = 0;                                                             \
+    struct bpf_event_t *event = bpf_ringbuf_reserve(                           \
+        &events, sizeof(struct bpf_event_t), RINGBUFFER_FLAGS);                \
+    if (event) {                                                               \
+      event->type = type_##module##_event_t;                                   \
+      struct bpf_##module##_event_t *e = &event->module##_event_t;             \
+      struct task_struct *c = (struct task_struct *)bpf_get_current_task();    \
+      struct cached_process *cached;                                           \
+                                                                               \
+      e->__timestamp = adjust_timestamp(bpf_ktime_get_boot_ns());              \
+      e->user.id = BPF_CORE_READ(c, real_cred, uid.val);                       \
+      e->user.group.id = BPF_CORE_READ(c, real_cred, gid.val);                 \
+      e->user.effective.id = BPF_CORE_READ(c, cred, uid.val);                  \
+      e->user.effective.group.id = BPF_CORE_READ(c, cred, gid.val);            \
+                                                                               \
+      __basic_process_info_for_task(e->process, c);                            \
+      if ((cached = get_cached_process(c))) {                                  \
+        __copy_cached_process(e->process, cached);                             \
+      }                                                                        \
+                                                                               \
+      __basic_process_info_for_task(e->process.parent, c, real_parent);        \
+      if ((cached = get_cached_process(BPF_CORE_READ(c, real_parent)))) {      \
+        __copy_cached_process(e->process.parent, cached);                      \
+      }                                                                        \
+                                                                               \
+      __ret = ____##module(___bpf_ctx_cast(ARGS), e, c);                       \
+      __check_rejection_filter(module, prefix, e, __ret);                      \
       bpf_ringbuf_submit(event, RINGBUFFER_FLAGS);                             \
+    }                                                                          \
     return __ret;                                                              \
   }                                                                            \
-  static int ____##module(unsigned long long *ctx, ##ARGS,                     \
+  static int ____##module(unsigned long long *ctx, ##__VA_ARGS__,              \
                           struct bpf_##module##_event_t *event,                \
                           struct task_struct *current_task)
 
@@ -182,18 +135,17 @@ __delete_cached_process(struct task_struct *task) {
     return 0;
 #define submit(event) return 0
 
-#define COMPLETE_LSM_HOOK(module, prefix, ARGS...)                             \
-  LSM_HOOK(module, prefix, ##ARGS) {                                           \
+#define COMPLETE_LSM_HOOK(module, prefix, ...)                                 \
+  LSM_HOOK(module, prefix, ##__VA_ARGS__) {                                    \
     initialize_event();                                                        \
     submit(event);                                                             \
   }
 
-__attribute__((always_inline)) static int
-last_index(const char *x, const char y, unsigned int len) {
+INLINE_STATIC int __last_index_of(const char *x, const char y, size_t len) {
   const char *a = x;
   int current_index = -1;
 #pragma unroll
-  for (unsigned int i = 0; i < len; i++) {
+  for (int i = 0; i < len; i++) {
     if (!*a)
       return current_index; // return whatever our current is at the end of the
                             // string
@@ -204,15 +156,14 @@ last_index(const char *x, const char y, unsigned int len) {
   return current_index;
 }
 
-__attribute__((always_inline)) static void set_basename(char *x, const char *y,
-                                                        unsigned int len) {
-  int last_slash = last_index(y, '/', len) % len;
+INLINE_STATIC void set_basename(char *x, const char *y, size_t len) {
+  int last_slash = __last_index_of(y, '/', len) % len;
   if (last_slash < 0)
     return;
   last_slash++;
-  int end = len - last_slash;
+  size_t end = len - last_slash;
 #pragma unroll
-  for (int i = 0; i < len && i < end; i++) {
+  for (size_t i = 0; i < len && i < end; i++) {
     x[i] = y[i + last_slash];
   }
 }
