@@ -19,6 +19,7 @@ pub struct Probe<'a> {
     // store the closures so that we make sure it has
     // the same lifetime as the state wrapper
     _bprm_check_security_handler: Option<Box<dyn 'a + Fn(ffi::bprm_check_security_event_t)>>,
+    _path_unlink_handler: Option<Box<dyn 'a + Fn(ffi::path_unlink_event_t)>>,
     debug: bool,
 }
 
@@ -27,6 +28,7 @@ impl<'a> Probe<'a> {
         Self {
             ctx: None,
             _bprm_check_security_handler: None,
+            _path_unlink_handler: None,
             debug: false,
         }
     }
@@ -47,7 +49,7 @@ impl<'a> Probe<'a> {
 
     pub fn run<F: 'a, U>(&mut self, handler: F) -> Result<&mut Self, Error>
     where
-        F: 'a + ProbeHandler<U> + panic::RefUnwindSafe,
+        F: 'a + ProbeHandler<U> + panic::RefUnwindSafe + Copy,
         U: std::fmt::Display,
     {
         let mut bprm_check_security_wrapper = move |e: ffi::bprm_check_security_event_t| {
@@ -62,10 +64,24 @@ impl<'a> Probe<'a> {
         };
         let (bprm_check_security_closure, bprm_check_security_callback) =
             unsafe { ffi::unpack_bprm_check_security_closure(&mut bprm_check_security_wrapper) };
+        let mut path_unlink_wrapper = move |e: ffi::path_unlink_event_t| {
+            let result = panic::catch_unwind(|| {
+                handler
+                    .enqueue(&mut struct_pb::PathUnlinkEvent::from(e))
+                    .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
+            });
+            if result.is_err() {
+                debug!("panic while handling event");
+            }
+        };
+        let (path_unlink_closure, path_unlink_callback) =
+            unsafe { ffi::unpack_path_unlink_closure(&mut path_unlink_wrapper) };
         let state_config = ffi::state_configuration {
             debug: self.debug,
             bprm_check_security_ctx: bprm_check_security_closure,
             bprm_check_security_handler: bprm_check_security_callback,
+            path_unlink_ctx: path_unlink_closure,
+            path_unlink_handler: path_unlink_callback,
         };
         let state = unsafe { ffi::new_state(state_config) };
         if state.is_null() {
@@ -104,6 +120,7 @@ impl<'a> Probe<'a> {
         }
         self.ctx = Some(state);
         self._bprm_check_security_handler = Some(Box::new(bprm_check_security_wrapper));
+        self._path_unlink_handler = Some(Box::new(path_unlink_wrapper));
         Ok(self)
     }
 
@@ -116,6 +133,13 @@ impl<'a> Probe<'a> {
                 ("bprm_check_security", Operation::Reject) => unsafe {
                     let rule = transmute_copy(&rule);
                     ffi::flush_bprm_check_security_rejection_rule(ctx, rule);
+                },
+                ("path_unlink", Operation::Filter) => unsafe {
+                    ffi::flush_path_unlink_filter_rule(ctx, transmute_copy(&rule));
+                },
+                ("path_unlink", Operation::Reject) => unsafe {
+                    let rule = transmute_copy(&rule);
+                    ffi::flush_path_unlink_rejection_rule(ctx, rule);
                 },
                 _ => return,
             },

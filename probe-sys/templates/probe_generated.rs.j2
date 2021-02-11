@@ -51,7 +51,7 @@ impl<'a> Probe<'a> {
 
     pub fn run<F: 'a, U>(&mut self, handler: F) -> Result<&mut Self, Error>
     where
-        F: 'a + ProbeHandler<U> + panic::RefUnwindSafe,
+        F: 'a + ProbeHandler<U> + panic::RefUnwindSafe + Copy,
         U: std::fmt::Display,
     {
 {% for module in modules %}{% set entry_point = module.structures | last %}

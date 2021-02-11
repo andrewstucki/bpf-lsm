@@ -79,11 +79,86 @@ message BprmCheckSecurityEvent {
   optional BprmCheckSecurityEventProcess process = 4 [json_name="process"];
   optional BprmCheckSecurityEventUser user = 5 [json_name="user"];
 }
+message PathUnlinkEventEvent {
+  optional string id = 1 [json_name="id"];
+  optional string kind = 2 [json_name="kind"];
+  optional string category = 3 [json_name="category"];
+  optional string action = 4 [json_name="action"];
+  optional string field_type = 5 [json_name="type"];
+  optional string module = 6 [json_name="module"];
+  optional string provider = 7 [json_name="provider"];
+  optional uint64 sequence = 8 [json_name="sequence"];
+  optional uint64 ingested = 9 [json_name="ingested"];
+}
+message PathUnlinkEventHostOs {
+  optional string field_type = 1 [json_name="type"];
+  optional string name = 2 [json_name="name"];
+  optional string kernel = 3 [json_name="kernel"];
+}
+message PathUnlinkEventHost {
+  optional string hostname = 1 [json_name="hostname"];
+  repeated string ip = 2 [json_name="ip"];
+  repeated string mac = 3 [json_name="mac"];
+  optional uint64 uptime = 4 [json_name="uptime"];
+  optional PathUnlinkEventHostOs os = 5 [json_name="os"];
+}
+message PathUnlinkEventProcessParent {
+  optional uint32 pid = 1 [json_name="pid"];
+  optional string entity_id = 2 [json_name="entity_id"];
+  optional string name = 3 [json_name="name"];
+  optional uint64 args_count = 4 [json_name="args_count"];
+  repeated string args = 5 [json_name="args"];
+  optional uint32 ppid = 6 [json_name="ppid"];
+  optional uint64 start = 7 [json_name="start"];
+  optional uint64 thread_id = 8 [json_name="thread.id"];
+  optional string executable = 9 [json_name="executable"];
+}
+message PathUnlinkEventProcess {
+  optional uint32 pid = 1 [json_name="pid"];
+  optional string entity_id = 2 [json_name="entity_id"];
+  optional string name = 3 [json_name="name"];
+  optional uint32 ppid = 4 [json_name="ppid"];
+  optional string executable = 5 [json_name="executable"];
+  optional uint64 args_count = 6 [json_name="args_count"];
+  optional uint64 start = 7 [json_name="start"];
+  optional uint64 thread_id = 8 [json_name="thread.id"];
+  optional string command_line = 9 [json_name="command_line"];
+  repeated string args = 10 [json_name="args"];
+  optional PathUnlinkEventProcessParent parent = 11 [json_name="parent"];
+}
+message PathUnlinkEventUserGroup {
+  optional string id = 1 [json_name="id"];
+  optional string name = 2 [json_name="name"];
+}
+message PathUnlinkEventUserEffectiveGroup {
+  optional string id = 1 [json_name="id"];
+  optional string name = 2 [json_name="name"];
+}
+message PathUnlinkEventUserEffective {
+  optional string id = 1 [json_name="id"];
+  optional string name = 2 [json_name="name"];
+  optional PathUnlinkEventUserEffectiveGroup group = 3 [json_name="group"];
+}
+message PathUnlinkEventUser {
+  optional string id = 1 [json_name="id"];
+  optional string name = 2 [json_name="name"];
+  optional PathUnlinkEventUserGroup group = 3 [json_name="group"];
+  optional PathUnlinkEventUserEffective effective = 4 [json_name="effective"];
+}
+message PathUnlinkEvent {
+  optional uint64 timestamp = 1 [json_name="@timestamp"];
+  optional PathUnlinkEventEvent event = 2 [json_name="event"];
+  optional PathUnlinkEventHost host = 3 [json_name="host"];
+  optional PathUnlinkEventProcess process = 4 [json_name="process"];
+  optional PathUnlinkEventUser user = 5 [json_name="user"];
+}
 
 message Event {
   enum EventType {
     BPRMCHECKSECURITYEVENT = 0;
+    PATHUNLINKEVENT = 1;
   }
   required EventType event_type = 1;
   optional BprmCheckSecurityEvent bprm_check_security_event_t = 2;
+  optional PathUnlinkEvent path_unlink_event_t = 3;
 }

@@ -122,8 +122,11 @@ INLINE_STATIC void delete_cached_process(struct task_struct *task) {
         __copy_cached_process(e->process.parent, cached);                      \
       }                                                                        \
                                                                                \
-      __ret = ____##module(___bpf_ctx_cast(ARGS), e, c);                       \
-      __check_rejection_filter(module, prefix, e, __ret);                      \
+      _Pragma("GCC diagnostic push")                                           \
+          _Pragma("GCC diagnostic ignored \"-Wint-conversion\"") __ret =       \
+              ____##module(___bpf_ctx_cast(__VA_ARGS__), e, c);                \
+      _Pragma("GCC diagnostic pop")                                            \
+          __check_rejection_filter(module, prefix, e, __ret);                  \
       bpf_ringbuf_submit(event, RINGBUFFER_FLAGS);                             \
     }                                                                          \
     return __ret;                                                              \

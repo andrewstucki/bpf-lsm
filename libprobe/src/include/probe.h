@@ -38,7 +38,8 @@ struct state {
 
 struct state *new_state(struct state_configuration config);
 void poll_state(struct state *s, int timeout);
-void cache_process(struct state *s, pid_t pid, const struct cached_process *process);
+void cache_process(struct state *s, pid_t pid,
+                   const struct cached_process *process);
 void destroy_state(struct state *self);
 
 #endif // __PROBE_H

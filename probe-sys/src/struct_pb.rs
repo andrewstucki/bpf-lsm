@@ -3393,10 +3393,3378 @@ impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEvent {
 }
 
 #[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventEvent {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    kind: ::std::option::Option<::std::string::String>,
+    category: ::std::option::Option<::std::string::String>,
+    action: ::std::option::Option<::std::string::String>,
+    field_type: ::std::option::Option<::std::string::String>,
+    module: ::std::option::Option<::std::string::String>,
+    provider: ::std::option::Option<::std::string::String>,
+    sequence: ::std::option::Option<u64>,
+    ingested: ::std::option::Option<u64>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventEvent {
+    fn default() -> &'a PathUnlinkEventEvent {
+        <PathUnlinkEventEvent as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventEvent {
+    pub fn new() -> PathUnlinkEventEvent {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string kind = 2;
+
+    pub fn get_kind(&self) -> &str {
+        match self.kind.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_kind(&mut self) {
+        self.kind = ::std::option::Option::None;
+    }
+
+    pub fn has_kind(&self) -> bool {
+        self.kind.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_kind(&mut self, v: ::std::string::String) {
+        self.kind = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_kind(&mut self) -> &mut ::std::string::String {
+        if self.kind.is_none() {
+            self.kind = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.kind.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_kind(&mut self) -> ::std::string::String {
+        self.kind.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string category = 3;
+
+    pub fn get_category(&self) -> &str {
+        match self.category.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_category(&mut self) {
+        self.category = ::std::option::Option::None;
+    }
+
+    pub fn has_category(&self) -> bool {
+        self.category.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_category(&mut self, v: ::std::string::String) {
+        self.category = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_category(&mut self) -> &mut ::std::string::String {
+        if self.category.is_none() {
+            self.category = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.category.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_category(&mut self) -> ::std::string::String {
+        self.category.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string action = 4;
+
+    pub fn get_action(&self) -> &str {
+        match self.action.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_action(&mut self) {
+        self.action = ::std::option::Option::None;
+    }
+
+    pub fn has_action(&self) -> bool {
+        self.action.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_action(&mut self, v: ::std::string::String) {
+        self.action = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_action(&mut self) -> &mut ::std::string::String {
+        if self.action.is_none() {
+            self.action = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.action.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_action(&mut self) -> ::std::string::String {
+        self.action.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string field_type = 5;
+
+    pub fn get_field_type(&self) -> &str {
+        match self.field_type.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_field_type(&mut self) {
+        self.field_type = ::std::option::Option::None;
+    }
+
+    pub fn has_field_type(&self) -> bool {
+        self.field_type.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_field_type(&mut self, v: ::std::string::String) {
+        self.field_type = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_field_type(&mut self) -> &mut ::std::string::String {
+        if self.field_type.is_none() {
+            self.field_type = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.field_type.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_field_type(&mut self) -> ::std::string::String {
+        self.field_type.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string module = 6;
+
+    pub fn get_module(&self) -> &str {
+        match self.module.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_module(&mut self) {
+        self.module = ::std::option::Option::None;
+    }
+
+    pub fn has_module(&self) -> bool {
+        self.module.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_module(&mut self, v: ::std::string::String) {
+        self.module = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_module(&mut self) -> &mut ::std::string::String {
+        if self.module.is_none() {
+            self.module = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.module.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_module(&mut self) -> ::std::string::String {
+        self.module.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string provider = 7;
+
+    pub fn get_provider(&self) -> &str {
+        match self.provider.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_provider(&mut self) {
+        self.provider = ::std::option::Option::None;
+    }
+
+    pub fn has_provider(&self) -> bool {
+        self.provider.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_provider(&mut self, v: ::std::string::String) {
+        self.provider = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_provider(&mut self) -> &mut ::std::string::String {
+        if self.provider.is_none() {
+            self.provider = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.provider.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_provider(&mut self) -> ::std::string::String {
+        self.provider.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint64 sequence = 8;
+
+    pub fn get_sequence(&self) -> u64 {
+        self.sequence.unwrap_or(0)
+    }
+
+    pub fn clear_sequence(&mut self) {
+        self.sequence = ::std::option::Option::None;
+    }
+
+    pub fn has_sequence(&self) -> bool {
+        self.sequence.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_sequence(&mut self, v: u64) {
+        self.sequence = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 ingested = 9;
+
+    pub fn get_ingested(&self) -> u64 {
+        self.ingested.unwrap_or(0)
+    }
+
+    pub fn clear_ingested(&mut self) {
+        self.ingested = ::std::option::Option::None;
+    }
+
+    pub fn has_ingested(&self) -> bool {
+        self.ingested.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_ingested(&mut self, v: u64) {
+        self.ingested = ::std::option::Option::Some(v);
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathUnlinkEventEvent| { &m.id },
+            |m: &mut PathUnlinkEventEvent| { &mut m.id },
+            PathUnlinkEventEvent::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "kind",
+            |m: &PathUnlinkEventEvent| { &m.kind },
+            |m: &mut PathUnlinkEventEvent| { &mut m.kind },
+            PathUnlinkEventEvent::get_kind,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "category",
+            |m: &PathUnlinkEventEvent| { &m.category },
+            |m: &mut PathUnlinkEventEvent| { &mut m.category },
+            PathUnlinkEventEvent::get_category,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "action",
+            |m: &PathUnlinkEventEvent| { &m.action },
+            |m: &mut PathUnlinkEventEvent| { &mut m.action },
+            PathUnlinkEventEvent::get_action,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "field_type",
+            |m: &PathUnlinkEventEvent| { &m.field_type },
+            |m: &mut PathUnlinkEventEvent| { &mut m.field_type },
+            PathUnlinkEventEvent::get_field_type,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "module",
+            |m: &PathUnlinkEventEvent| { &m.module },
+            |m: &mut PathUnlinkEventEvent| { &mut m.module },
+            PathUnlinkEventEvent::get_module,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "provider",
+            |m: &PathUnlinkEventEvent| { &m.provider },
+            |m: &mut PathUnlinkEventEvent| { &mut m.provider },
+            PathUnlinkEventEvent::get_provider,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "sequence",
+            |m: &PathUnlinkEventEvent| { &m.sequence },
+            |m: &mut PathUnlinkEventEvent| { &mut m.sequence },
+            PathUnlinkEventEvent::get_sequence,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "ingested",
+            |m: &PathUnlinkEventEvent| { &m.ingested },
+            |m: &mut PathUnlinkEventEvent| { &mut m.ingested },
+            PathUnlinkEventEvent::get_ingested,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventEvent>(
+            "PathUnlinkEventEvent",
+            10,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventEvent {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.kind = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.category = ::std::option::Option::Some(is.read_string()?);
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.action = ::std::option::Option::Some(is.read_string()?);
+                },
+                5 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.field_type = ::std::option::Option::Some(is.read_string()?);
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.module = ::std::option::Option::Some(is.read_string()?);
+                },
+                7 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.provider = ::std::option::Option::Some(is.read_string()?);
+                },
+                8 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.sequence = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                9 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ingested = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.kind.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.category.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        if let Some(v) = self.action.as_ref() {
+            my_size += ::protobuf::rt::string_size(4, &v);
+        }
+        if let Some(v) = self.field_type.as_ref() {
+            my_size += ::protobuf::rt::string_size(5, &v);
+        }
+        if let Some(v) = self.module.as_ref() {
+            my_size += ::protobuf::rt::string_size(6, &v);
+        }
+        if let Some(v) = self.provider.as_ref() {
+            my_size += ::protobuf::rt::string_size(7, &v);
+        }
+        if let Some(v) = self.sequence {
+            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.ingested {
+            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.kind.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.category.as_ref() {
+            os.write_string(3, v)?;
+        }
+        if let Some(v) = self.action.as_ref() {
+            os.write_string(4, v)?;
+        }
+        if let Some(v) = self.field_type.as_ref() {
+            os.write_string(5, v)?;
+        }
+        if let Some(v) = self.module.as_ref() {
+            os.write_string(6, v)?;
+        }
+        if let Some(v) = self.provider.as_ref() {
+            os.write_string(7, v)?;
+        }
+        if let Some(v) = self.sequence {
+            os.write_uint64(8, v)?;
+        }
+        if let Some(v) = self.ingested {
+            os.write_uint64(9, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventEvent {
+        PathUnlinkEventEvent::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventEvent {
+        static instance: PathUnlinkEventEvent = PathUnlinkEventEvent {
+            id: ::std::option::Option::None,
+            kind: ::std::option::Option::None,
+            category: ::std::option::Option::None,
+            action: ::std::option::Option::None,
+            field_type: ::std::option::Option::None,
+            module: ::std::option::Option::None,
+            provider: ::std::option::Option::None,
+            sequence: ::std::option::Option::None,
+            ingested: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventEvent {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.kind = ::std::option::Option::None;
+        self.category = ::std::option::Option::None;
+        self.action = ::std::option::Option::None;
+        self.field_type = ::std::option::Option::None;
+        self.module = ::std::option::Option::None;
+        self.provider = ::std::option::Option::None;
+        self.sequence = ::std::option::Option::None;
+        self.ingested = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventEvent {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventEvent {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventHostOs {
+    // message fields
+    field_type: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    kernel: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventHostOs {
+    fn default() -> &'a PathUnlinkEventHostOs {
+        <PathUnlinkEventHostOs as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventHostOs {
+    pub fn new() -> PathUnlinkEventHostOs {
+        ::std::default::Default::default()
+    }
+
+    // optional string field_type = 1;
+
+    pub fn get_field_type(&self) -> &str {
+        match self.field_type.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_field_type(&mut self) {
+        self.field_type = ::std::option::Option::None;
+    }
+
+    pub fn has_field_type(&self) -> bool {
+        self.field_type.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_field_type(&mut self, v: ::std::string::String) {
+        self.field_type = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_field_type(&mut self) -> &mut ::std::string::String {
+        if self.field_type.is_none() {
+            self.field_type = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.field_type.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_field_type(&mut self) -> ::std::string::String {
+        self.field_type.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string kernel = 3;
+
+    pub fn get_kernel(&self) -> &str {
+        match self.kernel.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_kernel(&mut self) {
+        self.kernel = ::std::option::Option::None;
+    }
+
+    pub fn has_kernel(&self) -> bool {
+        self.kernel.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_kernel(&mut self, v: ::std::string::String) {
+        self.kernel = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_kernel(&mut self) -> &mut ::std::string::String {
+        if self.kernel.is_none() {
+            self.kernel = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.kernel.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_kernel(&mut self) -> ::std::string::String {
+        self.kernel.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "field_type",
+            |m: &PathUnlinkEventHostOs| { &m.field_type },
+            |m: &mut PathUnlinkEventHostOs| { &mut m.field_type },
+            PathUnlinkEventHostOs::get_field_type,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathUnlinkEventHostOs| { &m.name },
+            |m: &mut PathUnlinkEventHostOs| { &mut m.name },
+            PathUnlinkEventHostOs::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "kernel",
+            |m: &PathUnlinkEventHostOs| { &m.kernel },
+            |m: &mut PathUnlinkEventHostOs| { &mut m.kernel },
+            PathUnlinkEventHostOs::get_kernel,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventHostOs>(
+            "PathUnlinkEventHostOs",
+            11,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventHostOs {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.field_type = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.kernel = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.field_type.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.kernel.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.field_type.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.kernel.as_ref() {
+            os.write_string(3, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventHostOs {
+        PathUnlinkEventHostOs::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 11)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventHostOs {
+        static instance: PathUnlinkEventHostOs = PathUnlinkEventHostOs {
+            field_type: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            kernel: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventHostOs {
+    fn clear(&mut self) {
+        self.field_type = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.kernel = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventHostOs {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventHostOs {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventHost {
+    // message fields
+    hostname: ::std::option::Option<::std::string::String>,
+    pub ip: ::std::vec::Vec<::std::string::String>,
+    pub mac: ::std::vec::Vec<::std::string::String>,
+    uptime: ::std::option::Option<u64>,
+    pub os: ::protobuf::MessageField<PathUnlinkEventHostOs>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventHost {
+    fn default() -> &'a PathUnlinkEventHost {
+        <PathUnlinkEventHost as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventHost {
+    pub fn new() -> PathUnlinkEventHost {
+        ::std::default::Default::default()
+    }
+
+    // optional string hostname = 1;
+
+    pub fn get_hostname(&self) -> &str {
+        match self.hostname.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_hostname(&mut self) {
+        self.hostname = ::std::option::Option::None;
+    }
+
+    pub fn has_hostname(&self) -> bool {
+        self.hostname.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_hostname(&mut self, v: ::std::string::String) {
+        self.hostname = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_hostname(&mut self) -> &mut ::std::string::String {
+        if self.hostname.is_none() {
+            self.hostname = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.hostname.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_hostname(&mut self) -> ::std::string::String {
+        self.hostname.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint64 uptime = 4;
+
+    pub fn get_uptime(&self) -> u64 {
+        self.uptime.unwrap_or(0)
+    }
+
+    pub fn clear_uptime(&mut self) {
+        self.uptime = ::std::option::Option::None;
+    }
+
+    pub fn has_uptime(&self) -> bool {
+        self.uptime.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_uptime(&mut self, v: u64) {
+        self.uptime = ::std::option::Option::Some(v);
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "hostname",
+            |m: &PathUnlinkEventHost| { &m.hostname },
+            |m: &mut PathUnlinkEventHost| { &mut m.hostname },
+            PathUnlinkEventHost::get_hostname,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "ip",
+            |m: &PathUnlinkEventHost| { &m.ip },
+            |m: &mut PathUnlinkEventHost| { &mut m.ip },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "mac",
+            |m: &PathUnlinkEventHost| { &m.mac },
+            |m: &mut PathUnlinkEventHost| { &mut m.mac },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "uptime",
+            |m: &PathUnlinkEventHost| { &m.uptime },
+            |m: &mut PathUnlinkEventHost| { &mut m.uptime },
+            PathUnlinkEventHost::get_uptime,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventHostOs>(
+            "os",
+            |m: &PathUnlinkEventHost| { &m.os },
+            |m: &mut PathUnlinkEventHost| { &mut m.os },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventHost>(
+            "PathUnlinkEventHost",
+            12,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventHost {
+    fn is_initialized(&self) -> bool {
+        for v in &self.os {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.hostname = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.ip)?;
+                },
+                3 => {
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.mac)?;
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.uptime = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                5 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.os)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.hostname.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        for value in &self.ip {
+            my_size += ::protobuf::rt::string_size(2, &value);
+        };
+        for value in &self.mac {
+            my_size += ::protobuf::rt::string_size(3, &value);
+        };
+        if let Some(v) = self.uptime {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.os.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.hostname.as_ref() {
+            os.write_string(1, v)?;
+        }
+        for v in &self.ip {
+            os.write_string(2, &v)?;
+        };
+        for v in &self.mac {
+            os.write_string(3, &v)?;
+        };
+        if let Some(v) = self.uptime {
+            os.write_uint64(4, v)?;
+        }
+        if let Some(v) = self.os.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventHost {
+        PathUnlinkEventHost::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 12)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventHost {
+        static instance: PathUnlinkEventHost = PathUnlinkEventHost {
+            hostname: ::std::option::Option::None,
+            ip: ::std::vec::Vec::new(),
+            mac: ::std::vec::Vec::new(),
+            uptime: ::std::option::Option::None,
+            os: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventHost {
+    fn clear(&mut self) {
+        self.hostname = ::std::option::Option::None;
+        self.ip.clear();
+        self.mac.clear();
+        self.uptime = ::std::option::Option::None;
+        self.os.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventHost {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventHost {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventProcessParent {
+    // message fields
+    pid: ::std::option::Option<u32>,
+    entity_id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    args_count: ::std::option::Option<u64>,
+    pub args: ::std::vec::Vec<::std::string::String>,
+    ppid: ::std::option::Option<u32>,
+    start: ::std::option::Option<u64>,
+    thread_id: ::std::option::Option<u64>,
+    executable: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventProcessParent {
+    fn default() -> &'a PathUnlinkEventProcessParent {
+        <PathUnlinkEventProcessParent as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventProcessParent {
+    pub fn new() -> PathUnlinkEventProcessParent {
+        ::std::default::Default::default()
+    }
+
+    // optional uint32 pid = 1;
+
+    pub fn get_pid(&self) -> u32 {
+        self.pid.unwrap_or(0)
+    }
+
+    pub fn clear_pid(&mut self) {
+        self.pid = ::std::option::Option::None;
+    }
+
+    pub fn has_pid(&self) -> bool {
+        self.pid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_pid(&mut self, v: u32) {
+        self.pid = ::std::option::Option::Some(v);
+    }
+
+    // optional string entity_id = 2;
+
+    pub fn get_entity_id(&self) -> &str {
+        match self.entity_id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_entity_id(&mut self) {
+        self.entity_id = ::std::option::Option::None;
+    }
+
+    pub fn has_entity_id(&self) -> bool {
+        self.entity_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_entity_id(&mut self, v: ::std::string::String) {
+        self.entity_id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_entity_id(&mut self) -> &mut ::std::string::String {
+        if self.entity_id.is_none() {
+            self.entity_id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.entity_id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_entity_id(&mut self) -> ::std::string::String {
+        self.entity_id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 3;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint64 args_count = 4;
+
+    pub fn get_args_count(&self) -> u64 {
+        self.args_count.unwrap_or(0)
+    }
+
+    pub fn clear_args_count(&mut self) {
+        self.args_count = ::std::option::Option::None;
+    }
+
+    pub fn has_args_count(&self) -> bool {
+        self.args_count.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_args_count(&mut self, v: u64) {
+        self.args_count = ::std::option::Option::Some(v);
+    }
+
+    // optional uint32 ppid = 6;
+
+    pub fn get_ppid(&self) -> u32 {
+        self.ppid.unwrap_or(0)
+    }
+
+    pub fn clear_ppid(&mut self) {
+        self.ppid = ::std::option::Option::None;
+    }
+
+    pub fn has_ppid(&self) -> bool {
+        self.ppid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_ppid(&mut self, v: u32) {
+        self.ppid = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 start = 7;
+
+    pub fn get_start(&self) -> u64 {
+        self.start.unwrap_or(0)
+    }
+
+    pub fn clear_start(&mut self) {
+        self.start = ::std::option::Option::None;
+    }
+
+    pub fn has_start(&self) -> bool {
+        self.start.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_start(&mut self, v: u64) {
+        self.start = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 thread_id = 8;
+
+    pub fn get_thread_id(&self) -> u64 {
+        self.thread_id.unwrap_or(0)
+    }
+
+    pub fn clear_thread_id(&mut self) {
+        self.thread_id = ::std::option::Option::None;
+    }
+
+    pub fn has_thread_id(&self) -> bool {
+        self.thread_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_thread_id(&mut self, v: u64) {
+        self.thread_id = ::std::option::Option::Some(v);
+    }
+
+    // optional string executable = 9;
+
+    pub fn get_executable(&self) -> &str {
+        match self.executable.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_executable(&mut self) {
+        self.executable = ::std::option::Option::None;
+    }
+
+    pub fn has_executable(&self) -> bool {
+        self.executable.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_executable(&mut self, v: ::std::string::String) {
+        self.executable = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_executable(&mut self) -> &mut ::std::string::String {
+        if self.executable.is_none() {
+            self.executable = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.executable.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_executable(&mut self) -> ::std::string::String {
+        self.executable.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "pid",
+            |m: &PathUnlinkEventProcessParent| { &m.pid },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.pid },
+            PathUnlinkEventProcessParent::get_pid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "entity_id",
+            |m: &PathUnlinkEventProcessParent| { &m.entity_id },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.entity_id },
+            PathUnlinkEventProcessParent::get_entity_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathUnlinkEventProcessParent| { &m.name },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.name },
+            PathUnlinkEventProcessParent::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "args_count",
+            |m: &PathUnlinkEventProcessParent| { &m.args_count },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.args_count },
+            PathUnlinkEventProcessParent::get_args_count,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "args",
+            |m: &PathUnlinkEventProcessParent| { &m.args },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.args },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "ppid",
+            |m: &PathUnlinkEventProcessParent| { &m.ppid },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.ppid },
+            PathUnlinkEventProcessParent::get_ppid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "start",
+            |m: &PathUnlinkEventProcessParent| { &m.start },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.start },
+            PathUnlinkEventProcessParent::get_start,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "thread_id",
+            |m: &PathUnlinkEventProcessParent| { &m.thread_id },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.thread_id },
+            PathUnlinkEventProcessParent::get_thread_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "executable",
+            |m: &PathUnlinkEventProcessParent| { &m.executable },
+            |m: &mut PathUnlinkEventProcessParent| { &mut m.executable },
+            PathUnlinkEventProcessParent::get_executable,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventProcessParent>(
+            "PathUnlinkEventProcessParent",
+            13,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventProcessParent {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.pid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.entity_id = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.args_count = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                5 => {
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.args)?;
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ppid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                7 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.start = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                8 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.thread_id = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                9 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.executable = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.pid {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        if let Some(v) = self.args_count {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        for value in &self.args {
+            my_size += ::protobuf::rt::string_size(5, &value);
+        };
+        if let Some(v) = self.ppid {
+            my_size += ::protobuf::rt::value_size(6, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.start {
+            my_size += ::protobuf::rt::value_size(7, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.thread_id {
+            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.executable.as_ref() {
+            my_size += ::protobuf::rt::string_size(9, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.pid {
+            os.write_uint32(1, v)?;
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(3, v)?;
+        }
+        if let Some(v) = self.args_count {
+            os.write_uint64(4, v)?;
+        }
+        for v in &self.args {
+            os.write_string(5, &v)?;
+        };
+        if let Some(v) = self.ppid {
+            os.write_uint32(6, v)?;
+        }
+        if let Some(v) = self.start {
+            os.write_uint64(7, v)?;
+        }
+        if let Some(v) = self.thread_id {
+            os.write_uint64(8, v)?;
+        }
+        if let Some(v) = self.executable.as_ref() {
+            os.write_string(9, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventProcessParent {
+        PathUnlinkEventProcessParent::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 13)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventProcessParent {
+        static instance: PathUnlinkEventProcessParent = PathUnlinkEventProcessParent {
+            pid: ::std::option::Option::None,
+            entity_id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            args_count: ::std::option::Option::None,
+            args: ::std::vec::Vec::new(),
+            ppid: ::std::option::Option::None,
+            start: ::std::option::Option::None,
+            thread_id: ::std::option::Option::None,
+            executable: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventProcessParent {
+    fn clear(&mut self) {
+        self.pid = ::std::option::Option::None;
+        self.entity_id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.args_count = ::std::option::Option::None;
+        self.args.clear();
+        self.ppid = ::std::option::Option::None;
+        self.start = ::std::option::Option::None;
+        self.thread_id = ::std::option::Option::None;
+        self.executable = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventProcessParent {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventProcessParent {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventProcess {
+    // message fields
+    pid: ::std::option::Option<u32>,
+    entity_id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    ppid: ::std::option::Option<u32>,
+    executable: ::std::option::Option<::std::string::String>,
+    args_count: ::std::option::Option<u64>,
+    start: ::std::option::Option<u64>,
+    thread_id: ::std::option::Option<u64>,
+    command_line: ::std::option::Option<::std::string::String>,
+    pub args: ::std::vec::Vec<::std::string::String>,
+    pub parent: ::protobuf::MessageField<PathUnlinkEventProcessParent>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventProcess {
+    fn default() -> &'a PathUnlinkEventProcess {
+        <PathUnlinkEventProcess as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventProcess {
+    pub fn new() -> PathUnlinkEventProcess {
+        ::std::default::Default::default()
+    }
+
+    // optional uint32 pid = 1;
+
+    pub fn get_pid(&self) -> u32 {
+        self.pid.unwrap_or(0)
+    }
+
+    pub fn clear_pid(&mut self) {
+        self.pid = ::std::option::Option::None;
+    }
+
+    pub fn has_pid(&self) -> bool {
+        self.pid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_pid(&mut self, v: u32) {
+        self.pid = ::std::option::Option::Some(v);
+    }
+
+    // optional string entity_id = 2;
+
+    pub fn get_entity_id(&self) -> &str {
+        match self.entity_id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_entity_id(&mut self) {
+        self.entity_id = ::std::option::Option::None;
+    }
+
+    pub fn has_entity_id(&self) -> bool {
+        self.entity_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_entity_id(&mut self, v: ::std::string::String) {
+        self.entity_id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_entity_id(&mut self) -> &mut ::std::string::String {
+        if self.entity_id.is_none() {
+            self.entity_id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.entity_id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_entity_id(&mut self) -> ::std::string::String {
+        self.entity_id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 3;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint32 ppid = 4;
+
+    pub fn get_ppid(&self) -> u32 {
+        self.ppid.unwrap_or(0)
+    }
+
+    pub fn clear_ppid(&mut self) {
+        self.ppid = ::std::option::Option::None;
+    }
+
+    pub fn has_ppid(&self) -> bool {
+        self.ppid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_ppid(&mut self, v: u32) {
+        self.ppid = ::std::option::Option::Some(v);
+    }
+
+    // optional string executable = 5;
+
+    pub fn get_executable(&self) -> &str {
+        match self.executable.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_executable(&mut self) {
+        self.executable = ::std::option::Option::None;
+    }
+
+    pub fn has_executable(&self) -> bool {
+        self.executable.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_executable(&mut self, v: ::std::string::String) {
+        self.executable = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_executable(&mut self) -> &mut ::std::string::String {
+        if self.executable.is_none() {
+            self.executable = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.executable.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_executable(&mut self) -> ::std::string::String {
+        self.executable.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint64 args_count = 6;
+
+    pub fn get_args_count(&self) -> u64 {
+        self.args_count.unwrap_or(0)
+    }
+
+    pub fn clear_args_count(&mut self) {
+        self.args_count = ::std::option::Option::None;
+    }
+
+    pub fn has_args_count(&self) -> bool {
+        self.args_count.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_args_count(&mut self, v: u64) {
+        self.args_count = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 start = 7;
+
+    pub fn get_start(&self) -> u64 {
+        self.start.unwrap_or(0)
+    }
+
+    pub fn clear_start(&mut self) {
+        self.start = ::std::option::Option::None;
+    }
+
+    pub fn has_start(&self) -> bool {
+        self.start.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_start(&mut self, v: u64) {
+        self.start = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 thread_id = 8;
+
+    pub fn get_thread_id(&self) -> u64 {
+        self.thread_id.unwrap_or(0)
+    }
+
+    pub fn clear_thread_id(&mut self) {
+        self.thread_id = ::std::option::Option::None;
+    }
+
+    pub fn has_thread_id(&self) -> bool {
+        self.thread_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_thread_id(&mut self, v: u64) {
+        self.thread_id = ::std::option::Option::Some(v);
+    }
+
+    // optional string command_line = 9;
+
+    pub fn get_command_line(&self) -> &str {
+        match self.command_line.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_command_line(&mut self) {
+        self.command_line = ::std::option::Option::None;
+    }
+
+    pub fn has_command_line(&self) -> bool {
+        self.command_line.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_command_line(&mut self, v: ::std::string::String) {
+        self.command_line = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_command_line(&mut self) -> &mut ::std::string::String {
+        if self.command_line.is_none() {
+            self.command_line = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.command_line.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_command_line(&mut self) -> ::std::string::String {
+        self.command_line.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "pid",
+            |m: &PathUnlinkEventProcess| { &m.pid },
+            |m: &mut PathUnlinkEventProcess| { &mut m.pid },
+            PathUnlinkEventProcess::get_pid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "entity_id",
+            |m: &PathUnlinkEventProcess| { &m.entity_id },
+            |m: &mut PathUnlinkEventProcess| { &mut m.entity_id },
+            PathUnlinkEventProcess::get_entity_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathUnlinkEventProcess| { &m.name },
+            |m: &mut PathUnlinkEventProcess| { &mut m.name },
+            PathUnlinkEventProcess::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "ppid",
+            |m: &PathUnlinkEventProcess| { &m.ppid },
+            |m: &mut PathUnlinkEventProcess| { &mut m.ppid },
+            PathUnlinkEventProcess::get_ppid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "executable",
+            |m: &PathUnlinkEventProcess| { &m.executable },
+            |m: &mut PathUnlinkEventProcess| { &mut m.executable },
+            PathUnlinkEventProcess::get_executable,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "args_count",
+            |m: &PathUnlinkEventProcess| { &m.args_count },
+            |m: &mut PathUnlinkEventProcess| { &mut m.args_count },
+            PathUnlinkEventProcess::get_args_count,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "start",
+            |m: &PathUnlinkEventProcess| { &m.start },
+            |m: &mut PathUnlinkEventProcess| { &mut m.start },
+            PathUnlinkEventProcess::get_start,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "thread_id",
+            |m: &PathUnlinkEventProcess| { &m.thread_id },
+            |m: &mut PathUnlinkEventProcess| { &mut m.thread_id },
+            PathUnlinkEventProcess::get_thread_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "command_line",
+            |m: &PathUnlinkEventProcess| { &m.command_line },
+            |m: &mut PathUnlinkEventProcess| { &mut m.command_line },
+            PathUnlinkEventProcess::get_command_line,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "args",
+            |m: &PathUnlinkEventProcess| { &m.args },
+            |m: &mut PathUnlinkEventProcess| { &mut m.args },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventProcessParent>(
+            "parent",
+            |m: &PathUnlinkEventProcess| { &m.parent },
+            |m: &mut PathUnlinkEventProcess| { &mut m.parent },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventProcess>(
+            "PathUnlinkEventProcess",
+            14,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventProcess {
+    fn is_initialized(&self) -> bool {
+        for v in &self.parent {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.pid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.entity_id = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ppid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                5 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.executable = ::std::option::Option::Some(is.read_string()?);
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.args_count = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                7 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.start = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                8 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.thread_id = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                9 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.command_line = ::std::option::Option::Some(is.read_string()?);
+                },
+                10 => {
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.args)?;
+                },
+                11 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.parent)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.pid {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        if let Some(v) = self.ppid {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.executable.as_ref() {
+            my_size += ::protobuf::rt::string_size(5, &v);
+        }
+        if let Some(v) = self.args_count {
+            my_size += ::protobuf::rt::value_size(6, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.start {
+            my_size += ::protobuf::rt::value_size(7, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.thread_id {
+            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.command_line.as_ref() {
+            my_size += ::protobuf::rt::string_size(9, &v);
+        }
+        for value in &self.args {
+            my_size += ::protobuf::rt::string_size(10, &value);
+        };
+        if let Some(v) = self.parent.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.pid {
+            os.write_uint32(1, v)?;
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(3, v)?;
+        }
+        if let Some(v) = self.ppid {
+            os.write_uint32(4, v)?;
+        }
+        if let Some(v) = self.executable.as_ref() {
+            os.write_string(5, v)?;
+        }
+        if let Some(v) = self.args_count {
+            os.write_uint64(6, v)?;
+        }
+        if let Some(v) = self.start {
+            os.write_uint64(7, v)?;
+        }
+        if let Some(v) = self.thread_id {
+            os.write_uint64(8, v)?;
+        }
+        if let Some(v) = self.command_line.as_ref() {
+            os.write_string(9, v)?;
+        }
+        for v in &self.args {
+            os.write_string(10, &v)?;
+        };
+        if let Some(v) = self.parent.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(11, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventProcess {
+        PathUnlinkEventProcess::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 14)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventProcess {
+        static instance: PathUnlinkEventProcess = PathUnlinkEventProcess {
+            pid: ::std::option::Option::None,
+            entity_id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            ppid: ::std::option::Option::None,
+            executable: ::std::option::Option::None,
+            args_count: ::std::option::Option::None,
+            start: ::std::option::Option::None,
+            thread_id: ::std::option::Option::None,
+            command_line: ::std::option::Option::None,
+            args: ::std::vec::Vec::new(),
+            parent: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventProcess {
+    fn clear(&mut self) {
+        self.pid = ::std::option::Option::None;
+        self.entity_id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.ppid = ::std::option::Option::None;
+        self.executable = ::std::option::Option::None;
+        self.args_count = ::std::option::Option::None;
+        self.start = ::std::option::Option::None;
+        self.thread_id = ::std::option::Option::None;
+        self.command_line = ::std::option::Option::None;
+        self.args.clear();
+        self.parent.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventProcess {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventProcess {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventUserGroup {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventUserGroup {
+    fn default() -> &'a PathUnlinkEventUserGroup {
+        <PathUnlinkEventUserGroup as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventUserGroup {
+    pub fn new() -> PathUnlinkEventUserGroup {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathUnlinkEventUserGroup| { &m.id },
+            |m: &mut PathUnlinkEventUserGroup| { &mut m.id },
+            PathUnlinkEventUserGroup::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathUnlinkEventUserGroup| { &m.name },
+            |m: &mut PathUnlinkEventUserGroup| { &mut m.name },
+            PathUnlinkEventUserGroup::get_name,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserGroup>(
+            "PathUnlinkEventUserGroup",
+            15,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventUserGroup {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventUserGroup {
+        PathUnlinkEventUserGroup::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 15)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventUserGroup {
+        static instance: PathUnlinkEventUserGroup = PathUnlinkEventUserGroup {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventUserGroup {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventUserGroup {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventUserGroup {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventUserEffectiveGroup {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventUserEffectiveGroup {
+    fn default() -> &'a PathUnlinkEventUserEffectiveGroup {
+        <PathUnlinkEventUserEffectiveGroup as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventUserEffectiveGroup {
+    pub fn new() -> PathUnlinkEventUserEffectiveGroup {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathUnlinkEventUserEffectiveGroup| { &m.id },
+            |m: &mut PathUnlinkEventUserEffectiveGroup| { &mut m.id },
+            PathUnlinkEventUserEffectiveGroup::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathUnlinkEventUserEffectiveGroup| { &m.name },
+            |m: &mut PathUnlinkEventUserEffectiveGroup| { &mut m.name },
+            PathUnlinkEventUserEffectiveGroup::get_name,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserEffectiveGroup>(
+            "PathUnlinkEventUserEffectiveGroup",
+            16,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventUserEffectiveGroup {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventUserEffectiveGroup {
+        PathUnlinkEventUserEffectiveGroup::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 16)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventUserEffectiveGroup {
+        static instance: PathUnlinkEventUserEffectiveGroup = PathUnlinkEventUserEffectiveGroup {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventUserEffectiveGroup {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventUserEffectiveGroup {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventUserEffectiveGroup {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventUserEffective {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    pub group: ::protobuf::MessageField<PathUnlinkEventUserEffectiveGroup>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventUserEffective {
+    fn default() -> &'a PathUnlinkEventUserEffective {
+        <PathUnlinkEventUserEffective as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventUserEffective {
+    pub fn new() -> PathUnlinkEventUserEffective {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathUnlinkEventUserEffective| { &m.id },
+            |m: &mut PathUnlinkEventUserEffective| { &mut m.id },
+            PathUnlinkEventUserEffective::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathUnlinkEventUserEffective| { &m.name },
+            |m: &mut PathUnlinkEventUserEffective| { &mut m.name },
+            PathUnlinkEventUserEffective::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventUserEffectiveGroup>(
+            "group",
+            |m: &PathUnlinkEventUserEffective| { &m.group },
+            |m: &mut PathUnlinkEventUserEffective| { &mut m.group },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserEffective>(
+            "PathUnlinkEventUserEffective",
+            17,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventUserEffective {
+    fn is_initialized(&self) -> bool {
+        for v in &self.group {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.group)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.group.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.group.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventUserEffective {
+        PathUnlinkEventUserEffective::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 17)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventUserEffective {
+        static instance: PathUnlinkEventUserEffective = PathUnlinkEventUserEffective {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            group: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventUserEffective {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.group.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventUserEffective {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventUserEffective {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEventUser {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    pub group: ::protobuf::MessageField<PathUnlinkEventUserGroup>,
+    pub effective: ::protobuf::MessageField<PathUnlinkEventUserEffective>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEventUser {
+    fn default() -> &'a PathUnlinkEventUser {
+        <PathUnlinkEventUser as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEventUser {
+    pub fn new() -> PathUnlinkEventUser {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathUnlinkEventUser| { &m.id },
+            |m: &mut PathUnlinkEventUser| { &mut m.id },
+            PathUnlinkEventUser::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathUnlinkEventUser| { &m.name },
+            |m: &mut PathUnlinkEventUser| { &mut m.name },
+            PathUnlinkEventUser::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventUserGroup>(
+            "group",
+            |m: &PathUnlinkEventUser| { &m.group },
+            |m: &mut PathUnlinkEventUser| { &mut m.group },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventUserEffective>(
+            "effective",
+            |m: &PathUnlinkEventUser| { &m.effective },
+            |m: &mut PathUnlinkEventUser| { &mut m.effective },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUser>(
+            "PathUnlinkEventUser",
+            18,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEventUser {
+    fn is_initialized(&self) -> bool {
+        for v in &self.group {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.effective {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.group)?;
+                },
+                4 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.effective)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.group.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if let Some(v) = self.effective.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.group.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        if let Some(v) = self.effective.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEventUser {
+        PathUnlinkEventUser::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 18)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEventUser {
+        static instance: PathUnlinkEventUser = PathUnlinkEventUser {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            group: ::protobuf::MessageField::none(),
+            effective: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEventUser {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.group.clear();
+        self.effective.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEventUser {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventUser {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathUnlinkEvent {
+    // message fields
+    timestamp: ::std::option::Option<u64>,
+    pub event: ::protobuf::MessageField<PathUnlinkEventEvent>,
+    pub host: ::protobuf::MessageField<PathUnlinkEventHost>,
+    pub process: ::protobuf::MessageField<PathUnlinkEventProcess>,
+    pub user: ::protobuf::MessageField<PathUnlinkEventUser>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathUnlinkEvent {
+    fn default() -> &'a PathUnlinkEvent {
+        <PathUnlinkEvent as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathUnlinkEvent {
+    pub fn new() -> PathUnlinkEvent {
+        ::std::default::Default::default()
+    }
+
+    // optional uint64 timestamp = 1;
+
+    pub fn get_timestamp(&self) -> u64 {
+        self.timestamp.unwrap_or(0)
+    }
+
+    pub fn clear_timestamp(&mut self) {
+        self.timestamp = ::std::option::Option::None;
+    }
+
+    pub fn has_timestamp(&self) -> bool {
+        self.timestamp.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_timestamp(&mut self, v: u64) {
+        self.timestamp = ::std::option::Option::Some(v);
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "timestamp",
+            |m: &PathUnlinkEvent| { &m.timestamp },
+            |m: &mut PathUnlinkEvent| { &mut m.timestamp },
+            PathUnlinkEvent::get_timestamp,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventEvent>(
+            "event",
+            |m: &PathUnlinkEvent| { &m.event },
+            |m: &mut PathUnlinkEvent| { &mut m.event },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventHost>(
+            "host",
+            |m: &PathUnlinkEvent| { &m.host },
+            |m: &mut PathUnlinkEvent| { &mut m.host },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventProcess>(
+            "process",
+            |m: &PathUnlinkEvent| { &m.process },
+            |m: &mut PathUnlinkEvent| { &mut m.process },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventUser>(
+            "user",
+            |m: &PathUnlinkEvent| { &m.user },
+            |m: &mut PathUnlinkEvent| { &mut m.user },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEvent>(
+            "PathUnlinkEvent",
+            19,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathUnlinkEvent {
+    fn is_initialized(&self) -> bool {
+        for v in &self.event {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.host {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.process {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.user {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.timestamp = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                2 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.event)?;
+                },
+                3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.host)?;
+                },
+                4 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.process)?;
+                },
+                5 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.user)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.timestamp {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.event.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if let Some(v) = self.host.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if let Some(v) = self.process.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if let Some(v) = self.user.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.timestamp {
+            os.write_uint64(1, v)?;
+        }
+        if let Some(v) = self.event.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
+        }
+        if let Some(v) = self.host.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        if let Some(v) = self.process.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
+        }
+        if let Some(v) = self.user.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathUnlinkEvent {
+        PathUnlinkEvent::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 19)
+    }
+
+    fn default_instance() -> &'static PathUnlinkEvent {
+        static instance: PathUnlinkEvent = PathUnlinkEvent {
+            timestamp: ::std::option::Option::None,
+            event: ::protobuf::MessageField::none(),
+            host: ::protobuf::MessageField::none(),
+            process: ::protobuf::MessageField::none(),
+            user: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathUnlinkEvent {
+    fn clear(&mut self) {
+        self.timestamp = ::std::option::Option::None;
+        self.event.clear();
+        self.host.clear();
+        self.process.clear();
+        self.user.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathUnlinkEvent {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathUnlinkEvent {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
 pub struct Event {
     // message fields
     event_type: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<event::EventType>>,
     pub bprm_check_security_event_t: ::protobuf::MessageField<BprmCheckSecurityEvent>,
+    pub path_unlink_event_t: ::protobuf::MessageField<PathUnlinkEvent>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::rt::CachedSize,
@@ -3448,9 +6816,14 @@ impl Event {
             |m: &Event| { &m.bprm_check_security_event_t },
             |m: &mut Event| { &mut m.bprm_check_security_event_t },
         ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEvent>(
+            "path_unlink_event_t",
+            |m: &Event| { &m.path_unlink_event_t },
+            |m: &mut Event| { &mut m.path_unlink_event_t },
+        ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<Event>(
             "Event",
-            10,
+            20,
             fields,
         )
     }
@@ -3462,6 +6835,11 @@ impl ::protobuf::Message for Event {
             return false;
         }
         for v in &self.bprm_check_security_event_t {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.path_unlink_event_t {
             if !v.is_initialized() {
                 return false;
             }
@@ -3482,6 +6860,9 @@ impl ::protobuf::Message for Event {
                 2 => {
                     ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.bprm_check_security_event_t)?;
                 },
+                3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.path_unlink_event_t)?;
+                },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
@@ -3501,6 +6882,10 @@ impl ::protobuf::Message for Event {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
+        if let Some(v) = self.path_unlink_event_t.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -3512,6 +6897,9 @@ impl ::protobuf::Message for Event {
         }
         if let Some(v) = self.bprm_check_security_event_t.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
+        }
+        if let Some(v) = self.path_unlink_event_t.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -3534,13 +6922,14 @@ impl ::protobuf::Message for Event {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 20)
     }
 
     fn default_instance() -> &'static Event {
         static instance: Event = Event {
             event_type: ::std::option::Option::None,
             bprm_check_security_event_t: ::protobuf::MessageField::none(),
+            path_unlink_event_t: ::protobuf::MessageField::none(),
             unknown_fields: ::protobuf::UnknownFields::new(),
             cached_size: ::protobuf::rt::CachedSize::new(),
         };
@@ -3552,6 +6941,7 @@ impl ::protobuf::Clear for Event {
     fn clear(&mut self) {
         self.event_type = ::std::option::Option::None;
         self.bprm_check_security_event_t.clear();
+        self.path_unlink_event_t.clear();
         self.unknown_fields.clear();
     }
 }
@@ -3571,6 +6961,7 @@ pub mod event {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     pub enum EventType {
         BPRMCHECKSECURITYEVENT = 0,
+        PATHUNLINKEVENT = 1,
     }
 
     impl ::protobuf::ProtobufEnum for EventType {
@@ -3581,6 +6972,7 @@ pub mod event {
         fn from_i32(value: i32) -> ::std::option::Option<EventType> {
             match value {
                 0 => ::std::option::Option::Some(EventType::BPRMCHECKSECURITYEVENT),
+                1 => ::std::option::Option::Some(EventType::PATHUNLINKEVENT),
                 _ => ::std::option::Option::None
             }
         }
@@ -3588,6 +6980,7 @@ pub mod event {
         fn values() -> &'static [Self] {
             static values: &'static [EventType] = &[
                 EventType::BPRMCHECKSECURITYEVENT,
+                EventType::PATHUNLINKEVENT,
             ];
             values
         }
@@ -3666,12 +7059,63 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     *.probe.protobuf.BprmCheckSecurityEventHostR\x04hostB\0\x12I\n\x07proces\
     s\x18\x04\x20\x01(\x0b2-.probe.protobuf.BprmCheckSecurityEventProcessR\
     \x07processB\0\x12@\n\x04user\x18\x05\x20\x01(\x0b2*.probe.protobuf.Bprm\
-    CheckSecurityEventUserR\x04userB\0:\0\"\xe0\x01\n\x05Event\x12@\n\nevent\
-    _type\x18\x01\x20\x02(\x0e2\x1f.probe.protobuf.Event.EventTypeR\teventTy\
-    peB\0\x12f\n\x1bbprm_check_security_event_t\x18\x02\x20\x01(\x0b2&.probe\
-    .protobuf.BprmCheckSecurityEventR\x17bprmCheckSecurityEventTB\0\"+\n\tEv\
-    entType\x12\x1c\n\x16BPRMCHECKSECURITYEVENT\x10\0\x1a\0\x1a\0:\0B\x02H\
-    \x01b\x06proto2\
+    CheckSecurityEventUserR\x04userB\0:\0\"\x88\x02\n\x14PathUnlinkEventEven\
+    t\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04kind\x18\x02\
+    \x20\x01(\tR\x04kindB\0\x12\x1c\n\x08category\x18\x03\x20\x01(\tR\x08cat\
+    egoryB\0\x12\x18\n\x06action\x18\x04\x20\x01(\tR\x06actionB\0\x12\x1a\n\
+    \nfield_type\x18\x05\x20\x01(\tR\x04typeB\0\x12\x18\n\x06module\x18\x06\
+    \x20\x01(\tR\x06moduleB\0\x12\x1c\n\x08provider\x18\x07\x20\x01(\tR\x08p\
+    roviderB\0\x12\x1c\n\x08sequence\x18\x08\x20\x01(\x04R\x08sequenceB\0\
+    \x12\x1c\n\x08ingested\x18\t\x20\x01(\x04R\x08ingestedB\0:\0\"e\n\x15Pat\
+    hUnlinkEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\tR\x04typeB\0\
+    \x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12\x18\n\x06kernel\
+    \x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\xae\x01\n\x13PathUnlinkEventHost\
+    \x12\x1c\n\x08hostname\x18\x01\x20\x01(\tR\x08hostnameB\0\x12\x10\n\x02i\
+    p\x18\x02\x20\x03(\tR\x02ipB\0\x12\x12\n\x03mac\x18\x03\x20\x03(\tR\x03m\
+    acB\0\x12\x18\n\x06uptime\x18\x04\x20\x01(\x04R\x06uptimeB\0\x127\n\x02o\
+    s\x18\x05\x20\x01(\x0b2%.probe.protobuf.PathUnlinkEventHostOsR\x02osB\0:\
+    \0\"\x92\x02\n\x1cPathUnlinkEventProcessParent\x12\x12\n\x03pid\x18\x01\
+    \x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tentity_\
+    idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x20\n\nargs_c\
+    ount\x18\x04\x20\x01(\x04R\nargs_countB\0\x12\x14\n\x04args\x18\x05\x20\
+    \x03(\tR\x04argsB\0\x12\x14\n\x04ppid\x18\x06\x20\x01(\rR\x04ppidB\0\x12\
+    \x16\n\x05start\x18\x07\x20\x01(\x04R\x05startB\0\x12\x1e\n\tthread_id\
+    \x18\x08\x20\x01(\x04R\tthread.idB\0\x12\x20\n\nexecutable\x18\t\x20\x01\
+    (\tR\nexecutableB\0:\0\"\xfa\x02\n\x16PathUnlinkEventProcess\x12\x12\n\
+    \x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\
+    \x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\
+    \x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\x04ppidB\0\x12\x20\n\nexecutable\
+    \x18\x05\x20\x01(\tR\nexecutableB\0\x12\x20\n\nargs_count\x18\x06\x20\
+    \x01(\x04R\nargs_countB\0\x12\x16\n\x05start\x18\x07\x20\x01(\x04R\x05st\
+    artB\0\x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\0\x12$\n\
+    \x0ccommand_line\x18\t\x20\x01(\tR\x0ccommand_lineB\0\x12\x14\n\x04args\
+    \x18\n\x20\x03(\tR\x04argsB\0\x12F\n\x06parent\x18\x0b\x20\x01(\x0b2,.pr\
+    obe.protobuf.PathUnlinkEventProcessParentR\x06parentB\0:\0\"D\n\x18PathU\
+    nlinkEventUserGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\
+    \n\x04name\x18\x02\x20\x01(\tR\x04nameB\0:\0\"M\n!PathUnlinkEventUserEff\
+    ectiveGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04na\
+    me\x18\x02\x20\x01(\tR\x04nameB\0:\0\"\x93\x01\n\x1cPathUnlinkEventUserE\
+    ffective\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\
+    \x18\x02\x20\x01(\tR\x04nameB\0\x12I\n\x05group\x18\x03\x20\x01(\x0b21.p\
+    robe.protobuf.PathUnlinkEventUserEffectiveGroupR\x05groupB\0:\0\"\xcf\
+    \x01\n\x13PathUnlinkEventUser\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\
+    \0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12@\n\x05group\x18\
+    \x03\x20\x01(\x0b2(.probe.protobuf.PathUnlinkEventUserGroupR\x05groupB\0\
+    \x12L\n\teffective\x18\x04\x20\x01(\x0b2,.probe.protobuf.PathUnlinkEvent\
+    UserEffectiveR\teffectiveB\0:\0\"\xac\x02\n\x0fPathUnlinkEvent\x12\x1f\n\
+    \ttimestamp\x18\x01\x20\x01(\x04R\n@timestampB\0\x12<\n\x05event\x18\x02\
+    \x20\x01(\x0b2$.probe.protobuf.PathUnlinkEventEventR\x05eventB\0\x129\n\
+    \x04host\x18\x03\x20\x01(\x0b2#.probe.protobuf.PathUnlinkEventHostR\x04h\
+    ostB\0\x12B\n\x07process\x18\x04\x20\x01(\x0b2&.probe.protobuf.PathUnlin\
+    kEventProcessR\x07processB\0\x129\n\x04user\x18\x05\x20\x01(\x0b2#.probe\
+    .protobuf.PathUnlinkEventUserR\x04userB\0:\0\"\xc9\x02\n\x05Event\x12@\n\
+    \nevent_type\x18\x01\x20\x02(\x0e2\x1f.probe.protobuf.Event.EventTypeR\t\
+    eventTypeB\0\x12f\n\x1bbprm_check_security_event_t\x18\x02\x20\x01(\x0b2\
+    &.probe.protobuf.BprmCheckSecurityEventR\x17bprmCheckSecurityEventTB\0\
+    \x12P\n\x13path_unlink_event_t\x18\x03\x20\x01(\x0b2\x1f.probe.protobuf.\
+    PathUnlinkEventR\x10pathUnlinkEventTB\0\"B\n\tEventType\x12\x1c\n\x16BPR\
+    MCHECKSECURITYEVENT\x10\0\x1a\0\x12\x15\n\x0fPATHUNLINKEVENT\x10\x01\x1a\
+    \0\x1a\0:\0B\x02H\x01b\x06proto2\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
@@ -3698,6 +7142,16 @@ pub fn file_descriptor() -> ::protobuf::reflect::FileDescriptor {
         messages.push(BprmCheckSecurityEventUserEffective::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEventUser::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEvent::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventEvent::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventHostOs::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventHost::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventProcessParent::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventProcess::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventUserGroup::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventUserEffectiveGroup::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventUserEffective::generated_message_descriptor_data());
+        messages.push(PathUnlinkEventUser::generated_message_descriptor_data());
+        messages.push(PathUnlinkEvent::generated_message_descriptor_data());
         messages.push(Event::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
         enums.push(event::EventType::generated_enum_descriptor_data());

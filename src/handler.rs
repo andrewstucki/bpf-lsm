@@ -1,5 +1,5 @@
 use probe_sys::{
-    BprmCheckSecurityEvent, ProbeHandler, SerializableEvent, SerializableResult,
+    BprmCheckSecurityEvent, PathUnlinkEvent, ProbeHandler, SerializableEvent, SerializableResult,
     TransformationHandler,
 };
 use uuid::Uuid;
@@ -7,6 +7,7 @@ use uuid::Uuid;
 use crate::errors::Error;
 use crate::globals::global_database;
 
+#[derive(Copy, Clone)]
 pub struct Handler {}
 
 impl ProbeHandler<Error> for Handler {
@@ -53,6 +54,16 @@ impl TransformationHandler for Handler {
         let command_line = process.args.join(" ");
         process.set_command_line(command_line);
 
+        Ok(e)
+    }
+
+    fn enrich_path_unlink<'a>(&self, e: &'a mut PathUnlinkEvent) -> SerializableResult<&'a mut PathUnlinkEvent> {
+        let event = e.event.get_mut_ref();
+        event.set_kind("event".to_string());
+        event.set_category("file".to_string());
+        event.set_field_type("info".to_string());
+        event.set_module("bpf-lsm".to_string());
+        event.set_provider("path-unlink".to_string());
         Ok(e)
     }
 }
