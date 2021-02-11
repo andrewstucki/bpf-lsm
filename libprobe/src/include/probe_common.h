@@ -57,7 +57,7 @@ INLINE_STATIC int ___strncmp(const char *x, const char *y, unsigned int len) {
 struct cached_process {
   char name[MAX_PATH_SIZE];
   char executable[MAX_PATH_SIZE];
-  char args[ARGSIZE][MAX_ARGS];
+  char args[MAX_ARGS][ARGSIZE];
   unsigned long args_count;
   int truncated;
 };

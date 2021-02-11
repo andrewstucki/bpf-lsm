@@ -104,10 +104,9 @@ void poll_state(struct state *s, int timeout) {
   }
 }
 
-void set_process_path(struct state *s, pid_t pid, const char *file_path) {
-  struct cached_process cached = {};
-  strncpy(cached.executable, file_path, sizeof(cached.executable));
-  bpf_map_update_elem(bpf_map__fd(s->obj->maps.processes), &pid, &cached,
+void cache_process(struct state *s, pid_t pid, const struct cached_process *process) {
+  // this copies the data at the pointer into the kernel
+  bpf_map_update_elem(bpf_map__fd(s->obj->maps.processes), &pid, process,
                       BPF_ANY);
 }
 

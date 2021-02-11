@@ -2,7 +2,7 @@ use rule_compiler::{Atom, Operation, Operator, QueryWriter};
 use std::convert::TryFrom;
 use std::os::raw::c_char;
 
-use crate::constants::{UNSET_ABSOLUTE, UNSET_OPERATOR};
+use crate::constants::UNSET_OPERATOR;
 use crate::helpers::operator_to_constant;
 use crate::query_writer::InnerBpfQueryWriter;
 use crate::traits::QueryStruct;
@@ -16,10 +16,7 @@ pub struct query_bpf_bprm_check_security_event_process_t {
 
 impl Default for query_bpf_bprm_check_security_event_process_t {
     fn default() -> Self {
-        Self {
-            executable___operator: UNSET_OPERATOR,
-            executable: [0; 256],
-        }
+        unsafe { std::mem::zeroed() }
     }
 }
 #[repr(C)]
@@ -31,10 +28,7 @@ pub struct query_bpf_bprm_check_security_event_user_t {
 
 impl Default for query_bpf_bprm_check_security_event_user_t {
     fn default() -> Self {
-        Self {
-            id___operator: UNSET_OPERATOR,
-            id: Default::default(),
-        }
+        unsafe { std::mem::zeroed() }
     }
 }
 #[repr(C)]
@@ -47,11 +41,7 @@ pub struct query_bpf_bprm_check_security_event_t {
 
 impl Default for query_bpf_bprm_check_security_event_t {
     fn default() -> Self {
-        Self {
-            ___absolute: UNSET_ABSOLUTE,
-            process: Default::default(),
-            user: Default::default(),
-        }
+        unsafe { std::mem::zeroed() }
     }
 }
 

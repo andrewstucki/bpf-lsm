@@ -1,6 +1,6 @@
 use log::{debug, warn};
 use rule_compiler::{compile, Operation};
-use std::ffi::CString;
+use std::convert::TryInto;
 use std::mem::transmute_copy;
 use std::os::raw::c_int;
 use std::os::unix::ffi::OsStrExt;
@@ -87,8 +87,28 @@ impl<'a> Probe<'a> {
             if exe == empty_path {
                 continue;
             }
-            let path = CString::new(exe.as_os_str().as_bytes()).unwrap();
-            unsafe { ffi::set_process_path(state, *pid as i32, path.as_ptr()) };
+            let name = process.name();
+            let cmd = process.cmd();
+            let mut cached: ffi::cached_process = Default::default();
+            for (dest, src) in cached.executable.iter_mut().zip(exe.as_os_str().as_bytes().iter()) {
+                *dest = *src as _;
+            }
+            for (dest, src) in cached.name.iter_mut().zip(name.as_bytes().iter()) {
+                *dest = *src as _;
+            }
+            for (index, c) in cached.args.iter_mut().enumerate() {
+                if cmd.len() > index {
+                    for (dest, src) in c.iter_mut().zip(cmd[index].as_bytes().iter()) {
+                        *dest = *src as _;
+                    }
+                    cached.args_count += 1;
+                }
+            }
+
+            if cached.args_count < cmd.len().try_into().unwrap() {
+                cached.truncated = 1;
+            }
+            unsafe { ffi::cache_process(state, *pid as i32, &cached) };
         }
         self.ctx = Some(state);
 {% for module in modules %}
