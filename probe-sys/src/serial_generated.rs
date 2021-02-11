@@ -1,17 +1,16 @@
-use sha2::Digest;
 use machine_uid;
 use pnet::datalink::interfaces;
-use protobuf::Message;
 use protobuf::json::print_to_string;
+use protobuf::Message;
+use sha2::Digest;
 use sysinfo::{System, SystemExt};
 use users::{Groups, Users};
 
-use crate::struct_pb::*;
-use crate::helpers::*;
 use crate::ffi_generated as ffi;
+use crate::helpers::*;
+use crate::struct_pb::*;
 
-use crate::errors::{SerializationError, SerializableResult};
-use crate::traits::SerializableEvent;
+use crate::errors::{SerializableResult, SerializationError};
 
 impl From<ffi::bprm_check_security_event_event_t> for BprmCheckSecurityEventEvent {
     fn from(e: ffi::bprm_check_security_event_event_t) -> Self {
@@ -114,30 +113,30 @@ impl SerializableEvent for BprmCheckSecurityEvent {
         event.bprm_check_security_event_t = Some(self.clone()).into();
         event.set_event_type(event::EventType::BPRMCHECKSECURITYEVENT);
         match event.write_to_bytes() {
-          Ok(result) => Ok(result),
-          Err(e) => Err(SerializationError::Bytes(e)),
+            Ok(result) => Ok(result),
+            Err(e) => Err(SerializationError::Bytes(e)),
         }
     }
 
     fn update_id(&mut self, id: &mut str) {
-      self.event.as_mut().and_then(|e| {
-        e.set_id(id.to_string().to_owned());
-        Some(e)
-      });
+        self.event.as_mut().and_then(|e| {
+            e.set_id(id.to_string().to_owned());
+            Some(e)
+        });
     }
 
     fn update_sequence(&mut self, seq: u64) {
-      self.event.as_mut().and_then(|e| {
-        e.set_sequence(seq);
-        Some(e)
-      });
+        self.event.as_mut().and_then(|e| {
+            e.set_sequence(seq);
+            Some(e)
+        });
     }
 
     fn suffix(&self) -> &'static str {
         "bprm_check_security"
     }
 
-    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self> {        
+    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self> {
         {
             let cache = super::USERS_CACHE.lock().unwrap();
             // real enrichments
@@ -172,23 +171,41 @@ impl SerializableEvent for BprmCheckSecurityEvent {
         let process = self.process.get_mut_ref();
         let pid = process.get_pid();
         let process_start = process.get_start();
-        let process_entity_id = format!("{}{}{}", machine_id, format!("{:01$}", pid, 5), process_start);          
-        process.set_entity_id(format!("{:x}", sha2::Sha256::digest(process_entity_id.as_bytes())));
+        let process_entity_id = format!(
+            "{}{}{}",
+            machine_id,
+            format!("{:01$}", pid, 5),
+            process_start
+        );
+        process.set_entity_id(format!(
+            "{:x}",
+            sha2::Sha256::digest(process_entity_id.as_bytes())
+        ));
 
         let parent = process.parent.get_mut_ref();
         let ppid = parent.get_pid();
         let parent_start = parent.get_start();
-        let parent_entity_id = format!("{}{}{}", machine_id, format!("{:01$}", ppid, 5), parent_start);  
-        parent.set_entity_id(format!("{:x}", sha2::Sha256::digest(parent_entity_id.as_bytes())));
+        let parent_entity_id = format!(
+            "{}{}{}",
+            machine_id,
+            format!("{:01$}", ppid, 5),
+            parent_start
+        );
+        parent.set_entity_id(format!(
+            "{:x}",
+            sha2::Sha256::digest(parent_entity_id.as_bytes())
+        ));
 
         let system = System::new();
         let host = self.host.get_mut_ref();
         host.set_uptime(system.get_uptime());
         for hostname in system.get_host_name() {
-           host.set_hostname(hostname);
+            host.set_hostname(hostname);
         }
         let all_interfaces = interfaces();
-        let active_interfaces = all_interfaces.iter().filter(|e| e.is_up() && !e.is_loopback() && !e.ips.is_empty());
+        let active_interfaces = all_interfaces
+            .iter()
+            .filter(|e| e.is_up() && !e.is_loopback() && !e.ips.is_empty());
         for interface in active_interfaces {
             if interface.mac.is_some() {
                 host.mac.push(interface.mac.unwrap().to_string());
@@ -202,12 +219,12 @@ impl SerializableEvent for BprmCheckSecurityEvent {
         let os = host.os.get_mut_ref();
         os.set_field_type("linux".to_string());
         for os_name in system.get_name() {
-          os.set_name(os_name);
-        }        
+            os.set_name(os_name);
+        }
         for kernel_version in system.get_kernel_version() {
-          os.set_kernel(kernel_version);
-        }        
-        
+            os.set_kernel(kernel_version);
+        }
+
         Ok(self)
     }
 }
