@@ -1,18 +1,18 @@
+use log::{debug, warn};
+use rule_compiler::{compile, Operation};
 use std::ffi::CString;
 use std::mem::transmute_copy;
 use std::os::raw::c_int;
 use std::os::unix::ffi::OsStrExt;
 use std::panic;
 use std::path::Path;
-use log::{debug, warn};
-use rule_compiler::{compile, Operation};
-use sysinfo::{System, ProcessExt, SystemExt};
+use sysinfo::{ProcessExt, System, SystemExt};
 
-use crate::ffi_generated as ffi;
 use crate::errors::Error;
+use crate::ffi_generated as ffi;
 use crate::query_writer::BpfQueryWriterFactory;
-use crate::traits::{ProbeHandler, QueryStruct};
 use crate::struct_pb;
+use crate::traits::{ProbeHandler, QueryStruct};
 
 pub struct Probe<'a> {
     ctx: Option<*mut ffi::state>,
@@ -40,31 +40,33 @@ impl<'a> Probe<'a> {
             let compiled = compile(rule)?;
             let query_writer = &BpfQueryWriterFactory::new(self);
             compiled.encode(query_writer)?
-        } 
+        }
         Ok(())
     }
 
     pub fn debug(&mut self, debug: bool) -> &mut Self {
-      self.debug = debug;
-      self
+        self.debug = debug;
+        self
     }
 
     pub fn run<F: 'a, U>(&mut self, handler: F) -> Result<&mut Self, Error>
     where
         F: 'a + ProbeHandler<U> + panic::RefUnwindSafe,
-        U: std::fmt::Display
+        U: std::fmt::Display,
     {
 {% for module in modules %}{% set entry_point = module.structures | last %}
         let mut {{module.name}}_wrapper = move |e: ffi::{{entry_point.name}}| {
             let result = panic::catch_unwind(|| {
-                handler.enqueue(&mut struct_pb::{{entry_point.final}}::from(e))
+                handler
+                    .enqueue(&mut struct_pb::{{entry_point.final}}::from(e))
                     .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
             });
             if result.is_err() {
                 debug!("panic while handling event");
             }
         };
-        let ({{module.name}}_closure, {{module.name}}_callback) = unsafe { ffi::unpack_{{module.name}}_closure(&mut {{module.name}}_wrapper) };
+        let ({{module.name}}_closure, {{module.name}}_callback) =
+            unsafe { ffi::unpack_{{module.name}}_closure(&mut {{module.name}}_wrapper) };
 {% endfor %}
         let state_config = ffi::state_configuration {
             debug: self.debug,
@@ -89,9 +91,9 @@ impl<'a> Probe<'a> {
             unsafe { ffi::set_process_path(state, *pid as i32, path.as_ptr()) };
         }
         self.ctx = Some(state);
-        {% for module in modules -%}
+{% for module in modules %}
         self._{{module.name}}_handler = Some(Box::new({{module.name}}_wrapper));
-        {% endfor %}
+{% endfor %}
         Ok(self)
     }
 
@@ -99,10 +101,10 @@ impl<'a> Probe<'a> {
         match self.ctx {
             Some(ctx) => match (module.as_str(), operation) {
 {% for module in modules %}{% set entry_point = module.structures | last %}{% if entry_point.queryable %}
-                ("{{module.name}}", Operation::Filter) => unsafe { 
+                ("{{module.name}}", Operation::Filter) => unsafe {
                     ffi::flush_{{module.name}}_filter_rule(ctx, transmute_copy(&rule));
                 },
-                ("{{module.name}}", Operation::Reject) => unsafe { 
+                ("{{module.name}}", Operation::Reject) => unsafe {
                     let rule = transmute_copy(&rule);
                     ffi::flush_{{module.name}}_rejection_rule(ctx, rule);
                 },

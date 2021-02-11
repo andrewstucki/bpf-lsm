@@ -12,10 +12,13 @@ mod traits;
 mod struct_pb;
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
+#[cfg_attr(rustfmt, rustfmt_skip)]
 mod compiler_generated;
+#[cfg_attr(rustfmt, rustfmt_skip)]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
 mod ffi_generated;
+#[cfg_attr(rustfmt, rustfmt_skip)]
 mod probe_generated;
 mod serial_generated;
 mod transform_generated;
