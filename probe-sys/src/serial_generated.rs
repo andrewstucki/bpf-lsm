@@ -6,11 +6,11 @@ use sha2::Digest;
 use sysinfo::{System, SystemExt};
 use users::{Groups, Users};
 
+use crate::errors::{SerializableResult, SerializationError};
 use crate::ffi_generated as ffi;
 use crate::helpers::*;
 use crate::struct_pb::*;
-
-use crate::errors::{SerializableResult, SerializationError};
+use crate::traits::SerializableEvent;
 
 impl From<ffi::bprm_check_security_event_event_t> for BprmCheckSecurityEventEvent {
     fn from(e: ffi::bprm_check_security_event_event_t) -> Self {

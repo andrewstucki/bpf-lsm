@@ -10,10 +10,7 @@ import subprocess
 from jinja2 import Template
 
 CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
-SCHEMAS_DIRECTORY = path.abspath(
-    path.join(CURRENT_DIRECTORY, "..", "..", "schemas"))
-TEMPLATES_DIRECTORY = path.abspath(
-    path.join(CURRENT_DIRECTORY, "..", "templates"))
+SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "schemas"))
 OUTPUT_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "src"))
 BPF_MODULES = ["bprm_check_security"]
 TRACEPOINTS = [
@@ -25,23 +22,29 @@ TRACEPOINTS = [
     ("sched", "sched_process_free"),
 ]
 TEMPLATES = [
-    ["include", "probe.generated.h.j2"],
-    ["ffi_generated.rs.j2"],
-    ["probe_generated.rs.j2"],
-    ["serial_generated.rs.j2"],
-    ["transform_generated.rs.j2"],
-    ["compiler_generated.rs.j2"],
-    ["struct.proto.j2"],
+    ("libprobe", ["include", "probe.generated.h.j2"]),
+    ("probe-sys", ["ffi_generated.rs.j2"]),
+    ("probe-sys", ["probe_generated.rs.j2"]),
+    ("probe-sys", ["serial_generated.rs.j2"]),
+    ("probe-sys", ["transform_generated.rs.j2"]),
+    ("probe-sys", ["compiler_generated.rs.j2"]),
+    ("probe-sys", ["struct.proto.j2"]),
 ]
 
 
+def get_template_path(project, path):
+    return path.join(CURRENT_DIRECTORY, "..", project, "templates", *path)
+
+
+def get_output_path(project, path):
+    return path.join(CURRENT_DIRECTORY, "..", project, "src", *path)
+
+
 def render(all_hooks, event_hooks, modules, tracepoints):
-    for filepath in TEMPLATES:
-        template_path = path.join(*filepath)
-        output_path = path.join(OUTPUT_DIRECTORY,
-                                path.splitext(template_path)[0])
-        with open(path.join(TEMPLATES_DIRECTORY,
-                            template_path)) as template_file:
+    for (project, filepath) in TEMPLATES:
+        template_path = get_template_path(project, filepath)
+        output_path = get_output_path(project, filepath)
+        with open(template_path) as template_file:
             template = Template(template_file.read(), trim_blocks=True)
             with open(output_path, "w") as output:
                 output.write(
@@ -49,7 +52,7 @@ def render(all_hooks, event_hooks, modules, tracepoints):
                                     event_hooks=event_hooks,
                                     modules=modules,
                                     tracepoints=tracepoints))
-        if output_path.endswith(".h"):
+        if project == "libprobe":
             subprocess.run(["clang-format", "-i", output_path], check=True)
 
 
