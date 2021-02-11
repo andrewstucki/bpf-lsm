@@ -9,10 +9,10 @@ import subprocess
 
 from jinja2 import Template
 
-class Tracepoint(NamedTuple):
-  family: str
-  hook: str
-
+CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
+SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "..", "schemas"))
+TEMPLATES_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "templates"))
+OUTPUT_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "src"))
 BPF_MODULES = ["bprm_check_security"]
 TRACEPOINTS = [
   ("syscalls", "sys_enter_execve"),
@@ -22,66 +22,23 @@ TRACEPOINTS = [
   ("syscalls", "sys_exit_clone3"),
   ("sched", "sched_process_free"),
 ]
+TEMPLATES = [
+  ["include", "probe.generated.h.j2"],
+  ["lib.rs.j2"],
+  ["compiler.rs.j2"],
+  ["struct.proto.j2"],
+]
 
-CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
-SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "..", "schemas"))
-BPF_SCHEMA_FILES = [path.join(SCHEMAS_DIRECTORY, "%s.yml" % f) for f in BPF_MODULES]
-
-HEADER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "include", "probe.generated.h.j2")).read())
-HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "include", "probe.generated.h")
-
-RUST_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "lib.rs.j2")).read())
-RUST_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "lib.rs")
-
-COMPILER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "compiler.rs.j2")).read())
-COMPILER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "compiler.rs")
-
-PROTO_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "struct.proto.j2")).read())
-PROTO_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "struct.proto")
-
-class FieldType(NamedTuple):
-  transformation: Any
-  final: str
-  proto: str
-  rust: str
-  name: Any
-  size: Any
-  lifetime: bool
-  setter: Any
-
-class Field(NamedTuple):
-  type: FieldType
-  enrichment: bool
-  final: str
-  name: str
-  original: str
-  complex: bool
-  queryable: Any
-  path: str
-
-class FieldStructure(NamedTuple):
-  final: str
-  name: str
-  enrichment: bool
-  lifetime: bool
-  fields: list
-  queryable: bool
-
-class ModuleStructures(NamedTuple):
-  final: str
-  name: str
-  structures: list
-  map: dict = {}
-
-class Transformation(NamedTuple):
-  method: str
-
-BPF_TYPES = {
-  'date': FieldType(None, 'u64', 'uint64', 'u64', 'unsigned long', None, False, None),
-  'long': FieldType(None, 'u64', 'uint64', 'u64', 'unsigned long', None, False, None),
-  'keyword': FieldType(Transformation('transform_string'), 'String', 'string', 'c_char', 'char', 256, False, None),
-  'wildcard': FieldType(Transformation('transform_string'), 'String', 'string', 'c_char', 'char', 256, False, None),
-}
+def render(all_hooks, event_hooks, modules, tracepoints):
+  for filepath in TEMPLATES:
+    template_path = path.join(*filepath)
+    output_path = path.join(OUTPUT_DIRECTORY, path.splitext(template_path)[0])
+    with open(path.join(TEMPLATES_DIRECTORY, template_path)) as template_file:
+      template = Template(template_file.read())
+      with open(output_path, "w") as output:
+        output.write(template.render(all_hooks=all_hooks, event_hooks=event_hooks, modules=modules, tracepoints=tracepoints))
+    if output_path.endswith(".h"):
+      subprocess.run(["clang-format", "-i", output_path], check=True)
 
 # add to this as need be
 NAME_NORMALIZATION = re.compile(r"[@\.]")
@@ -101,20 +58,137 @@ def rustify(name):
 def rustify_class(name):
   return ''.join(word.title() for word in name.split('_'))
 
-class Generator:
+class Tracepoint(NamedTuple):
+  family: str
+  hook: str
+
+class Transformation(NamedTuple):
+  method: str
+
+class Type:
+  def __init__(self, final, proto, rust, name, size=None, transformation=None, lifetime=False, setter=None):
+    self.transformation = transformation
+    self.final = final
+    self.proto = proto
+    self.rust = rust
+    self.name = name
+    self.size = size
+    self.lifetime = lifetime
+    self.setter = setter
+
+  def __render_c_name(self):
+    if isinstance(self.name, dict):
+      return self.name.get('type')
+    else:
+      return self.name
+
+  def __render_c_suffix(self):
+    if isinstance(self.name, dict):
+      return self.name.get('suffix')
+    elif self.size:
+      return "[%d]" % self.size
+    else:
+      return ""
+
+  def render_c(self, prefix, name, complex):
+    if complex:
+      return "struct %s%s %s%s;" % (prefix, self.__render_c_name(), name, self.__render_c_suffix())
+    else:
+      return "%s %s%s;" % (self.__render_c_name(), name, self.__render_c_suffix())
+
+BPF_TYPES = {
+  'date': Type('u64', 'uint64', 'u64', 'unsigned long'),
+  'long': Type('u64', 'uint64', 'u64', 'unsigned long'),
+  'keyword': Type('String', 'string', 'c_char', 'char', 256, Transformation('transform_string')),
+  'wildcard': Type('String', 'string', 'c_char', 'char', 256, Transformation('transform_string')),
+}
+
+class Field:
+  def __init__(self, type, enrichment, final, name, original, complex, queryable, path):
+    self.type = type
+    self.enrichment = enrichment
+    self.final = final
+    self.name = name
+    self.original = original
+    self.complex = complex
+    self.queryable = queryable
+    self.path = path
+
+  def render_c_field(self):
+    if not self.enrichment:
+      return self.type.render_c("bpf_", self.name, self.complex)
+
+  def __render_c_query_field_op(self):
+    if not self.complex:
+      return "char %s___operator;" % self.name
+  
+  def __render_c_query_field(self):
+    return self.type.render_c("query_bpf_", self.name, self.complex)
+
+  def render_c_query_field(self):
+    if self.queryable:
+      decls = [self.__render_c_query_field_op(), self.__render_c_query_field()]
+      compacted = [d for d in decls if d]
+      return "\n  ".join(compacted)
+
+class Structure:
+  def __init__(self, final, name, enrichment, lifetime, fields, queryable):
+    self.final = final
+    self.name = name
+    self.enrichment = enrichment
+    self.lifetime = lifetime
+    self.fields = fields
+    self.queryable = queryable
+
+  def __render_c_fields(self):
+    decls = [f.render_c_field() for f in self.fields]
+    compacted = [d for d in decls if d]
+    return "\n  ".join(compacted)
+
+  def __render_c_query_fields(self, entrypoint):
+    decls = [f.render_c_query_field() for f in self.fields]
+    compacted = [d for d in decls if d]
+    if entrypoint:
+      compacted.insert(0, "char ___absolute;")
+    return "\n  ".join(compacted)
+
+  def render_c_field_struct(self):
+    if not self.enrichment:
+      return "struct bpf_%s {\n  %s\n};" % (self.name, self.__render_c_fields())
+
+  def render_c_query_struct(self, entrypoint):
+    if self.queryable:
+      return "struct query_bpf_%s {\n  %s\n};" % (self.name, self.__render_c_query_fields(entrypoint))
+
+class Module:
   def __init__(self, filename):
     with open(filename) as file:
-      self.module = path.splitext(path.basename(filename))[0]
+      self.name = path.splitext(path.basename(filename))[0]
+      self.final = rustify_class(self.name)
       self.data = load(file, Loader=Loader)
+    self.structures = self.__build_structs(BPF_TYPES, False)
 
-  def _structure_name(self, namespaces):
-    return "_".join([self.module, "event"] + namespaces + ["t"])
+  def __structure_name(self, namespaces):
+    return "_".join([self.name, "event"] + namespaces + ["t"])
 
-  def _rusty_name(self, namespaces):
-    name = "_".join([self.module, "event"] + namespaces)
+  def __rusty_name(self, namespaces):
+    name = "_".join([self.name, "event"] + namespaces)
     return rustify_class(name)
 
-  def _build_structs(self, types, lifetime, enrichment=False, namespaces=[], child=None):
+  def __render_module_index(self, index):
+    return "#define %s_index %d" % (self.name, index)
+
+  def __render_c_field_structs(self):
+    decls = [s.render_c_field_struct() for s in self.structures]
+    compacted = [d for d in decls if d]
+    return "\n".join(compacted)
+
+  def __render_c_query_structs(self):
+    decls = [s.render_c_query_struct(s == self.structures[-1]) for s in self.structures]
+    compacted = [d for d in decls if d]
+    return "\n".join(compacted)
+
+  def __build_structs(self, types, lifetime, enrichment=False, namespaces=[], child=None):
     data = child if child else self.data
     structures = []
     fields = []
@@ -133,51 +207,41 @@ class Generator:
         child_lifetime = field.get('lifetime', False)
         if child_lifetime:
           lifetime = True
-        child_structures = self._build_structs(types, child_lifetime, field_enrichment, child_namespaces, field.get('fields'))
+        child_structures = self.__build_structs(types, child_lifetime, field_enrichment, child_namespaces, field.get('fields'))
         for c in child_structures:
           if c.queryable:
             queryable = True
             parent_queryable = True
             break
-        field_type = FieldType(None, self._rusty_name(child_namespaces), self._rusty_name(child_namespaces), self._structure_name(child_namespaces), self._structure_name(child_namespaces), None, child_lifetime, None)
+        field_type = Type(self.__rusty_name(child_namespaces), self.__rusty_name(child_namespaces), self.__structure_name(child_namespaces), self.__structure_name(child_namespaces), None, None, child_lifetime, None)
         structures += child_structures
       else:
         queryable = field.get('queryable', False)
         if queryable:
           parent_queryable = True
         if 'override' in field:
-          field_type = FieldType(field['override'].get('transform', None), field['override']['final'], field['override']['proto'], field['override']['rust'], field['override']['c'], None, False, field['override'].get('setter', None))
+          field_type = Type(field['override']['final'], field['override']['proto'], field['override']['rust'], field['override']['c'], None, field['override'].get('transform', None), False, field['override'].get('setter', None))
         else:
           field_type = types[field_type]
       field_path = ".".join(namespaces)
       if len(namespaces) > 0:
         field_path += "."
       fields.append(Field(field_type, field_enrichment, rust_name, normalized_name, name, complex, queryable, field_path))
-    structure = FieldStructure(self._rusty_name(namespaces), self._structure_name(namespaces), enrichment, lifetime, fields, parent_queryable)
+    structure = Structure(self.__rusty_name(namespaces), self.__structure_name(namespaces), enrichment, lifetime, fields, parent_queryable)
     structures.append(structure)
     return structures
 
-  def dump_bpf_structs(self):
-    return ModuleStructures(rustify_class(self.module), self.module, self._build_structs(BPF_TYPES, False))
-
-  def dump_tracepoint_structs(self):
-    return self.data
-
-  def dump(self):
-    print(self.module, self.data)
+  def render_c(self, index):
+    return "\n\n".join([
+      self.__render_module_index(index),
+      self.__render_c_field_structs(),
+      self.__render_c_query_structs(),
+    ])
 
 if __name__ == "__main__":
-  generators = [Generator(filename) for filename in BPF_SCHEMA_FILES]
-  modules = [generator.dump_bpf_structs() for generator in generators]
+  schema_files = [path.join(SCHEMAS_DIRECTORY, "%s.yml" % f) for f in BPF_MODULES]
+  modules = [Module(f) for f in schema_files]
   tracepoints = [Tracepoint(family, hook) for (family, hook) in TRACEPOINTS]
   all_hooks = ", ".join([m.name for m in modules] + [t.hook for t in tracepoints])
   event_hooks = ", ".join([m.name for m in modules])
-  with open(HEADER_OUTPUT, "w") as bpf_output:
-    bpf_output.write(HEADER_TEMPLATE.render(all_hooks=all_hooks, event_hooks=event_hooks, modules=modules, tracepoints=tracepoints))
-  with open(RUST_OUTPUT, "w") as bpf_output:
-    bpf_output.write(RUST_TEMPLATE.render(modules=modules))
-  with open(COMPILER_OUTPUT, "w") as bpf_output:
-    bpf_output.write(COMPILER_TEMPLATE.render(modules=modules))
-  with open(PROTO_OUTPUT, "w") as bpf_output:
-    bpf_output.write(PROTO_TEMPLATE.render(modules=modules))
-  subprocess.run(["clang-format", "-i", HEADER_OUTPUT], check=True)
+  render(all_hooks, event_hooks, modules, tracepoints)

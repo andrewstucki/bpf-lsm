@@ -12,40 +12,8 @@
 #define ALL_HOOKS {{all_hooks}}
 
 {% for module in modules %}
-#define {{module.name}}_index {{ loop.index0 }}
+{{ module.render_c(loop.index0) }}
 {% endfor %}
-
-{% for module in modules %}
-{% for structure in module.structures -%}
-{% if not structure.enrichment -%}
-struct bpf_{{structure.name}} {
-  {% for field in structure.fields -%}
-  {% if not field.enrichment %}{% if field.complex %}struct bpf_{% endif %}{%if field.type.name.type %}{{field.type.name.type}}{% else %}{{field.type.name}}{% endif %} {{field.name}}{%if field.type.name.suffix %}{{field.type.name.suffix}}{% elif field.type.size is not none %}[{{field.type.size}}]{% endif %};
-  {% endif -%}
-  {%- endfor -%}
-};
-{% endif -%}
-{% endfor %}
-{% endfor %}
-
-{% for module in modules %}
-{% for structure in module.structures -%}
-{% if structure.queryable -%}
-struct query_bpf_{{structure.name}} {
-  {% set entry_point = module.structures | last %}
-  {% if entry_point.name == structure.name %}
-  char ___absolute;
-  {% endif %}
-  {% for field in structure.fields -%}
-  {% if field.queryable %}
-    {% if not field.complex %}char {{field.name}}___operator;{% endif %}
-    {% if field.complex %}struct query_bpf_{% endif %}{%if field.type.name.type %}{{field.type.name.type}}{% else %}{{field.type.name}}{% endif %} {{field.name}}{%if field.type.name.suffix %}{{field.type.name.suffix}}{% elif field.type.size is not none %}[{{field.type.size}}]{% endif %};
-  {% endif -%}
-  {%- endfor -%}
-};
-{% endif -%}
-{% endfor -%}
-{% endfor -%}
 
 enum event_type {
   {% for module in modules %}
