@@ -22,11 +22,11 @@ impl<T: TransformationHandler> Transformer<T> {
     pub fn transform(&self, data: Vec<u8>) -> SerializableResult<String> {
         let e = Event::parse_from_bytes(&data).unwrap();
         match e.get_event_type() {
-  {% for module in modules %}{% set entry_point = module.structures | last %}
+{% for module in modules %}{% set entry_point = module.structures | last %}
             event::EventType::{{entry_point.final | upper}} => {
                 self.handler.enrich_{{module.name}}((&mut e.{{entry_point.name}}.unwrap()).enrich_common()?)?.to_json()
             },
-  {% endfor %}
+{% endfor %}
         }
     }
 }

@@ -79,12 +79,7 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
                     return Err(format!("{} already in condition", path));
                 }
                 if value.len() < 256 {
-                    for (dest, src) in self
-                        .process
-                        .executable
-                        .iter_mut()
-                        .zip(value.as_bytes().iter())
-                    {
+                    for (dest, src) in self.process.executable.iter_mut().zip(value.as_bytes().iter()) {
                         *dest = *src as _;
                     }
                     self.process.executable___operator = operator_to_constant(operator);
@@ -92,7 +87,7 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
                 } else {
                     Err(format!("process.executable is too long, maximum 256 characters, given value is {} characters", value.len()))
                 }
-            }
+            },
             _ => Err(format!("string field named {} not found in schema", path)),
         }
     }
@@ -104,8 +99,7 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
 
 pub struct BpfQueryWriter<'a> {
     table: String,
-    write_query_bprm_check_security_event_t:
-        InnerBpfQueryWriter<query_bpf_bprm_check_security_event_t>,
+    write_query_bprm_check_security_event_t: InnerBpfQueryWriter<query_bpf_bprm_check_security_event_t>,
     probe: Option<&'a super::Probe<'a>>,
 }
 
@@ -113,10 +107,10 @@ impl<'a> BpfQueryWriter<'a> {
     pub fn new(probe: Option<&'a super::Probe>, table: String, operation: Operation) -> Self {
         Self {
             table: table,
-            write_query_bprm_check_security_event_t: InnerBpfQueryWriter::<
-                query_bpf_bprm_check_security_event_t,
-            >::new(
-                "bprm_check_security".into(), operation, 8
+            write_query_bprm_check_security_event_t: InnerBpfQueryWriter::<query_bpf_bprm_check_security_event_t>::new(
+                "bprm_check_security".into(),
+                operation,
+                8,
             ),
             probe: probe,
         }
@@ -131,27 +125,21 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
         atom: &'a Atom,
     ) -> Result<(), String> {
         match self.table.as_str() {
-            "bprm_check_security" => self
-                .write_query_bprm_check_security_event_t
-                .write_statement(field, operator, atom),
+            "bprm_check_security" => self.write_query_bprm_check_security_event_t.write_statement(field, operator, atom),
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
 
     fn start_new_clause(&mut self) -> Result<(), String> {
         match self.table.as_str() {
-            "bprm_check_security" => self
-                .write_query_bprm_check_security_event_t
-                .start_new_clause(),
+            "bprm_check_security" => self.write_query_bprm_check_security_event_t.start_new_clause(),
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
 
     fn write_absolute(&mut self, value: bool) -> Result<(), String> {
         match self.table.as_str() {
-            "bprm_check_security" => self
-                .write_query_bprm_check_security_event_t
-                .write_absolute(value),
+            "bprm_check_security" => self.write_query_bprm_check_security_event_t.write_absolute(value),
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
@@ -159,12 +147,10 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
     fn flush(&mut self) -> Result<(), String> {
         match self.probe {
             Some(probe) => match self.table.as_str() {
-                "bprm_check_security" => self
-                    .write_query_bprm_check_security_event_t
-                    .flush_probe(probe),
+                "bprm_check_security" => self.write_query_bprm_check_security_event_t.flush_probe(probe),
                 _ => Err(format!("invalid table name {}", self.table)),
             },
-            _ => Ok(()),
+            _ => Ok(())
         }
     }
 }
