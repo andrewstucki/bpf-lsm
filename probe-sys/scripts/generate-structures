@@ -27,9 +27,6 @@ CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
 SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "..", "schemas"))
 BPF_SCHEMA_FILES = [path.join(SCHEMAS_DIRECTORY, "%s.yml" % f) for f in BPF_MODULES]
 
-USERSPACE_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "probe.c.j2")).read())
-USERSPACE_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "probe.c")
-
 HEADER_TEMPLATE = Template(open(path.join(CURRENT_DIRECTORY, "..", "templates", "include", "probe.generated.h.j2")).read())
 HEADER_OUTPUT = path.join(CURRENT_DIRECTORY, "..", "src", "include", "probe.generated.h")
 
@@ -173,15 +170,14 @@ if __name__ == "__main__":
   generators = [Generator(filename) for filename in BPF_SCHEMA_FILES]
   modules = [generator.dump_bpf_structs() for generator in generators]
   tracepoints = [Tracepoint(family, hook) for (family, hook) in TRACEPOINTS]
-  with open(USERSPACE_OUTPUT, "w") as bpf_output:
-    bpf_output.write(USERSPACE_TEMPLATE.render(modules=modules, tracepoints=tracepoints))
+  all_hooks = ", ".join([m.name for m in modules] + [t.hook for t in tracepoints])
+  event_hooks = ", ".join([m.name for m in modules])
   with open(HEADER_OUTPUT, "w") as bpf_output:
-    bpf_output.write(HEADER_TEMPLATE.render(modules=modules))
+    bpf_output.write(HEADER_TEMPLATE.render(all_hooks=all_hooks, event_hooks=event_hooks, modules=modules, tracepoints=tracepoints))
   with open(RUST_OUTPUT, "w") as bpf_output:
     bpf_output.write(RUST_TEMPLATE.render(modules=modules))
   with open(COMPILER_OUTPUT, "w") as bpf_output:
     bpf_output.write(COMPILER_TEMPLATE.render(modules=modules))
   with open(PROTO_OUTPUT, "w") as bpf_output:
     bpf_output.write(PROTO_TEMPLATE.render(modules=modules))
-  subprocess.run(["clang-format", "-i", USERSPACE_OUTPUT], check=True)
   subprocess.run(["clang-format", "-i", HEADER_OUTPUT], check=True)

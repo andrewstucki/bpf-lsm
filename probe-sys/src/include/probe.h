@@ -1,9 +1,40 @@
 #ifndef __PROBE_H
 #define __PROBE_H
 
-struct state;
+#include <bpf/bpf.h>
+#include <bpf/libbpf.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "probe.generated.h"
+#include "probe.skel.h"
+#include "probe_macros.h"
+
+struct state {
+  struct probe_bpf *obj;
+  struct ring_buffer *rb;
+  struct handlers *handlers;
+  DECLARE_HOOKS(ALL_HOOKS);
+  struct bpf_link *creds_hook;
+};
+
+struct handle_event_wrapper {
+  void *ctx;
+  void *handler;
+};
+
+DECLARE_HANDLERS(EVENT_HOOKS);
+struct handlers {
+  DECLARE_HANDLER_WRAPPERS(EVENT_HOOKS);
+};
+
+struct state_configuration {
+  unsigned char debug;
+  DECLARE_HANDLER_CONFIGURATIONS(EVENT_HOOKS);
+};
 
 struct state *new_state(struct state_configuration config);
 void destroy_state(struct state *self);

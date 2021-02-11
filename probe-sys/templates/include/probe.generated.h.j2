@@ -8,6 +8,9 @@
 
 #include "probe_common.h"
 
+#define EVENT_HOOKS {{event_hooks}}
+#define ALL_HOOKS {{all_hooks}}
+
 {% for module in modules %}
 #define {{module.name}}_index {{ loop.index0 }}
 {% endfor %}
@@ -61,31 +64,7 @@ struct bpf_event_t {
   };
 };
 
-#ifndef BPF
-
-{% for module in modules -%}
-// begin {{module.name}}
-
-{% set entry_point = module.structures | last %}
-typedef void {{module.name}}_event_handler(void *ctx, struct bpf_{{entry_point.name}} e);
-
-{% if entry_point.queryable -%}
-void flush_{{module.name}}_filter_rule(struct state *s, struct query_bpf_{{entry_point.name}} rule);
-void flush_{{module.name}}_rejection_rule(struct state *s, struct query_bpf_{{entry_point.name}} rule);
-{%endif%}
-
-// end {{module.name}}
-{%- endfor %}
-
-struct state_configuration {
-  unsigned char debug;
-  {% for module in modules -%}
-  void *{{module.name}}_ctx;
-  {{module.name}}_event_handler *{{module.name}}_handler;
-  {% endfor %}
-};
-
-#else 
+#ifdef BPF
 
 struct {
   __uint(type, BPF_MAP_TYPE_ARRAY);

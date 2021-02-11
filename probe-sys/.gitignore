@@ -1,4 +1,3 @@
-probe.c
 *.generated.h
 struct_pb.rs
 struct.proto

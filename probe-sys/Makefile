@@ -8,7 +8,7 @@ BPFFLAGS := -g -O2 -D__TARGET_ARCH_x86 -D__KERNEL__ -target bpf
 LIB = libprobe.a
 SOURCES = src/probe.c
 BPF_SOURCES = src/probe.bpf.c
-GENERATED_SOURCES = src/lib.rs src/compiler.rs src/probe.c src/include/probe.generated.h src/struct.proto
+GENERATED_SOURCES = src/lib.rs src/compiler.rs src/include/probe.generated.h src/struct.proto
 GENERATOR_SCRIPT = scripts/generate-structures
 GENERATOR_TEMPLATES = $(GENERATED_SOURCES:src/%=templates/%.j2)
 OBJECTS = $(SOURCES:src/%.c=$(OUTPUT)/%.o)
