@@ -31,5 +31,7 @@ pub use serial_generated::*;
 pub use struct_pb::*;
 pub use traits::{ProbeHandler, SerializableEvent};
 pub use transform_generated::{TransformationHandler, Transformer};
+// for tests
+pub use query_writer::BpfQueryWriterFactory;
 
 static USERS_CACHE: Lazy<Mutex<UsersCache>> = Lazy::new(|| Mutex::new(UsersCache::new()));

@@ -24,7 +24,7 @@ mod compiler {
     #[test]
     fn test_ok() {
         let rule =
-            compile(r#"REJECT bprm_check_security WHEN process.name == "ls" and user.id == 1"#)
+            compile(r#"REJECT bprm_check_security WHEN process.executable == "/usr/bin/ls" and user.id == 1"#)
                 .unwrap();
         assert!(rule.encode(&BpfQueryWriterFactory::empty()).is_ok());
     }
