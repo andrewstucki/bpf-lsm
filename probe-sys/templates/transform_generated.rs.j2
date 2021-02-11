@@ -1,7 +1,7 @@
 use protobuf::Message;
 
-use crate::struct_pb::*;
 use crate::errors::SerializableResult;
+use crate::struct_pb::*;
 use crate::traits::SerializableEvent;
 
 pub trait TransformationHandler {
@@ -15,20 +15,18 @@ pub struct Transformer<T> {
 }
 
 impl<T: TransformationHandler> Transformer<T> {
-  pub fn new(handler: T) -> Self {
-      Self {
-          handler: handler,
-      }
-  }
+    pub fn new(handler: T) -> Self {
+        Self { handler: handler }
+    }
 
-  pub fn transform(&self, data: Vec<u8>) -> SerializableResult<String> {
-      let e = Event::parse_from_bytes(&data).unwrap();
-      match e.get_event_type() {
-{% for module in modules %}{% set entry_point = module.structures | last %}
-          event::EventType::{{entry_point.final | upper}} => {
-              self.handler.enrich_{{module.name}}((&mut e.{{entry_point.name}}.unwrap()).enrich_common()?)?.to_json()
-          },
-{% endfor %}
-      }
-  }  
+    pub fn transform(&self, data: Vec<u8>) -> SerializableResult<String> {
+        let e = Event::parse_from_bytes(&data).unwrap();
+        match e.get_event_type() {
+  {% for module in modules %}{% set entry_point = module.structures | last %}
+            event::EventType::{{entry_point.final | upper}} => {
+                self.handler.enrich_{{module.name}}((&mut e.{{entry_point.name}}.unwrap()).enrich_common()?)?.to_json()
+            },
+  {% endfor %}
+        }
+    }
 }

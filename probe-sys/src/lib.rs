@@ -20,7 +20,9 @@ mod compiler_generated;
 mod ffi_generated;
 #[cfg_attr(rustfmt, rustfmt_skip)]
 mod probe_generated;
+#[cfg_attr(rustfmt, rustfmt_skip)]
 mod serial_generated;
+#[cfg_attr(rustfmt, rustfmt_skip)]
 mod transform_generated;
 
 pub use errors::{Error, SerializableResult, SerializationError};
