@@ -38,9 +38,9 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
 
     fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String> {
         match path.as_str() {
-    {% for structure in module.structures %}
-    {% for field in structure.fields %}
-    {% if field.queryable == "number" %}
+{% for structure in module.structures %}
+{% for field in structure.fields %}
+{% if field.queryable == "number" %}
             "{{field.path}}{{field.name}}" => {
                 if self.{{field.path}}{{field.name}}___operator != UNSET_OPERATOR {
                     // we can only hold a single condition per variable for now
@@ -50,10 +50,10 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
                 self.{{field.path}}{{field.name}} = v;
                 self.{{field.path}}{{field.name}}___operator = operator_to_constant(operator);
                 Ok(())
-            },
-    {% endif %}
-    {% endfor %}
-    {% endfor %}
+            }
+{% endif %}
+{% endfor %}
+{% endfor %}
             _ => Err(format!("numeric field named {} not found in schema", path)),
         }
     }
