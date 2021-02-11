@@ -4,14 +4,10 @@ use std::ffi::CString;
 use std::fmt;
 use std::os::raw::c_char;
 use std::fmt::Debug;
-
-const UNSET_OPERATOR: u8 = 0;
-const EQUAL_OPERATOR: u8 = 1;
-const NOT_EQUAL_OPERATOR: u8 = 2;
-
-const UNSET_ABSOLUTE: u8 = 0;
-const TRUE_ABSOLUTE: u8 = 1;
-const FALSE_ABSOLUTE: u8 = 2;
+use crate::traits::QueryStruct;
+use crate::query_writer::InnerBpfQueryWriter;
+use crate::constants::{UNSET_ABSOLUTE, UNSET_OPERATOR};
+use crate::helpers::operator_to_constant;
 
 {% for module in modules %}
 {% set entry_point = module.structures | last %}
@@ -132,7 +128,7 @@ pub struct BpfQueryWriter<'a> {
 }
 
 impl<'a> BpfQueryWriter<'a> {
-    fn new(probe: Option<&'a super::Probe>, table: String, operation: Operation) -> Self {
+    pub fn new(probe: Option<&'a super::Probe>, table: String, operation: Operation) -> Self {
         Self {
             table: table,
             {% for module in modules %}
@@ -205,135 +201,5 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
             },
             _ => Ok(())
         }
-
-    }
-}
-
-fn operator_to_constant(operator: Operator) -> u8 {
-    match operator {
-        Operator::Equal => EQUAL_OPERATOR,
-        Operator::NotEqual => NOT_EQUAL_OPERATOR,
-    }
-}
-
-fn absolute_to_constant(absolute: bool) -> u8 {
-    match absolute {
-        true => TRUE_ABSOLUTE,
-        false => FALSE_ABSOLUTE,
-    }
-}
-
-pub trait QueryStruct {
-    fn set_absolute(&mut self, value: u8);
-    fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String>;
-    fn set_string(&mut self, path: String, operator: Operator, value: String)
-        -> Result<(), String>;
-    fn flush<'a>(&mut self, probe: &'a super::Probe<'a>) -> Result<(), String>;
-}
-
-pub trait QueryFlusher {
-    fn apply_rule<T: QueryStruct>(&self, module: String, operation: Operation, rule: T);
-}
-
-struct InnerBpfQueryWriter<T: QueryStruct + Default + Copy + Debug + PartialEq> {
-    module: String,
-    operation: Operation,
-    current: T,
-    conditionals: Vec<T>,
-    limit: usize,
-}
-
-impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T> {
-    fn new(module: String, operation: Operation, limit: usize) -> Self {
-        Self {
-            module: module,
-            operation: operation,
-            current: Default::default(),
-            conditionals: vec![],
-            limit: limit,
-        }
-    }
-}
-
-impl<T: QueryStruct + Default + Copy + Debug + PartialEq> QueryWriter for InnerBpfQueryWriter<T> {
-    fn write_statement<'a>(
-        &mut self,
-        field: &'a String,
-        operator: &'a Operator,
-        atom: &'a Atom,
-    ) -> Result<(), String> {
-        match atom {
-            Atom::Number(value) => self
-                .current
-                .set_number(field.to_string(), *operator, *value)?,
-            Atom::String(value) => {
-                self.current
-                    .set_string(field.to_string(), *operator, value.to_string())?
-            }
-        };
-        Ok(())
-    }
-
-    fn start_new_clause(&mut self) -> Result<(), String> {
-        if self.conditionals.len() > self.limit {
-            return Err(format!(
-                "cannot add any more OR statements, max is {}",
-                self.limit
-            ));
-        }
-        if self.conditionals.len() == 0 {
-            self.conditionals.push(self.current);
-        }
-        self.current = Default::default();
-        Ok(())
-    }
-
-    fn write_absolute(&mut self, value: bool) -> Result<(), String> {
-        if self.conditionals.len() > self.limit {
-            return Err(format!(
-                "cannot add any more OR statements, max is {}",
-                self.limit
-            ));
-        }
-        self.current = Default::default();
-        self.current.set_absolute(absolute_to_constant(value));
-        self.conditionals.push(self.current);
-        Ok(())
-    }
-
-    fn flush(&mut self) -> Result<(), String> { Ok(()) }
-}
-
-impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T> {
-    fn flush_probe<'a>(&mut self, probe: &'a super::Probe<'a>) -> Result<(), String> {
-        let uninitialized: T = Default::default(); 
-        self.conditionals.push(self.current);
-        for filter in &self.conditionals {
-            if *filter != uninitialized {
-                probe.apply_rule(self.module.clone(), self.operation, filter.clone())
-            }
-        }
-        Ok(())
-    }
-}
-
-
-pub struct BpfQueryWriterFactory<'b> {
-    probe: Option<&'b super::Probe<'b>>
-}
-
-impl<'b> BpfQueryWriterFactory<'b> {
-    pub fn empty() -> Self {
-        Self { probe: None }
-    }
-    
-    pub fn new(probe: &'b super::Probe<'b>) -> Self {
-        Self { probe: Some(probe) }
-    }
-}
-
-impl<'b> QueryWriterFactory<BpfQueryWriter<'b>> for BpfQueryWriterFactory<'b> {
-    fn create<'a>(&self, operation: Operation, table: &'a str) -> Result<BpfQueryWriter<'b>, String> {
-        Ok(BpfQueryWriter::new(self.probe.clone(), table.to_string(), operation))
     }
 }

@@ -96,6 +96,27 @@ class Type:
     else:
       return "%s %s%s;" % (self.__render_c_name(), name, self.__render_c_suffix())
 
+  def __render_rust_setter_name(self, dest):
+    if self.setter:
+      return self.setter
+    return "set_%s" % dest
+
+  def __render_rust_setter_transformation(self, dest, source):
+    extra = ""
+    if isinstance(self.transformation, dict):
+      method = self.transformation.get("method")
+      extra = self.transformation.get("extra", "")
+    else:
+      method = self.transformation.method
+    if extra != "":
+      extra += ", "
+    return "event.%s(%s(%se.%s.into()));" % (self.__render_rust_setter_name(dest), method, extra, source)
+
+  def render_rust_setter(self, dest, source):
+    if not self.transformation:
+      return "event.set_%s(e.%s);" % (dest, source)
+    return self.__render_rust_setter_transformation(dest, source) 
+
 BPF_TYPES = {
   'date': Type('u64', 'uint64', 'u64', 'unsigned long'),
   'long': Type('u64', 'uint64', 'u64', 'unsigned long'),
@@ -113,6 +134,15 @@ class Field:
     self.complex = complex
     self.queryable = queryable
     self.path = path
+
+  def render_rust_setter(self):
+    if self.complex:
+      if self.enrichment:
+        return "event.%s = Some(Default::default()).into();" % self.final
+      else:
+        return "event.%s = Some(e.%s.into()).into();" % (self.final, self.name)
+    if not self.enrichment:
+      return self.type.render_rust_setter(self.final, self.name)
 
   def render_c_field(self):
     if not self.enrichment:
@@ -132,6 +162,16 @@ class Field:
       return "\n  ".join(compacted)
 
 class Structure:
+  rust_from_ffi_template = '''
+impl From<ffi::%s> for %s {
+    fn from(e: ffi::%s) -> Self {
+        let mut event = Self::default();
+        %s
+        event
+    }
+}
+'''
+
   def __init__(self, final, name, enrichment, lifetime, fields, queryable):
     self.final = final
     self.name = name
@@ -139,6 +179,12 @@ class Structure:
     self.lifetime = lifetime
     self.fields = fields
     self.queryable = queryable
+
+  def render_rust_from_ffi(self):
+    if not self.enrichment:
+      decls = [f.render_rust_setter() for f in self.fields]
+      compacted = [d for d in decls if d]
+      return self.rust_from_ffi_template.strip() % (self.name, self.final, self.name, "\n        ".join(compacted))
 
   def __render_c_fields(self):
     decls = [f.render_c_field() for f in self.fields]
@@ -230,6 +276,11 @@ class Module:
     structure = Structure(self.__rusty_name(namespaces), self.__structure_name(namespaces), enrichment, lifetime, fields, parent_queryable)
     structures.append(structure)
     return structures
+
+  def render_rust_from_ffi(self):
+    decls = [s.render_rust_from_ffi() for s in self.structures]
+    compacted = [d for d in decls if d]
+    return "\n\n".join(compacted)
 
   def render_c(self, index):
     return "\n\n".join([

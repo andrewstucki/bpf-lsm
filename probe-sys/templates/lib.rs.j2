@@ -25,10 +25,20 @@ use std::ffi::CString;
 use std::path::Path;
 
 mod struct_pb;
+mod query_writer;
 mod compiler;
+mod errors;
+mod constants;
+mod helpers;
+mod traits;
 
-pub use compiler::*;
 pub use struct_pb::*;
+pub use query_writer::*;
+pub use compiler::*;
+pub use errors::*;
+pub use constants::*;
+pub use helpers::*;
+pub use traits::*;
 
 static USERS_CACHE: Lazy<Mutex<UsersCache>> = Lazy::new(|| Mutex::new(UsersCache::new()));
 
@@ -115,44 +125,6 @@ pub mod ffi {
     {% endfor %}
 }
 
-#[derive(Debug, Clone)]
-pub enum Error {
-    InitializationError,
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Error::InitializationError => f.write_str(
-                "Could not initialize BPF object, ensure you're using Linux kernel >= 4.18",
-            ),
-        }
-    }
-}
-
-use std::ffi::CStr;
-use std::os::raw::c_char;
-fn transform_string(val: Vec<c_char>) -> String {
-  unsafe { CStr::from_ptr(val.as_ptr()).to_string_lossy().into_owned() }
-}
-
-fn convert_string_array<T>(size: u64, arr: Vec<T>) -> Vec<String>
-where T: Into<Vec<c_char>> + Copy {
-    unsafe { 
-        let mut strings = vec![];
-        for x in 0..size {
-            let ptr: Vec<c_char> = arr[x as usize].into();
-            let var = CStr::from_ptr(ptr.as_ptr());
-            let printable = var.to_string_lossy().into_owned();
-            strings.push(printable)
-        }
-        strings
-    }
-}
-
-fn int_to_string(v: u32) -> String {
-  v.to_string()
-}
 
 pub struct Probe<'a> {
     ctx: Option<*mut ffi::state>,
@@ -165,70 +137,8 @@ pub struct Probe<'a> {
     debug: bool,
 }
 
-#[derive(Debug)]
-pub enum SerializationError {
-    Json(PrintError),
-    Bytes(ProtobufError),
-    Transform(String),
-}
-
-impl fmt::Display for SerializationError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-          Self::Json(_e) => write!(f, "json serialization failed"),
-          Self::Bytes(e) => std::fmt::Display::fmt(&e, f),
-          Self::Transform(e) => std::fmt::Display::fmt(&e, f),
-        }
-    }
-}
-
-impl error::Error for SerializationError {
-    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
-        match self {
-          Self::Json(_) => None,
-          Self::Bytes(e) => Some(e),
-          Self::Transform(_) => None,
-        }
-    }
-}
-
-
-pub type SerializableResult<T> = Result<T, SerializationError>;
-pub trait SerializableEvent {
-    fn to_json(&self) -> SerializableResult<String>;
-    fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
-    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self>;
-    fn update_id(&mut self, id: &mut str);
-    fn update_sequence(&mut self, seq: u64);
-    fn suffix(&self) -> &'static str;
-}
-
 {% for module in modules -%}
-{% for structure in module.structures -%}
-{%- if not structure.enrichment -%}
-impl From<ffi::{{structure.name}}{% if structure.lifetime %}<'_>{%endif%}> for {{structure.final}} {
-    fn from(e: ffi::{{structure.name}}) -> Self {
-        let mut event = Self::default();
-        {%- for field in structure.fields -%}
-        {%- if field.complex -%}
-        {%- if not field.enrichment -%}
-        event.{{field.final}} = Some(e.{{field.name}}.into()).into();
-        {%- else -%}
-        event.{{field.final}} = Some(Default::default()).into();
-        {%- endif -%}
-        {%- elif not field.enrichment -%}
-        {%- if field.type.transformation.method -%}
-        event.{% if field.type.setter %}{{field.type.setter}}{%else%}set_{{field.final}}{%endif%}({{field.type.transformation.method}}({%if field.type.transformation.extra%}{{field.type.transformation.extra}}, {%endif%}e.{{field.name}}.into()));
-        {%- else -%}
-        event.set_{{field.final}}(e.{{field.name}});
-        {%- endif -%}
-        {%- endif -%}
-        {% endfor -%}
-        event
-    }
-}
-{% endif %}
-{% endfor %}
+{{ module.render_rust_from_ffi() }}
 
 {% set entry_point = module.structures | last %}
 impl SerializableEvent for {{entry_point.final}} {
