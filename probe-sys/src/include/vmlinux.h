@@ -1,3 +1,5 @@
+// clang-format off
+
 #ifndef __VMLINUX_H__
 #define __VMLINUX_H__
 
@@ -115843,3 +115845,5 @@ struct restore_data_record {
 #endif
 
 #endif /* __VMLINUX_H__ */
+
+// clang-format on
