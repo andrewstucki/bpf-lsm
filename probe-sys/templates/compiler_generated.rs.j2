@@ -2,10 +2,10 @@ use rule_compiler::{Atom, Operation, Operator, QueryWriter};
 use std::convert::TryFrom;
 use std::os::raw::c_char;
 
-use crate::traits::QueryStruct;
-use crate::query_writer::InnerBpfQueryWriter;
 use crate::constants::{UNSET_ABSOLUTE, UNSET_OPERATOR};
 use crate::helpers::operator_to_constant;
+use crate::query_writer::InnerBpfQueryWriter;
+use crate::traits::QueryStruct;
 
 {% for module in modules %}{% set entry_point = module.structures | last %}
 {% for structure in module.structures %}{% if structure.queryable %}
@@ -31,10 +31,10 @@ impl Default for query_bpf_{{structure.name}} {
 {% endif %}
 {% for field in structure.fields %}{% if field.queryable %}
 {% if not field.complex %}
-              {{field.name}}___operator: UNSET_OPERATOR,
-              {{field.name}}: {% if field.type.size is not none %}[0; {{field.type.size}}]{% else %}Default::default(){%endif%},
+            {{field.name}}___operator: UNSET_OPERATOR,
+            {{field.name}}: {% if field.type.size is not none %}[0; {{field.type.size}}]{% else %}Default::default(){%endif%},
 {% else %}
-              {{field.name}}: Default::default(),
+            {{field.name}}: Default::default(),
 {% endif %}
 {% endif %}{% endfor %}
         }
@@ -49,26 +49,25 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
     }
 
     fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String> {
-      match path.as_str() {
-{% for structure in module.structures %}
-{% for field in structure.fields %}
-{% if field.queryable == "number" %}
-          "{{field.path}}{{field.name}}" => {
-              if self.{{field.path}}{{field.name}}___operator != UNSET_OPERATOR {
-                  // we can only hold a single condition per variable for now
-                  return Err(format!("{} already in condition", path));
-              }
-              let v = {{field.type.rust}}::try_from(value)
-                  .map_err(|_| String::from("{{field.path}}{{field.name}} must be a {{field.type.rust}}"))?;
-              self.{{field.path}}{{field.name}} = v;
-              self.{{field.path}}{{field.name}}___operator = operator_to_constant(operator);
-              Ok(())
-          },
-{% endif %}
-{% endfor %}
-{% endfor %}
-          _ => Err(format!("numeric field named {} not found in schema", path)),
-      }
+        match path.as_str() {
+    {% for structure in module.structures %}
+    {% for field in structure.fields %}
+    {% if field.queryable == "number" %}
+            "{{field.path}}{{field.name}}" => {
+                if self.{{field.path}}{{field.name}}___operator != UNSET_OPERATOR {
+                    // we can only hold a single condition per variable for now
+                    return Err(format!("{} already in condition", path));
+                }
+                let v = {{field.type.rust}}::try_from(value).map_err(|_| String::from("{{field.path}}{{field.name}} must be a {{field.type.rust}}"))?;
+                self.{{field.path}}{{field.name}} = v;
+                self.{{field.path}}{{field.name}}___operator = operator_to_constant(operator);
+                Ok(())
+            },
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+            _ => Err(format!("numeric field named {} not found in schema", path)),
+        }
     }
 
     fn set_string(
@@ -87,13 +86,13 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
                     return Err(format!("{} already in condition", path));
                 }
                 if value.len() < {{field.type.size}} {
-                  for (dest, src) in self.{{field.path}}{{field.name}}.iter_mut().zip(value.as_bytes().iter()) {
-                      *dest = *src as _;
-                  }
-                  self.{{field.path}}{{field.name}}___operator = operator_to_constant(operator);
-                  Ok(())
+                    for (dest, src) in self.{{field.path}}{{field.name}}.iter_mut().zip(value.as_bytes().iter()) {
+                        *dest = *src as _;
+                    }
+                    self.{{field.path}}{{field.name}}___operator = operator_to_constant(operator);
+                    Ok(())
                 } else {
-                  Err(format!("{{field.path}}{{field.name}} is too long, maximum {{field.type.size}} characters, given value is {} characters", value.len()))
+                    Err(format!("{{field.path}}{{field.name}} is too long, maximum {{field.type.size}} characters, given value is {} characters", value.len()))
                 }
             },
 {% endif %}
@@ -104,7 +103,7 @@ impl QueryStruct for query_bpf_{{entry_point.name}} {
     }
 
     fn flush<'a>(&mut self, _probe: &'a super::Probe<'a>) -> Result<(), String> {
-       Ok(())
+        Ok(())
     }
 }
 {% endif %}{% endfor %}

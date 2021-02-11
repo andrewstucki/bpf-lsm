@@ -2,10 +2,10 @@ use rule_compiler::{Atom, Operation, Operator, QueryWriter};
 use std::convert::TryFrom;
 use std::os::raw::c_char;
 
-use crate::traits::QueryStruct;
-use crate::query_writer::InnerBpfQueryWriter;
 use crate::constants::{UNSET_ABSOLUTE, UNSET_OPERATOR};
 use crate::helpers::operator_to_constant;
+use crate::query_writer::InnerBpfQueryWriter;
+use crate::traits::QueryStruct;
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -17,8 +17,8 @@ pub struct query_bpf_bprm_check_security_event_process_t {
 impl Default for query_bpf_bprm_check_security_event_process_t {
     fn default() -> Self {
         Self {
-              executable___operator: UNSET_OPERATOR,
-              executable: [0; 256],
+            executable___operator: UNSET_OPERATOR,
+            executable: [0; 256],
         }
     }
 }
@@ -32,8 +32,8 @@ pub struct query_bpf_bprm_check_security_event_user_t {
 impl Default for query_bpf_bprm_check_security_event_user_t {
     fn default() -> Self {
         Self {
-              id___operator: UNSET_OPERATOR,
-              id: Default::default(),
+            id___operator: UNSET_OPERATOR,
+            id: Default::default(),
         }
     }
 }
@@ -49,8 +49,8 @@ impl Default for query_bpf_bprm_check_security_event_t {
     fn default() -> Self {
         Self {
             ___absolute: UNSET_ABSOLUTE,
-              process: Default::default(),
-              user: Default::default(),
+            process: Default::default(),
+            user: Default::default(),
         }
     }
 }
@@ -61,20 +61,19 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
     }
 
     fn set_number(&mut self, path: String, operator: Operator, value: u64) -> Result<(), String> {
-      match path.as_str() {
-          "user.id" => {
-              if self.user.id___operator != UNSET_OPERATOR {
-                  // we can only hold a single condition per variable for now
-                  return Err(format!("{} already in condition", path));
-              }
-              let v = u32::try_from(value)
-                  .map_err(|_| String::from("user.id must be a u32"))?;
-              self.user.id = v;
-              self.user.id___operator = operator_to_constant(operator);
-              Ok(())
-          },
-          _ => Err(format!("numeric field named {} not found in schema", path)),
-      }
+        match path.as_str() {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        "user.id" => {
+                if self.user.id___operator != UNSET_OPERATOR {
+                    // we can only hold a single condition per variable for now
+                    return Err(format!("{} already in condition", path));
+                }
+                let v = u32::try_from(value).map_err(|_| String::from("user.id must be a u32"))?;
+                self.user.id = v;
+                self.user.id___operator = operator_to_constant(operator);
+                Ok(())
+            },
+                                                                                                _ => Err(format!("numeric field named {} not found in schema", path)),
+        }
     }
 
     fn set_string(
@@ -90,13 +89,13 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
                     return Err(format!("{} already in condition", path));
                 }
                 if value.len() < 256 {
-                  for (dest, src) in self.process.executable.iter_mut().zip(value.as_bytes().iter()) {
-                      *dest = *src as _;
-                  }
-                  self.process.executable___operator = operator_to_constant(operator);
-                  Ok(())
+                    for (dest, src) in self.process.executable.iter_mut().zip(value.as_bytes().iter()) {
+                        *dest = *src as _;
+                    }
+                    self.process.executable___operator = operator_to_constant(operator);
+                    Ok(())
                 } else {
-                  Err(format!("process.executable is too long, maximum 256 characters, given value is {} characters", value.len()))
+                    Err(format!("process.executable is too long, maximum 256 characters, given value is {} characters", value.len()))
                 }
             },
             _ => Err(format!("string field named {} not found in schema", path)),
@@ -104,7 +103,7 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
     }
 
     fn flush<'a>(&mut self, _probe: &'a super::Probe<'a>) -> Result<(), String> {
-       Ok(())
+        Ok(())
     }
 }
 
