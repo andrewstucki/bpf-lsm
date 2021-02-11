@@ -8,7 +8,9 @@
 #include <bpf/bpf_helpers.h>
 // clang-format on
 
-#include "probe_bpf.generated.h"
+#define BPF
+
+#include "probe.generated.h"
 
 char _license[] SEC("license") = "GPL";
 
@@ -137,7 +139,7 @@ INLINE_STATIC void delete_cached_process(struct task_struct *task) {
 #define initialize_event()                                                     \
   if (!event)                                                                  \
     return 0;
-    
+
 INLINE_STATIC int __last_index_of(const char *x, const char y, size_t len) {
   const char *a = x;
   int current_index = -1;
