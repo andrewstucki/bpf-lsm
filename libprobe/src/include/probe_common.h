@@ -25,7 +25,6 @@
 INLINE_STATIC int ___strncmp(const char *x, const char *y, unsigned int len) {
   const char *a = x;
   const char *b = y;
-#pragma unroll
   for (unsigned int i = 0; i < len; i++) {
     if (!*a && !*b)
       return 0; // we have a null byte at the same location
