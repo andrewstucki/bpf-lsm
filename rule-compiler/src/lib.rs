@@ -111,7 +111,7 @@ fn parse_number<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>>
 
 fn parse_escape<'a>(i: &'a str) -> IResult<&'a str, String, VerboseError<&'a str>> {
     escaped_transform(
-        take_while1(|c: char| c == '_' || c == '/' || c.is_alphanumeric()),
+        take_while1(|c: char| c == '.' || c == '_' || c == '/' || c.is_alphanumeric()),
         '\\',
         alt((
             value("\\", tag("\\")),
