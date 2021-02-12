@@ -444,16 +444,16 @@ impl SerializableEvent for PathRenameEvent {
         Ok(self)
     }
 }
-impl From<ffi::path_unlink_event_event_t> for PathUnlinkEventEvent {
-    fn from(e: ffi::path_unlink_event_event_t) -> Self {
+impl From<ffi::inode_unlink_event_event_t> for InodeUnlinkEventEvent {
+    fn from(e: ffi::inode_unlink_event_event_t) -> Self {
         let mut event = Self::default();
         event.set_action(transform_string(e.action.into()));
         event
     }
 }
 
-impl From<ffi::path_unlink_event_process_parent_t> for PathUnlinkEventProcessParent {
-    fn from(e: ffi::path_unlink_event_process_parent_t) -> Self {
+impl From<ffi::inode_unlink_event_process_parent_t> for InodeUnlinkEventProcessParent {
+    fn from(e: ffi::inode_unlink_event_process_parent_t) -> Self {
         let mut event = Self::default();
         event.set_pid(e.pid);
         event.set_entity_id(transform_string(e.entity_id.into()));
@@ -468,8 +468,8 @@ impl From<ffi::path_unlink_event_process_parent_t> for PathUnlinkEventProcessPar
     }
 }
 
-impl From<ffi::path_unlink_event_process_t> for PathUnlinkEventProcess {
-    fn from(e: ffi::path_unlink_event_process_t) -> Self {
+impl From<ffi::inode_unlink_event_process_t> for InodeUnlinkEventProcess {
+    fn from(e: ffi::inode_unlink_event_process_t) -> Self {
         let mut event = Self::default();
         event.set_pid(e.pid);
         event.set_entity_id(transform_string(e.entity_id.into()));
@@ -485,24 +485,24 @@ impl From<ffi::path_unlink_event_process_t> for PathUnlinkEventProcess {
     }
 }
 
-impl From<ffi::path_unlink_event_user_group_t> for PathUnlinkEventUserGroup {
-    fn from(e: ffi::path_unlink_event_user_group_t) -> Self {
+impl From<ffi::inode_unlink_event_user_group_t> for InodeUnlinkEventUserGroup {
+    fn from(e: ffi::inode_unlink_event_user_group_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
         event
     }
 }
 
-impl From<ffi::path_unlink_event_user_effective_group_t> for PathUnlinkEventUserEffectiveGroup {
-    fn from(e: ffi::path_unlink_event_user_effective_group_t) -> Self {
+impl From<ffi::inode_unlink_event_user_effective_group_t> for InodeUnlinkEventUserEffectiveGroup {
+    fn from(e: ffi::inode_unlink_event_user_effective_group_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
         event
     }
 }
 
-impl From<ffi::path_unlink_event_user_effective_t> for PathUnlinkEventUserEffective {
-    fn from(e: ffi::path_unlink_event_user_effective_t) -> Self {
+impl From<ffi::inode_unlink_event_user_effective_t> for InodeUnlinkEventUserEffective {
+    fn from(e: ffi::inode_unlink_event_user_effective_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
         event.group = Some(e.group.into()).into();
@@ -510,8 +510,8 @@ impl From<ffi::path_unlink_event_user_effective_t> for PathUnlinkEventUserEffect
     }
 }
 
-impl From<ffi::path_unlink_event_user_t> for PathUnlinkEventUser {
-    fn from(e: ffi::path_unlink_event_user_t) -> Self {
+impl From<ffi::inode_unlink_event_user_t> for InodeUnlinkEventUser {
+    fn from(e: ffi::inode_unlink_event_user_t) -> Self {
         let mut event = Self::default();
         event.set_id(int_to_string(e.id.into()));
         event.group = Some(e.group.into()).into();
@@ -520,19 +520,28 @@ impl From<ffi::path_unlink_event_user_t> for PathUnlinkEventUser {
     }
 }
 
-impl From<ffi::path_unlink_event_t> for PathUnlinkEvent {
-    fn from(e: ffi::path_unlink_event_t) -> Self {
+impl From<ffi::inode_unlink_event_file_t> for InodeUnlinkEventFile {
+    fn from(e: ffi::inode_unlink_event_file_t) -> Self {
+        let mut event = Self::default();
+        event.set_path(transform_string(e.path.into()));
+        event
+    }
+}
+
+impl From<ffi::inode_unlink_event_t> for InodeUnlinkEvent {
+    fn from(e: ffi::inode_unlink_event_t) -> Self {
         let mut event = Self::default();
         event.set_timestamp(e.__timestamp);
         event.event = Some(e.event.into()).into();
         event.host = Some(Default::default()).into();
         event.process = Some(e.process.into()).into();
         event.user = Some(e.user.into()).into();
+        event.file = Some(e.file.into()).into();
         event
     }
 }
 
-impl SerializableEvent for PathUnlinkEvent {
+impl SerializableEvent for InodeUnlinkEvent {
     fn to_json(&self) -> SerializableResult<String> {
         match print_to_string(self) {
             Ok(result) => Ok(result),
@@ -542,8 +551,8 @@ impl SerializableEvent for PathUnlinkEvent {
 
     fn to_bytes(&self) -> SerializableResult<Vec<u8>> {
         let mut event = Event::new();
-        event.path_unlink_event_t = Some(self.clone()).into();
-        event.set_event_type(event::EventType::PATHUNLINKEVENT);
+        event.inode_unlink_event_t = Some(self.clone()).into();
+        event.set_event_type(event::EventType::INODEUNLINKEVENT);
         match event.write_to_bytes() {
             Ok(result) => Ok(result),
             Err(e) => Err(SerializationError::Bytes(e)),
@@ -565,7 +574,7 @@ impl SerializableEvent for PathUnlinkEvent {
     }
 
     fn suffix(&self) -> &'static str {
-        "path_unlink"
+        "inode_unlink"
     }
 
     fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self> {

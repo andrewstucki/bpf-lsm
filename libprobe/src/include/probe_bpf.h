@@ -58,6 +58,36 @@ INLINE_STATIC void delete_cached_process(struct task_struct *task) {
   bpf_map_delete_elem(&processes, &pid);
 }
 
+const struct cached_file empty_cached_file = {};
+
+struct {
+  __uint(type, BPF_MAP_TYPE_HASH);
+  __uint(max_entries, 10240);
+  __type(key, pid_t);
+  __type(value, struct cached_file);
+} files SEC(".maps");
+
+INLINE_STATIC struct cached_file *
+create_cached_file(struct task_struct *task) {
+  // we store by the kernel task
+  pid_t pid = BPF_CORE_READ(task, pid);
+  bpf_map_update_elem(&files, &pid, &empty_cached_file, BPF_ANY);
+  return bpf_map_lookup_elem(&files, &pid);
+}
+
+INLINE_STATIC struct cached_file *
+get_cached_file(struct task_struct *task) {
+  // we store by the kernel task
+  pid_t pid = BPF_CORE_READ(task, pid);
+  return bpf_map_lookup_elem(&files, &pid);
+}
+
+INLINE_STATIC void delete_cached_file(struct task_struct *task) {
+  // we store by the kernel task
+  pid_t pid = BPF_CORE_READ(task, pid);
+  bpf_map_delete_elem(&files, &pid);
+}
+
 #define TRACEPOINT(family, module, ctx)                                        \
   SEC("tp/" #family "/" #module)                                               \
   static int module##_hook(ctx)
@@ -90,6 +120,10 @@ INLINE_STATIC void delete_cached_process(struct task_struct *task) {
   memcpy(x.name, cached->name, MAX_PATH_SIZE);                                 \
   _Pragma("unroll") for (int i = 0; i < MAX_ARGS && i < cached->args_count;    \
                          i++) memcpy(x.args[i], cached->args[i], ARGSIZE)
+
+#define SLEEPABLE_LSM_HOOK(module, ...)                                        \
+  SEC("lsm.s/" #module)                                                        \
+  int BPF_PROG(module##_hook, ##__VA_ARGS__)
 
 #define LSM_HOOK(module, prefix, ...)                                          \
   INLINE_STATIC int ____##module(unsigned long long *ctx, ##__VA_ARGS__,       \

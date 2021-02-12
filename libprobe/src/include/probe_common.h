@@ -61,4 +61,8 @@ struct cached_process {
   int truncated;
 };
 
+struct cached_file {
+  char path[MAX_PATH_SIZE];
+};
+
 #endif // __PROBE_COMMON_H

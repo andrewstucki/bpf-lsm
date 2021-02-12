@@ -8,8 +8,8 @@
 
 #include "probe_common.h"
 
-#define EVENT_HOOKS bprm_check_security, path_rename, path_unlink
-#define ALL_HOOKS bprm_check_security, path_rename, path_unlink, sys_enter_execve, sys_exit_fork, sys_exit_vfork, sys_exit_clone, sys_exit_clone3, sched_process_free
+#define EVENT_HOOKS bprm_check_security, path_rename, inode_unlink
+#define ALL_HOOKS bprm_check_security, path_rename, inode_unlink, sys_enter_execve, sys_exit_fork, sys_exit_vfork, sys_exit_clone, sys_exit_clone3, sched_process_free, inode_getattr
 
 #define bprm_check_security_index 0
 
@@ -155,12 +155,12 @@ struct query_bpf_path_rename_event_t {
   struct query_bpf_path_rename_event_process_t process;
   struct query_bpf_path_rename_event_user_t user;
 };
-#define path_unlink_index 2
+#define inode_unlink_index 2
 
-struct bpf_path_unlink_event_event_t {
+struct bpf_inode_unlink_event_event_t {
   char action[256];
 };
-struct bpf_path_unlink_event_process_parent_t {
+struct bpf_inode_unlink_event_process_parent_t {
   unsigned int pid;
   char entity_id[256];
   char name[256];
@@ -171,7 +171,7 @@ struct bpf_path_unlink_event_process_parent_t {
   unsigned long thread__id;
   char executable[256];
 };
-struct bpf_path_unlink_event_process_t {
+struct bpf_inode_unlink_event_process_t {
   unsigned int pid;
   char entity_id[256];
   char name[256];
@@ -181,57 +181,66 @@ struct bpf_path_unlink_event_process_t {
   unsigned long start;
   unsigned long thread__id;
   char args[64][128];
-  struct bpf_path_unlink_event_process_parent_t parent;
+  struct bpf_inode_unlink_event_process_parent_t parent;
 };
-struct bpf_path_unlink_event_user_group_t {
+struct bpf_inode_unlink_event_user_group_t {
   unsigned int id;
 };
-struct bpf_path_unlink_event_user_effective_group_t {
+struct bpf_inode_unlink_event_user_effective_group_t {
   unsigned int id;
 };
-struct bpf_path_unlink_event_user_effective_t {
+struct bpf_inode_unlink_event_user_effective_t {
   unsigned int id;
-  struct bpf_path_unlink_event_user_effective_group_t group;
+  struct bpf_inode_unlink_event_user_effective_group_t group;
 };
-struct bpf_path_unlink_event_user_t {
+struct bpf_inode_unlink_event_user_t {
   unsigned int id;
-  struct bpf_path_unlink_event_user_group_t group;
-  struct bpf_path_unlink_event_user_effective_t effective;
+  struct bpf_inode_unlink_event_user_group_t group;
+  struct bpf_inode_unlink_event_user_effective_t effective;
 };
-struct bpf_path_unlink_event_t {
+struct bpf_inode_unlink_event_file_t {
+  char path[256];
+};
+struct bpf_inode_unlink_event_t {
   unsigned long __timestamp;
-  struct bpf_path_unlink_event_event_t event;
-  struct bpf_path_unlink_event_process_t process;
-  struct bpf_path_unlink_event_user_t user;
+  struct bpf_inode_unlink_event_event_t event;
+  struct bpf_inode_unlink_event_process_t process;
+  struct bpf_inode_unlink_event_user_t user;
+  struct bpf_inode_unlink_event_file_t file;
 };
 
-struct query_bpf_path_unlink_event_process_parent_t {
+struct query_bpf_inode_unlink_event_process_parent_t {
   char name___operator;
   char name[256];
   char executable___operator;
   char executable[256];
 };
-struct query_bpf_path_unlink_event_process_t {
+struct query_bpf_inode_unlink_event_process_t {
   char name___operator;
   char name[256];
   char executable___operator;
   char executable[256];
-  struct query_bpf_path_unlink_event_process_parent_t parent;
+  struct query_bpf_inode_unlink_event_process_parent_t parent;
 };
-struct query_bpf_path_unlink_event_user_t {
+struct query_bpf_inode_unlink_event_user_t {
   char id___operator;
   unsigned int id;
 };
-struct query_bpf_path_unlink_event_t {
+struct query_bpf_inode_unlink_event_file_t {
+  char path___operator;
+  char path[256];
+};
+struct query_bpf_inode_unlink_event_t {
   char ___absolute;
-  struct query_bpf_path_unlink_event_process_t process;
-  struct query_bpf_path_unlink_event_user_t user;
+  struct query_bpf_inode_unlink_event_process_t process;
+  struct query_bpf_inode_unlink_event_user_t user;
+  struct query_bpf_inode_unlink_event_file_t file;
 };
 
 enum event_type {
   type_bprm_check_security_event_t,
   type_path_rename_event_t,
-  type_path_unlink_event_t,
+  type_inode_unlink_event_t,
 };
 
 struct bpf_event_t {
@@ -239,7 +248,7 @@ struct bpf_event_t {
   union {
     struct bpf_bprm_check_security_event_t bprm_check_security_event_t;
     struct bpf_path_rename_event_t path_rename_event_t;
-    struct bpf_path_unlink_event_t path_unlink_event_t;
+    struct bpf_inode_unlink_event_t inode_unlink_event_t;
   };
 };
 
@@ -407,9 +416,9 @@ struct {
   __uint(value_size, sizeof(struct query_bpf_path_rename_event_t));
   __uint(max_entries, 8);
 } path_rename_rejections SEC(".maps");
-INLINE_STATIC int ___test_path_unlink(
-  struct bpf_path_unlink_event_t *event,
-  struct query_bpf_path_unlink_event_t *rule
+INLINE_STATIC int ___test_inode_unlink(
+  struct bpf_inode_unlink_event_t *event,
+  struct query_bpf_inode_unlink_event_t *rule
 ) {
   int conditional_true = 1;
   if (rule && event) {
@@ -443,16 +452,21 @@ INLINE_STATIC int ___test_path_unlink(
       } else if (rule->user.id___operator == NOT_EQUAL_OPERATOR) {
         conditional_true = conditional_true && NUMBER_INEQUALITY(event->user.id, rule->user.id);
       }
+      if (rule->file.path___operator == EQUAL_OPERATOR) {
+        conditional_true = conditional_true && STRING_EQUALITY(event->file.path,rule->file.path);
+      } else if (rule->file.path___operator == NOT_EQUAL_OPERATOR) {
+        conditional_true = conditional_true && STRING_INEQUALITY(event->file.path, rule->file.path);
+      }
     }
   }
 
   return conditional_true;
 }
 
-INLINE_STATIC int ___check_path_unlink(
+INLINE_STATIC int ___check_inode_unlink(
   unsigned int size,
   void *rule_map,
-  struct bpf_path_unlink_event_t *event
+  struct bpf_inode_unlink_event_t *event
 ) {
   int conditional_true = 0;
   if (!rule_map) return conditional_true;
@@ -462,8 +476,8 @@ INLINE_STATIC int ___check_path_unlink(
     if (index >= size) {
       return conditional_true;
     }
-    struct query_bpf_path_unlink_event_t *rule = bpf_map_lookup_elem(rule_map, &index);
-    conditional_true = conditional_true || ___test_path_unlink(event, rule);
+    struct query_bpf_inode_unlink_event_t *rule = bpf_map_lookup_elem(rule_map, &index);
+    conditional_true = conditional_true || ___test_inode_unlink(event, rule);
   }
   return conditional_true;
 }
@@ -471,16 +485,16 @@ INLINE_STATIC int ___check_path_unlink(
 struct {
   __uint(type, BPF_MAP_TYPE_ARRAY);
   __uint(key_size, sizeof(u32));
-  __uint(value_size, sizeof(struct query_bpf_path_unlink_event_t));
+  __uint(value_size, sizeof(struct query_bpf_inode_unlink_event_t));
   __uint(max_entries, 8);
-} path_unlink_filters SEC(".maps");
+} inode_unlink_filters SEC(".maps");
 
 struct {
   __uint(type, BPF_MAP_TYPE_ARRAY);
   __uint(key_size, sizeof(u32));
-  __uint(value_size, sizeof(struct query_bpf_path_unlink_event_t));
+  __uint(value_size, sizeof(struct query_bpf_inode_unlink_event_t));
   __uint(max_entries, 8);
-} path_unlink_rejections SEC(".maps");
+} inode_unlink_rejections SEC(".maps");
 
 #endif
 

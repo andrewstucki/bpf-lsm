@@ -272,3 +272,11 @@
               enrichment: true
               type: keyword
               description: Name of the group.
+- name: file
+  description: Fields describing files.
+  type: group
+  fields:
+    - name: path
+      type: wildcard
+      queryable: string
+      description: Full path to the file, including the file name.

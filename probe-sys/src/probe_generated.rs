@@ -20,7 +20,7 @@ pub struct Probe<'a> {
     // the same lifetime as the state wrapper
     _bprm_check_security_handler: Option<Box<dyn 'a + Fn(ffi::bprm_check_security_event_t)>>,
     _path_rename_handler: Option<Box<dyn 'a + Fn(ffi::path_rename_event_t)>>,
-    _path_unlink_handler: Option<Box<dyn 'a + Fn(ffi::path_unlink_event_t)>>,
+    _inode_unlink_handler: Option<Box<dyn 'a + Fn(ffi::inode_unlink_event_t)>>,
     debug: bool,
 }
 
@@ -30,7 +30,7 @@ impl<'a> Probe<'a> {
             ctx: None,
             _bprm_check_security_handler: None,
             _path_rename_handler: None,
-            _path_unlink_handler: None,
+            _inode_unlink_handler: None,
             debug: false,
         }
     }
@@ -78,26 +78,26 @@ impl<'a> Probe<'a> {
         };
         let (path_rename_closure, path_rename_callback) =
             unsafe { ffi::unpack_path_rename_closure(&mut path_rename_wrapper) };
-        let mut path_unlink_wrapper = move |e: ffi::path_unlink_event_t| {
+        let mut inode_unlink_wrapper = move |e: ffi::inode_unlink_event_t| {
             let result = panic::catch_unwind(|| {
                 handler
-                    .enqueue(&mut struct_pb::PathUnlinkEvent::from(e))
+                    .enqueue(&mut struct_pb::InodeUnlinkEvent::from(e))
                     .unwrap_or_else(|e| warn!("error enqueuing data: {}", e));
             });
             if result.is_err() {
                 debug!("panic while handling event");
             }
         };
-        let (path_unlink_closure, path_unlink_callback) =
-            unsafe { ffi::unpack_path_unlink_closure(&mut path_unlink_wrapper) };
+        let (inode_unlink_closure, inode_unlink_callback) =
+            unsafe { ffi::unpack_inode_unlink_closure(&mut inode_unlink_wrapper) };
         let state_config = ffi::state_configuration {
             debug: self.debug,
             bprm_check_security_ctx: bprm_check_security_closure,
             bprm_check_security_handler: bprm_check_security_callback,
             path_rename_ctx: path_rename_closure,
             path_rename_handler: path_rename_callback,
-            path_unlink_ctx: path_unlink_closure,
-            path_unlink_handler: path_unlink_callback,
+            inode_unlink_ctx: inode_unlink_closure,
+            inode_unlink_handler: inode_unlink_callback,
         };
         let state = unsafe { ffi::new_state(state_config) };
         if state.is_null() {
@@ -137,7 +137,7 @@ impl<'a> Probe<'a> {
         self.ctx = Some(state);
         self._bprm_check_security_handler = Some(Box::new(bprm_check_security_wrapper));
         self._path_rename_handler = Some(Box::new(path_rename_wrapper));
-        self._path_unlink_handler = Some(Box::new(path_unlink_wrapper));
+        self._inode_unlink_handler = Some(Box::new(inode_unlink_wrapper));
         Ok(self)
     }
 
@@ -158,12 +158,12 @@ impl<'a> Probe<'a> {
                     let rule = transmute_copy(&rule);
                     ffi::flush_path_rename_rejection_rule(ctx, rule);
                 },
-                ("path_unlink", Operation::Filter) => unsafe {
-                    ffi::flush_path_unlink_filter_rule(ctx, transmute_copy(&rule));
+                ("inode_unlink", Operation::Filter) => unsafe {
+                    ffi::flush_inode_unlink_filter_rule(ctx, transmute_copy(&rule));
                 },
-                ("path_unlink", Operation::Reject) => unsafe {
+                ("inode_unlink", Operation::Reject) => unsafe {
                     let rule = transmute_copy(&rule);
-                    ffi::flush_path_unlink_rejection_rule(ctx, rule);
+                    ffi::flush_inode_unlink_rejection_rule(ctx, rule);
                 },
                 _ => return,
             },

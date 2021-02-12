@@ -7,7 +7,7 @@ use crate::traits::SerializableEvent;
 pub trait TransformationHandler {
     fn enrich_bprm_check_security<'a>(&self, e: &'a mut BprmCheckSecurityEvent) -> SerializableResult<&'a mut BprmCheckSecurityEvent>;
     fn enrich_path_rename<'a>(&self, e: &'a mut PathRenameEvent) -> SerializableResult<&'a mut PathRenameEvent>;
-    fn enrich_path_unlink<'a>(&self, e: &'a mut PathUnlinkEvent) -> SerializableResult<&'a mut PathUnlinkEvent>;
+    fn enrich_inode_unlink<'a>(&self, e: &'a mut InodeUnlinkEvent) -> SerializableResult<&'a mut InodeUnlinkEvent>;
 }
 
 pub struct Transformer<T> {
@@ -28,8 +28,8 @@ impl<T: TransformationHandler> Transformer<T> {
             event::EventType::PATHRENAMEEVENT => {
                 self.handler.enrich_path_rename((&mut e.path_rename_event_t.unwrap()).enrich_common()?)?.to_json()
             },
-            event::EventType::PATHUNLINKEVENT => {
-                self.handler.enrich_path_unlink((&mut e.path_unlink_event_t.unwrap()).enrich_common()?)?.to_json()
+            event::EventType::INODEUNLINKEVENT => {
+                self.handler.enrich_inode_unlink((&mut e.inode_unlink_event_t.unwrap()).enrich_common()?)?.to_json()
             },
         }
     }

@@ -311,60 +311,73 @@ impl QueryStruct for query_bpf_path_rename_event_t {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct query_bpf_path_unlink_event_process_parent_t {
+pub struct query_bpf_inode_unlink_event_process_parent_t {
     pub name___operator: u8,
     pub name: [c_char; 256],
     pub executable___operator: u8,
     pub executable: [c_char; 256],
 }
 
-impl Default for query_bpf_path_unlink_event_process_parent_t {
+impl Default for query_bpf_inode_unlink_event_process_parent_t {
     fn default() -> Self {
         unsafe { std::mem::zeroed() }
     }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct query_bpf_path_unlink_event_process_t {
+pub struct query_bpf_inode_unlink_event_process_t {
     pub name___operator: u8,
     pub name: [c_char; 256],
     pub executable___operator: u8,
     pub executable: [c_char; 256],
-    pub parent: query_bpf_path_unlink_event_process_parent_t,
+    pub parent: query_bpf_inode_unlink_event_process_parent_t,
 }
 
-impl Default for query_bpf_path_unlink_event_process_t {
+impl Default for query_bpf_inode_unlink_event_process_t {
     fn default() -> Self {
         unsafe { std::mem::zeroed() }
     }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct query_bpf_path_unlink_event_user_t {
+pub struct query_bpf_inode_unlink_event_user_t {
     pub id___operator: u8,
     pub id: u32,
 }
 
-impl Default for query_bpf_path_unlink_event_user_t {
+impl Default for query_bpf_inode_unlink_event_user_t {
     fn default() -> Self {
         unsafe { std::mem::zeroed() }
     }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct query_bpf_path_unlink_event_t {
-    pub ___absolute: u8,
-    pub process: query_bpf_path_unlink_event_process_t,
-    pub user: query_bpf_path_unlink_event_user_t,
+pub struct query_bpf_inode_unlink_event_file_t {
+    pub path___operator: u8,
+    pub path: [c_char; 256],
 }
 
-impl Default for query_bpf_path_unlink_event_t {
+impl Default for query_bpf_inode_unlink_event_file_t {
+    fn default() -> Self {
+        unsafe { std::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub struct query_bpf_inode_unlink_event_t {
+    pub ___absolute: u8,
+    pub process: query_bpf_inode_unlink_event_process_t,
+    pub user: query_bpf_inode_unlink_event_user_t,
+    pub file: query_bpf_inode_unlink_event_file_t,
+}
+
+impl Default for query_bpf_inode_unlink_event_t {
     fn default() -> Self {
         unsafe { std::mem::zeroed() }
     }
 }
 
-impl QueryStruct for query_bpf_path_unlink_event_t {
+impl QueryStruct for query_bpf_inode_unlink_event_t {
     fn set_absolute(&mut self, value: u8) {
         self.___absolute = value;
     }
@@ -452,6 +465,21 @@ impl QueryStruct for query_bpf_path_unlink_event_t {
                     Err(format!("process.executable is too long, maximum 256 characters, given value is {} characters", value.len()))
                 }
             },
+            "file.path" => {
+                if self.file.path___operator != UNSET_OPERATOR {
+                    // we can only hold a single condition per variable for now
+                    return Err(format!("{} already in condition", path));
+                }
+                if value.len() < 256 {
+                    for (dest, src) in self.file.path.iter_mut().zip(value.as_bytes().iter()) {
+                        *dest = *src as _;
+                    }
+                    self.file.path___operator = operator_to_constant(operator);
+                    Ok(())
+                } else {
+                    Err(format!("file.path is too long, maximum 256 characters, given value is {} characters", value.len()))
+                }
+            },
             _ => Err(format!("string field named {} not found in schema", path)),
         }
     }
@@ -465,7 +493,7 @@ pub struct BpfQueryWriter<'a> {
     table: String,
     write_query_bprm_check_security_event_t: InnerBpfQueryWriter<query_bpf_bprm_check_security_event_t>,
     write_query_path_rename_event_t: InnerBpfQueryWriter<query_bpf_path_rename_event_t>,
-    write_query_path_unlink_event_t: InnerBpfQueryWriter<query_bpf_path_unlink_event_t>,
+    write_query_inode_unlink_event_t: InnerBpfQueryWriter<query_bpf_inode_unlink_event_t>,
     probe: Option<&'a super::Probe<'a>>,
 }
 
@@ -483,8 +511,8 @@ impl<'a> BpfQueryWriter<'a> {
                 operation,
                 8,
             ),
-            write_query_path_unlink_event_t: InnerBpfQueryWriter::<query_bpf_path_unlink_event_t>::new(
-                "path_unlink".into(),
+            write_query_inode_unlink_event_t: InnerBpfQueryWriter::<query_bpf_inode_unlink_event_t>::new(
+                "inode_unlink".into(),
                 operation,
                 8,
             ),
@@ -503,7 +531,7 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
         match self.table.as_str() {
             "bprm_check_security" => self.write_query_bprm_check_security_event_t.write_statement(field, operator, atom),
             "path_rename" => self.write_query_path_rename_event_t.write_statement(field, operator, atom),
-            "path_unlink" => self.write_query_path_unlink_event_t.write_statement(field, operator, atom),
+            "inode_unlink" => self.write_query_inode_unlink_event_t.write_statement(field, operator, atom),
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
@@ -512,7 +540,7 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
         match self.table.as_str() {
             "bprm_check_security" => self.write_query_bprm_check_security_event_t.start_new_clause(),
             "path_rename" => self.write_query_path_rename_event_t.start_new_clause(),
-            "path_unlink" => self.write_query_path_unlink_event_t.start_new_clause(),
+            "inode_unlink" => self.write_query_inode_unlink_event_t.start_new_clause(),
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
@@ -521,7 +549,7 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
         match self.table.as_str() {
             "bprm_check_security" => self.write_query_bprm_check_security_event_t.write_absolute(value),
             "path_rename" => self.write_query_path_rename_event_t.write_absolute(value),
-            "path_unlink" => self.write_query_path_unlink_event_t.write_absolute(value),
+            "inode_unlink" => self.write_query_inode_unlink_event_t.write_absolute(value),
             _ => Err(format!("invalid table name {}", self.table)),
         }
     }
@@ -531,7 +559,7 @@ impl<'b> QueryWriter for BpfQueryWriter<'b> {
             Some(probe) => match self.table.as_str() {
                 "bprm_check_security" => self.write_query_bprm_check_security_event_t.flush_probe(probe),
                 "path_rename" => self.write_query_path_rename_event_t.flush_probe(probe),
-                "path_unlink" => self.write_query_path_unlink_event_t.flush_probe(probe),
+                "inode_unlink" => self.write_query_inode_unlink_event_t.flush_probe(probe),
                 _ => Err(format!("invalid table name {}", self.table)),
             },
             _ => Ok(())

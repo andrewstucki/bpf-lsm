@@ -12,7 +12,8 @@ from jinja2 import Template
 CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
 SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "schemas"))
 OUTPUT_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "src"))
-BPF_MODULES = ["bprm_check_security", "path_rename", "path_unlink"]
+LSM_MODULES = ["bprm_check_security", "path_rename", "inode_unlink"]
+SLEEPABLE_LSM_MODULES = ["inode_getattr"]
 TRACEPOINTS = [
     ("syscalls", "sys_enter_execve"),
     ("syscalls", "sys_exit_fork"),
@@ -368,11 +369,11 @@ class Module:
 
 if __name__ == "__main__":
     schema_files = [
-        path.join(SCHEMAS_DIRECTORY, "%s.yml" % f) for f in BPF_MODULES
+        path.join(SCHEMAS_DIRECTORY, "%s.yml" % f) for f in LSM_MODULES
     ]
     modules = [Module(f) for f in schema_files]
     tracepoints = [Tracepoint(family, hook) for (family, hook) in TRACEPOINTS]
     all_hooks = ", ".join([m.name
-                           for m in modules] + [t.hook for t in tracepoints])
+                           for m in modules] + [t.hook for t in tracepoints] + SLEEPABLE_LSM_MODULES)
     event_hooks = ", ".join([m.name for m in modules])
     render(all_hooks, event_hooks, modules, tracepoints)

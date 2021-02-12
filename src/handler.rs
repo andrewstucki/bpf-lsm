@@ -1,5 +1,5 @@
 use probe_sys::{
-    BprmCheckSecurityEvent, PathRenameEvent, PathUnlinkEvent, ProbeHandler, SerializableEvent,
+    BprmCheckSecurityEvent, PathRenameEvent, InodeUnlinkEvent, ProbeHandler, SerializableEvent,
     SerializableResult, TransformationHandler,
 };
 use uuid::Uuid;
@@ -57,6 +57,19 @@ impl TransformationHandler for Handler {
         Ok(e)
     }
 
+    fn enrich_inode_unlink<'a>(
+        &self,
+        e: &'a mut InodeUnlinkEvent,
+    ) -> SerializableResult<&'a mut InodeUnlinkEvent> {
+        let event = e.event.get_mut_ref();
+        event.set_kind("event".to_string());
+        event.set_category("file".to_string());
+        event.set_field_type("info".to_string());
+        event.set_module("bpf-lsm".to_string());
+        event.set_provider("inode-unlink".to_string());
+        Ok(e)
+    }
+
     fn enrich_path_rename<'a>(
         &self,
         e: &'a mut PathRenameEvent,
@@ -67,19 +80,6 @@ impl TransformationHandler for Handler {
         event.set_field_type("change".to_string());
         event.set_module("bpf-lsm".to_string());
         event.set_provider("path-rename".to_string());
-        Ok(e)
-    }
-
-    fn enrich_path_unlink<'a>(
-        &self,
-        e: &'a mut PathUnlinkEvent,
-    ) -> SerializableResult<&'a mut PathUnlinkEvent> {
-        let event = e.event.get_mut_ref();
-        event.set_kind("event".to_string());
-        event.set_category("file".to_string());
-        event.set_field_type("info".to_string());
-        event.set_module("bpf-lsm".to_string());
-        event.set_provider("path-unlink".to_string());
         Ok(e)
     }
 }

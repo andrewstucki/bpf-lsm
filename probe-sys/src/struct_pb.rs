@@ -6760,7 +6760,7 @@ impl ::protobuf::reflect::ProtobufValue for PathRenameEvent {
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventEvent {
+pub struct InodeUnlinkEventEvent {
     // message fields
     id: ::std::option::Option<::std::string::String>,
     kind: ::std::option::Option<::std::string::String>,
@@ -6776,14 +6776,14 @@ pub struct PathUnlinkEventEvent {
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventEvent {
-    fn default() -> &'a PathUnlinkEventEvent {
-        <PathUnlinkEventEvent as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventEvent {
+    fn default() -> &'a InodeUnlinkEventEvent {
+        <InodeUnlinkEventEvent as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventEvent {
-    pub fn new() -> PathUnlinkEventEvent {
+impl InodeUnlinkEventEvent {
+    pub fn new() -> InodeUnlinkEventEvent {
         ::std::default::Default::default()
     }
 
@@ -7081,67 +7081,67 @@ impl PathUnlinkEventEvent {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "id",
-            |m: &PathUnlinkEventEvent| { &m.id },
-            |m: &mut PathUnlinkEventEvent| { &mut m.id },
-            PathUnlinkEventEvent::get_id,
+            |m: &InodeUnlinkEventEvent| { &m.id },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.id },
+            InodeUnlinkEventEvent::get_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "kind",
-            |m: &PathUnlinkEventEvent| { &m.kind },
-            |m: &mut PathUnlinkEventEvent| { &mut m.kind },
-            PathUnlinkEventEvent::get_kind,
+            |m: &InodeUnlinkEventEvent| { &m.kind },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.kind },
+            InodeUnlinkEventEvent::get_kind,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "category",
-            |m: &PathUnlinkEventEvent| { &m.category },
-            |m: &mut PathUnlinkEventEvent| { &mut m.category },
-            PathUnlinkEventEvent::get_category,
+            |m: &InodeUnlinkEventEvent| { &m.category },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.category },
+            InodeUnlinkEventEvent::get_category,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "action",
-            |m: &PathUnlinkEventEvent| { &m.action },
-            |m: &mut PathUnlinkEventEvent| { &mut m.action },
-            PathUnlinkEventEvent::get_action,
+            |m: &InodeUnlinkEventEvent| { &m.action },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.action },
+            InodeUnlinkEventEvent::get_action,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "field_type",
-            |m: &PathUnlinkEventEvent| { &m.field_type },
-            |m: &mut PathUnlinkEventEvent| { &mut m.field_type },
-            PathUnlinkEventEvent::get_field_type,
+            |m: &InodeUnlinkEventEvent| { &m.field_type },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.field_type },
+            InodeUnlinkEventEvent::get_field_type,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "module",
-            |m: &PathUnlinkEventEvent| { &m.module },
-            |m: &mut PathUnlinkEventEvent| { &mut m.module },
-            PathUnlinkEventEvent::get_module,
+            |m: &InodeUnlinkEventEvent| { &m.module },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.module },
+            InodeUnlinkEventEvent::get_module,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "provider",
-            |m: &PathUnlinkEventEvent| { &m.provider },
-            |m: &mut PathUnlinkEventEvent| { &mut m.provider },
-            PathUnlinkEventEvent::get_provider,
+            |m: &InodeUnlinkEventEvent| { &m.provider },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.provider },
+            InodeUnlinkEventEvent::get_provider,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "sequence",
-            |m: &PathUnlinkEventEvent| { &m.sequence },
-            |m: &mut PathUnlinkEventEvent| { &mut m.sequence },
-            PathUnlinkEventEvent::get_sequence,
+            |m: &InodeUnlinkEventEvent| { &m.sequence },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.sequence },
+            InodeUnlinkEventEvent::get_sequence,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "ingested",
-            |m: &PathUnlinkEventEvent| { &m.ingested },
-            |m: &mut PathUnlinkEventEvent| { &mut m.ingested },
-            PathUnlinkEventEvent::get_ingested,
+            |m: &InodeUnlinkEventEvent| { &m.ingested },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.ingested },
+            InodeUnlinkEventEvent::get_ingested,
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventEvent>(
-            "PathUnlinkEventEvent",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventEvent>(
+            "InodeUnlinkEventEvent",
             20,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventEvent {
+impl ::protobuf::Message for InodeUnlinkEventEvent {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -7292,16 +7292,16 @@ impl ::protobuf::Message for PathUnlinkEventEvent {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventEvent {
-        PathUnlinkEventEvent::new()
+    fn new() -> InodeUnlinkEventEvent {
+        InodeUnlinkEventEvent::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 20)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventEvent {
-        static instance: PathUnlinkEventEvent = PathUnlinkEventEvent {
+    fn default_instance() -> &'static InodeUnlinkEventEvent {
+        static instance: InodeUnlinkEventEvent = InodeUnlinkEventEvent {
             id: ::std::option::Option::None,
             kind: ::std::option::Option::None,
             category: ::std::option::Option::None,
@@ -7318,7 +7318,7 @@ impl ::protobuf::Message for PathUnlinkEventEvent {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventEvent {
+impl ::protobuf::Clear for InodeUnlinkEventEvent {
     fn clear(&mut self) {
         self.id = ::std::option::Option::None;
         self.kind = ::std::option::Option::None;
@@ -7333,18 +7333,18 @@ impl ::protobuf::Clear for PathUnlinkEventEvent {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventEvent {
+impl ::std::fmt::Debug for InodeUnlinkEventEvent {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventEvent {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventEvent {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventHostOs {
+pub struct InodeUnlinkEventHostOs {
     // message fields
     field_type: ::std::option::Option<::std::string::String>,
     name: ::std::option::Option<::std::string::String>,
@@ -7354,14 +7354,14 @@ pub struct PathUnlinkEventHostOs {
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventHostOs {
-    fn default() -> &'a PathUnlinkEventHostOs {
-        <PathUnlinkEventHostOs as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventHostOs {
+    fn default() -> &'a InodeUnlinkEventHostOs {
+        <InodeUnlinkEventHostOs as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventHostOs {
-    pub fn new() -> PathUnlinkEventHostOs {
+impl InodeUnlinkEventHostOs {
+    pub fn new() -> InodeUnlinkEventHostOs {
         ::std::default::Default::default()
     }
 
@@ -7477,31 +7477,31 @@ impl PathUnlinkEventHostOs {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "field_type",
-            |m: &PathUnlinkEventHostOs| { &m.field_type },
-            |m: &mut PathUnlinkEventHostOs| { &mut m.field_type },
-            PathUnlinkEventHostOs::get_field_type,
+            |m: &InodeUnlinkEventHostOs| { &m.field_type },
+            |m: &mut InodeUnlinkEventHostOs| { &mut m.field_type },
+            InodeUnlinkEventHostOs::get_field_type,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "name",
-            |m: &PathUnlinkEventHostOs| { &m.name },
-            |m: &mut PathUnlinkEventHostOs| { &mut m.name },
-            PathUnlinkEventHostOs::get_name,
+            |m: &InodeUnlinkEventHostOs| { &m.name },
+            |m: &mut InodeUnlinkEventHostOs| { &mut m.name },
+            InodeUnlinkEventHostOs::get_name,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "kernel",
-            |m: &PathUnlinkEventHostOs| { &m.kernel },
-            |m: &mut PathUnlinkEventHostOs| { &mut m.kernel },
-            PathUnlinkEventHostOs::get_kernel,
+            |m: &InodeUnlinkEventHostOs| { &m.kernel },
+            |m: &mut InodeUnlinkEventHostOs| { &mut m.kernel },
+            InodeUnlinkEventHostOs::get_kernel,
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventHostOs>(
-            "PathUnlinkEventHostOs",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventHostOs>(
+            "InodeUnlinkEventHostOs",
             21,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventHostOs {
+impl ::protobuf::Message for InodeUnlinkEventHostOs {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -7580,16 +7580,16 @@ impl ::protobuf::Message for PathUnlinkEventHostOs {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventHostOs {
-        PathUnlinkEventHostOs::new()
+    fn new() -> InodeUnlinkEventHostOs {
+        InodeUnlinkEventHostOs::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 21)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventHostOs {
-        static instance: PathUnlinkEventHostOs = PathUnlinkEventHostOs {
+    fn default_instance() -> &'static InodeUnlinkEventHostOs {
+        static instance: InodeUnlinkEventHostOs = InodeUnlinkEventHostOs {
             field_type: ::std::option::Option::None,
             name: ::std::option::Option::None,
             kernel: ::std::option::Option::None,
@@ -7600,7 +7600,7 @@ impl ::protobuf::Message for PathUnlinkEventHostOs {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventHostOs {
+impl ::protobuf::Clear for InodeUnlinkEventHostOs {
     fn clear(&mut self) {
         self.field_type = ::std::option::Option::None;
         self.name = ::std::option::Option::None;
@@ -7609,37 +7609,37 @@ impl ::protobuf::Clear for PathUnlinkEventHostOs {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventHostOs {
+impl ::std::fmt::Debug for InodeUnlinkEventHostOs {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventHostOs {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventHostOs {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventHost {
+pub struct InodeUnlinkEventHost {
     // message fields
     hostname: ::std::option::Option<::std::string::String>,
     pub ip: ::std::vec::Vec<::std::string::String>,
     pub mac: ::std::vec::Vec<::std::string::String>,
     uptime: ::std::option::Option<u64>,
-    pub os: ::protobuf::MessageField<PathUnlinkEventHostOs>,
+    pub os: ::protobuf::MessageField<InodeUnlinkEventHostOs>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventHost {
-    fn default() -> &'a PathUnlinkEventHost {
-        <PathUnlinkEventHost as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventHost {
+    fn default() -> &'a InodeUnlinkEventHost {
+        <InodeUnlinkEventHost as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventHost {
-    pub fn new() -> PathUnlinkEventHost {
+impl InodeUnlinkEventHost {
+    pub fn new() -> InodeUnlinkEventHost {
         ::std::default::Default::default()
     }
 
@@ -7702,40 +7702,40 @@ impl PathUnlinkEventHost {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "hostname",
-            |m: &PathUnlinkEventHost| { &m.hostname },
-            |m: &mut PathUnlinkEventHost| { &mut m.hostname },
-            PathUnlinkEventHost::get_hostname,
+            |m: &InodeUnlinkEventHost| { &m.hostname },
+            |m: &mut InodeUnlinkEventHost| { &mut m.hostname },
+            InodeUnlinkEventHost::get_hostname,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
             "ip",
-            |m: &PathUnlinkEventHost| { &m.ip },
-            |m: &mut PathUnlinkEventHost| { &mut m.ip },
+            |m: &InodeUnlinkEventHost| { &m.ip },
+            |m: &mut InodeUnlinkEventHost| { &mut m.ip },
         ));
         fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
             "mac",
-            |m: &PathUnlinkEventHost| { &m.mac },
-            |m: &mut PathUnlinkEventHost| { &mut m.mac },
+            |m: &InodeUnlinkEventHost| { &m.mac },
+            |m: &mut InodeUnlinkEventHost| { &mut m.mac },
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "uptime",
-            |m: &PathUnlinkEventHost| { &m.uptime },
-            |m: &mut PathUnlinkEventHost| { &mut m.uptime },
-            PathUnlinkEventHost::get_uptime,
+            |m: &InodeUnlinkEventHost| { &m.uptime },
+            |m: &mut InodeUnlinkEventHost| { &mut m.uptime },
+            InodeUnlinkEventHost::get_uptime,
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventHostOs>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventHostOs>(
             "os",
-            |m: &PathUnlinkEventHost| { &m.os },
-            |m: &mut PathUnlinkEventHost| { &mut m.os },
+            |m: &InodeUnlinkEventHost| { &m.os },
+            |m: &mut InodeUnlinkEventHost| { &mut m.os },
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventHost>(
-            "PathUnlinkEventHost",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventHost>(
+            "InodeUnlinkEventHost",
             22,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventHost {
+impl ::protobuf::Message for InodeUnlinkEventHost {
     fn is_initialized(&self) -> bool {
         for v in &self.os {
             if !v.is_initialized() {
@@ -7835,16 +7835,16 @@ impl ::protobuf::Message for PathUnlinkEventHost {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventHost {
-        PathUnlinkEventHost::new()
+    fn new() -> InodeUnlinkEventHost {
+        InodeUnlinkEventHost::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 22)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventHost {
-        static instance: PathUnlinkEventHost = PathUnlinkEventHost {
+    fn default_instance() -> &'static InodeUnlinkEventHost {
+        static instance: InodeUnlinkEventHost = InodeUnlinkEventHost {
             hostname: ::std::option::Option::None,
             ip: ::std::vec::Vec::new(),
             mac: ::std::vec::Vec::new(),
@@ -7857,7 +7857,7 @@ impl ::protobuf::Message for PathUnlinkEventHost {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventHost {
+impl ::protobuf::Clear for InodeUnlinkEventHost {
     fn clear(&mut self) {
         self.hostname = ::std::option::Option::None;
         self.ip.clear();
@@ -7868,18 +7868,18 @@ impl ::protobuf::Clear for PathUnlinkEventHost {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventHost {
+impl ::std::fmt::Debug for InodeUnlinkEventHost {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventHost {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventHost {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventProcessParent {
+pub struct InodeUnlinkEventProcessParent {
     // message fields
     pid: ::std::option::Option<u32>,
     entity_id: ::std::option::Option<::std::string::String>,
@@ -7895,14 +7895,14 @@ pub struct PathUnlinkEventProcessParent {
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventProcessParent {
-    fn default() -> &'a PathUnlinkEventProcessParent {
-        <PathUnlinkEventProcessParent as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventProcessParent {
+    fn default() -> &'a InodeUnlinkEventProcessParent {
+        <InodeUnlinkEventProcessParent as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventProcessParent {
-    pub fn new() -> PathUnlinkEventProcessParent {
+impl InodeUnlinkEventProcessParent {
+    pub fn new() -> InodeUnlinkEventProcessParent {
         ::std::default::Default::default()
     }
 
@@ -8113,66 +8113,66 @@ impl PathUnlinkEventProcessParent {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "pid",
-            |m: &PathUnlinkEventProcessParent| { &m.pid },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.pid },
-            PathUnlinkEventProcessParent::get_pid,
+            |m: &InodeUnlinkEventProcessParent| { &m.pid },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.pid },
+            InodeUnlinkEventProcessParent::get_pid,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "entity_id",
-            |m: &PathUnlinkEventProcessParent| { &m.entity_id },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.entity_id },
-            PathUnlinkEventProcessParent::get_entity_id,
+            |m: &InodeUnlinkEventProcessParent| { &m.entity_id },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.entity_id },
+            InodeUnlinkEventProcessParent::get_entity_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "name",
-            |m: &PathUnlinkEventProcessParent| { &m.name },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.name },
-            PathUnlinkEventProcessParent::get_name,
+            |m: &InodeUnlinkEventProcessParent| { &m.name },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.name },
+            InodeUnlinkEventProcessParent::get_name,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "args_count",
-            |m: &PathUnlinkEventProcessParent| { &m.args_count },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.args_count },
-            PathUnlinkEventProcessParent::get_args_count,
+            |m: &InodeUnlinkEventProcessParent| { &m.args_count },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.args_count },
+            InodeUnlinkEventProcessParent::get_args_count,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
             "args",
-            |m: &PathUnlinkEventProcessParent| { &m.args },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.args },
+            |m: &InodeUnlinkEventProcessParent| { &m.args },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.args },
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "ppid",
-            |m: &PathUnlinkEventProcessParent| { &m.ppid },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.ppid },
-            PathUnlinkEventProcessParent::get_ppid,
+            |m: &InodeUnlinkEventProcessParent| { &m.ppid },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.ppid },
+            InodeUnlinkEventProcessParent::get_ppid,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "start",
-            |m: &PathUnlinkEventProcessParent| { &m.start },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.start },
-            PathUnlinkEventProcessParent::get_start,
+            |m: &InodeUnlinkEventProcessParent| { &m.start },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.start },
+            InodeUnlinkEventProcessParent::get_start,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "thread_id",
-            |m: &PathUnlinkEventProcessParent| { &m.thread_id },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.thread_id },
-            PathUnlinkEventProcessParent::get_thread_id,
+            |m: &InodeUnlinkEventProcessParent| { &m.thread_id },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.thread_id },
+            InodeUnlinkEventProcessParent::get_thread_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "executable",
-            |m: &PathUnlinkEventProcessParent| { &m.executable },
-            |m: &mut PathUnlinkEventProcessParent| { &mut m.executable },
-            PathUnlinkEventProcessParent::get_executable,
+            |m: &InodeUnlinkEventProcessParent| { &m.executable },
+            |m: &mut InodeUnlinkEventProcessParent| { &mut m.executable },
+            InodeUnlinkEventProcessParent::get_executable,
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventProcessParent>(
-            "PathUnlinkEventProcessParent",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventProcessParent>(
+            "InodeUnlinkEventProcessParent",
             23,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventProcessParent {
+impl ::protobuf::Message for InodeUnlinkEventProcessParent {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -8320,16 +8320,16 @@ impl ::protobuf::Message for PathUnlinkEventProcessParent {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventProcessParent {
-        PathUnlinkEventProcessParent::new()
+    fn new() -> InodeUnlinkEventProcessParent {
+        InodeUnlinkEventProcessParent::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 23)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventProcessParent {
-        static instance: PathUnlinkEventProcessParent = PathUnlinkEventProcessParent {
+    fn default_instance() -> &'static InodeUnlinkEventProcessParent {
+        static instance: InodeUnlinkEventProcessParent = InodeUnlinkEventProcessParent {
             pid: ::std::option::Option::None,
             entity_id: ::std::option::Option::None,
             name: ::std::option::Option::None,
@@ -8346,7 +8346,7 @@ impl ::protobuf::Message for PathUnlinkEventProcessParent {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventProcessParent {
+impl ::protobuf::Clear for InodeUnlinkEventProcessParent {
     fn clear(&mut self) {
         self.pid = ::std::option::Option::None;
         self.entity_id = ::std::option::Option::None;
@@ -8361,18 +8361,18 @@ impl ::protobuf::Clear for PathUnlinkEventProcessParent {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventProcessParent {
+impl ::std::fmt::Debug for InodeUnlinkEventProcessParent {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventProcessParent {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventProcessParent {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventProcess {
+pub struct InodeUnlinkEventProcess {
     // message fields
     pid: ::std::option::Option<u32>,
     entity_id: ::std::option::Option<::std::string::String>,
@@ -8384,20 +8384,20 @@ pub struct PathUnlinkEventProcess {
     thread_id: ::std::option::Option<u64>,
     command_line: ::std::option::Option<::std::string::String>,
     pub args: ::std::vec::Vec<::std::string::String>,
-    pub parent: ::protobuf::MessageField<PathUnlinkEventProcessParent>,
+    pub parent: ::protobuf::MessageField<InodeUnlinkEventProcessParent>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventProcess {
-    fn default() -> &'a PathUnlinkEventProcess {
-        <PathUnlinkEventProcess as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventProcess {
+    fn default() -> &'a InodeUnlinkEventProcess {
+        <InodeUnlinkEventProcess as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventProcess {
-    pub fn new() -> PathUnlinkEventProcess {
+impl InodeUnlinkEventProcess {
+    pub fn new() -> InodeUnlinkEventProcess {
         ::std::default::Default::default()
     }
 
@@ -8644,77 +8644,77 @@ impl PathUnlinkEventProcess {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "pid",
-            |m: &PathUnlinkEventProcess| { &m.pid },
-            |m: &mut PathUnlinkEventProcess| { &mut m.pid },
-            PathUnlinkEventProcess::get_pid,
+            |m: &InodeUnlinkEventProcess| { &m.pid },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.pid },
+            InodeUnlinkEventProcess::get_pid,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "entity_id",
-            |m: &PathUnlinkEventProcess| { &m.entity_id },
-            |m: &mut PathUnlinkEventProcess| { &mut m.entity_id },
-            PathUnlinkEventProcess::get_entity_id,
+            |m: &InodeUnlinkEventProcess| { &m.entity_id },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.entity_id },
+            InodeUnlinkEventProcess::get_entity_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "name",
-            |m: &PathUnlinkEventProcess| { &m.name },
-            |m: &mut PathUnlinkEventProcess| { &mut m.name },
-            PathUnlinkEventProcess::get_name,
+            |m: &InodeUnlinkEventProcess| { &m.name },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.name },
+            InodeUnlinkEventProcess::get_name,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "ppid",
-            |m: &PathUnlinkEventProcess| { &m.ppid },
-            |m: &mut PathUnlinkEventProcess| { &mut m.ppid },
-            PathUnlinkEventProcess::get_ppid,
+            |m: &InodeUnlinkEventProcess| { &m.ppid },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.ppid },
+            InodeUnlinkEventProcess::get_ppid,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "executable",
-            |m: &PathUnlinkEventProcess| { &m.executable },
-            |m: &mut PathUnlinkEventProcess| { &mut m.executable },
-            PathUnlinkEventProcess::get_executable,
+            |m: &InodeUnlinkEventProcess| { &m.executable },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.executable },
+            InodeUnlinkEventProcess::get_executable,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "args_count",
-            |m: &PathUnlinkEventProcess| { &m.args_count },
-            |m: &mut PathUnlinkEventProcess| { &mut m.args_count },
-            PathUnlinkEventProcess::get_args_count,
+            |m: &InodeUnlinkEventProcess| { &m.args_count },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.args_count },
+            InodeUnlinkEventProcess::get_args_count,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "start",
-            |m: &PathUnlinkEventProcess| { &m.start },
-            |m: &mut PathUnlinkEventProcess| { &mut m.start },
-            PathUnlinkEventProcess::get_start,
+            |m: &InodeUnlinkEventProcess| { &m.start },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.start },
+            InodeUnlinkEventProcess::get_start,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "thread_id",
-            |m: &PathUnlinkEventProcess| { &m.thread_id },
-            |m: &mut PathUnlinkEventProcess| { &mut m.thread_id },
-            PathUnlinkEventProcess::get_thread_id,
+            |m: &InodeUnlinkEventProcess| { &m.thread_id },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.thread_id },
+            InodeUnlinkEventProcess::get_thread_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "command_line",
-            |m: &PathUnlinkEventProcess| { &m.command_line },
-            |m: &mut PathUnlinkEventProcess| { &mut m.command_line },
-            PathUnlinkEventProcess::get_command_line,
+            |m: &InodeUnlinkEventProcess| { &m.command_line },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.command_line },
+            InodeUnlinkEventProcess::get_command_line,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
             "args",
-            |m: &PathUnlinkEventProcess| { &m.args },
-            |m: &mut PathUnlinkEventProcess| { &mut m.args },
+            |m: &InodeUnlinkEventProcess| { &m.args },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.args },
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventProcessParent>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventProcessParent>(
             "parent",
-            |m: &PathUnlinkEventProcess| { &m.parent },
-            |m: &mut PathUnlinkEventProcess| { &mut m.parent },
+            |m: &InodeUnlinkEventProcess| { &m.parent },
+            |m: &mut InodeUnlinkEventProcess| { &mut m.parent },
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventProcess>(
-            "PathUnlinkEventProcess",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventProcess>(
+            "InodeUnlinkEventProcess",
             24,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventProcess {
+impl ::protobuf::Message for InodeUnlinkEventProcess {
     fn is_initialized(&self) -> bool {
         for v in &self.parent {
             if !v.is_initialized() {
@@ -8889,16 +8889,16 @@ impl ::protobuf::Message for PathUnlinkEventProcess {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventProcess {
-        PathUnlinkEventProcess::new()
+    fn new() -> InodeUnlinkEventProcess {
+        InodeUnlinkEventProcess::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 24)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventProcess {
-        static instance: PathUnlinkEventProcess = PathUnlinkEventProcess {
+    fn default_instance() -> &'static InodeUnlinkEventProcess {
+        static instance: InodeUnlinkEventProcess = InodeUnlinkEventProcess {
             pid: ::std::option::Option::None,
             entity_id: ::std::option::Option::None,
             name: ::std::option::Option::None,
@@ -8917,7 +8917,7 @@ impl ::protobuf::Message for PathUnlinkEventProcess {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventProcess {
+impl ::protobuf::Clear for InodeUnlinkEventProcess {
     fn clear(&mut self) {
         self.pid = ::std::option::Option::None;
         self.entity_id = ::std::option::Option::None;
@@ -8934,18 +8934,18 @@ impl ::protobuf::Clear for PathUnlinkEventProcess {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventProcess {
+impl ::std::fmt::Debug for InodeUnlinkEventProcess {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventProcess {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventProcess {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventUserGroup {
+pub struct InodeUnlinkEventUserGroup {
     // message fields
     id: ::std::option::Option<::std::string::String>,
     name: ::std::option::Option<::std::string::String>,
@@ -8954,14 +8954,14 @@ pub struct PathUnlinkEventUserGroup {
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventUserGroup {
-    fn default() -> &'a PathUnlinkEventUserGroup {
-        <PathUnlinkEventUserGroup as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventUserGroup {
+    fn default() -> &'a InodeUnlinkEventUserGroup {
+        <InodeUnlinkEventUserGroup as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventUserGroup {
-    pub fn new() -> PathUnlinkEventUserGroup {
+impl InodeUnlinkEventUserGroup {
+    pub fn new() -> InodeUnlinkEventUserGroup {
         ::std::default::Default::default()
     }
 
@@ -9041,25 +9041,25 @@ impl PathUnlinkEventUserGroup {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "id",
-            |m: &PathUnlinkEventUserGroup| { &m.id },
-            |m: &mut PathUnlinkEventUserGroup| { &mut m.id },
-            PathUnlinkEventUserGroup::get_id,
+            |m: &InodeUnlinkEventUserGroup| { &m.id },
+            |m: &mut InodeUnlinkEventUserGroup| { &mut m.id },
+            InodeUnlinkEventUserGroup::get_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "name",
-            |m: &PathUnlinkEventUserGroup| { &m.name },
-            |m: &mut PathUnlinkEventUserGroup| { &mut m.name },
-            PathUnlinkEventUserGroup::get_name,
+            |m: &InodeUnlinkEventUserGroup| { &m.name },
+            |m: &mut InodeUnlinkEventUserGroup| { &mut m.name },
+            InodeUnlinkEventUserGroup::get_name,
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserGroup>(
-            "PathUnlinkEventUserGroup",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventUserGroup>(
+            "InodeUnlinkEventUserGroup",
             25,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventUserGroup {
+impl ::protobuf::Message for InodeUnlinkEventUserGroup {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -9126,16 +9126,16 @@ impl ::protobuf::Message for PathUnlinkEventUserGroup {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventUserGroup {
-        PathUnlinkEventUserGroup::new()
+    fn new() -> InodeUnlinkEventUserGroup {
+        InodeUnlinkEventUserGroup::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 25)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventUserGroup {
-        static instance: PathUnlinkEventUserGroup = PathUnlinkEventUserGroup {
+    fn default_instance() -> &'static InodeUnlinkEventUserGroup {
+        static instance: InodeUnlinkEventUserGroup = InodeUnlinkEventUserGroup {
             id: ::std::option::Option::None,
             name: ::std::option::Option::None,
             unknown_fields: ::protobuf::UnknownFields::new(),
@@ -9145,7 +9145,7 @@ impl ::protobuf::Message for PathUnlinkEventUserGroup {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventUserGroup {
+impl ::protobuf::Clear for InodeUnlinkEventUserGroup {
     fn clear(&mut self) {
         self.id = ::std::option::Option::None;
         self.name = ::std::option::Option::None;
@@ -9153,18 +9153,18 @@ impl ::protobuf::Clear for PathUnlinkEventUserGroup {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventUserGroup {
+impl ::std::fmt::Debug for InodeUnlinkEventUserGroup {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventUserGroup {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventUserGroup {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventUserEffectiveGroup {
+pub struct InodeUnlinkEventUserEffectiveGroup {
     // message fields
     id: ::std::option::Option<::std::string::String>,
     name: ::std::option::Option<::std::string::String>,
@@ -9173,14 +9173,14 @@ pub struct PathUnlinkEventUserEffectiveGroup {
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventUserEffectiveGroup {
-    fn default() -> &'a PathUnlinkEventUserEffectiveGroup {
-        <PathUnlinkEventUserEffectiveGroup as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventUserEffectiveGroup {
+    fn default() -> &'a InodeUnlinkEventUserEffectiveGroup {
+        <InodeUnlinkEventUserEffectiveGroup as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventUserEffectiveGroup {
-    pub fn new() -> PathUnlinkEventUserEffectiveGroup {
+impl InodeUnlinkEventUserEffectiveGroup {
+    pub fn new() -> InodeUnlinkEventUserEffectiveGroup {
         ::std::default::Default::default()
     }
 
@@ -9260,25 +9260,25 @@ impl PathUnlinkEventUserEffectiveGroup {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "id",
-            |m: &PathUnlinkEventUserEffectiveGroup| { &m.id },
-            |m: &mut PathUnlinkEventUserEffectiveGroup| { &mut m.id },
-            PathUnlinkEventUserEffectiveGroup::get_id,
+            |m: &InodeUnlinkEventUserEffectiveGroup| { &m.id },
+            |m: &mut InodeUnlinkEventUserEffectiveGroup| { &mut m.id },
+            InodeUnlinkEventUserEffectiveGroup::get_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "name",
-            |m: &PathUnlinkEventUserEffectiveGroup| { &m.name },
-            |m: &mut PathUnlinkEventUserEffectiveGroup| { &mut m.name },
-            PathUnlinkEventUserEffectiveGroup::get_name,
+            |m: &InodeUnlinkEventUserEffectiveGroup| { &m.name },
+            |m: &mut InodeUnlinkEventUserEffectiveGroup| { &mut m.name },
+            InodeUnlinkEventUserEffectiveGroup::get_name,
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserEffectiveGroup>(
-            "PathUnlinkEventUserEffectiveGroup",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventUserEffectiveGroup>(
+            "InodeUnlinkEventUserEffectiveGroup",
             26,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventUserEffectiveGroup {
+impl ::protobuf::Message for InodeUnlinkEventUserEffectiveGroup {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -9345,16 +9345,16 @@ impl ::protobuf::Message for PathUnlinkEventUserEffectiveGroup {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventUserEffectiveGroup {
-        PathUnlinkEventUserEffectiveGroup::new()
+    fn new() -> InodeUnlinkEventUserEffectiveGroup {
+        InodeUnlinkEventUserEffectiveGroup::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 26)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventUserEffectiveGroup {
-        static instance: PathUnlinkEventUserEffectiveGroup = PathUnlinkEventUserEffectiveGroup {
+    fn default_instance() -> &'static InodeUnlinkEventUserEffectiveGroup {
+        static instance: InodeUnlinkEventUserEffectiveGroup = InodeUnlinkEventUserEffectiveGroup {
             id: ::std::option::Option::None,
             name: ::std::option::Option::None,
             unknown_fields: ::protobuf::UnknownFields::new(),
@@ -9364,7 +9364,7 @@ impl ::protobuf::Message for PathUnlinkEventUserEffectiveGroup {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventUserEffectiveGroup {
+impl ::protobuf::Clear for InodeUnlinkEventUserEffectiveGroup {
     fn clear(&mut self) {
         self.id = ::std::option::Option::None;
         self.name = ::std::option::Option::None;
@@ -9372,35 +9372,35 @@ impl ::protobuf::Clear for PathUnlinkEventUserEffectiveGroup {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventUserEffectiveGroup {
+impl ::std::fmt::Debug for InodeUnlinkEventUserEffectiveGroup {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventUserEffectiveGroup {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventUserEffectiveGroup {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventUserEffective {
+pub struct InodeUnlinkEventUserEffective {
     // message fields
     id: ::std::option::Option<::std::string::String>,
     name: ::std::option::Option<::std::string::String>,
-    pub group: ::protobuf::MessageField<PathUnlinkEventUserEffectiveGroup>,
+    pub group: ::protobuf::MessageField<InodeUnlinkEventUserEffectiveGroup>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventUserEffective {
-    fn default() -> &'a PathUnlinkEventUserEffective {
-        <PathUnlinkEventUserEffective as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventUserEffective {
+    fn default() -> &'a InodeUnlinkEventUserEffective {
+        <InodeUnlinkEventUserEffective as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventUserEffective {
-    pub fn new() -> PathUnlinkEventUserEffective {
+impl InodeUnlinkEventUserEffective {
+    pub fn new() -> InodeUnlinkEventUserEffective {
         ::std::default::Default::default()
     }
 
@@ -9480,30 +9480,30 @@ impl PathUnlinkEventUserEffective {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "id",
-            |m: &PathUnlinkEventUserEffective| { &m.id },
-            |m: &mut PathUnlinkEventUserEffective| { &mut m.id },
-            PathUnlinkEventUserEffective::get_id,
+            |m: &InodeUnlinkEventUserEffective| { &m.id },
+            |m: &mut InodeUnlinkEventUserEffective| { &mut m.id },
+            InodeUnlinkEventUserEffective::get_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "name",
-            |m: &PathUnlinkEventUserEffective| { &m.name },
-            |m: &mut PathUnlinkEventUserEffective| { &mut m.name },
-            PathUnlinkEventUserEffective::get_name,
+            |m: &InodeUnlinkEventUserEffective| { &m.name },
+            |m: &mut InodeUnlinkEventUserEffective| { &mut m.name },
+            InodeUnlinkEventUserEffective::get_name,
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventUserEffectiveGroup>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventUserEffectiveGroup>(
             "group",
-            |m: &PathUnlinkEventUserEffective| { &m.group },
-            |m: &mut PathUnlinkEventUserEffective| { &mut m.group },
+            |m: &InodeUnlinkEventUserEffective| { &m.group },
+            |m: &mut InodeUnlinkEventUserEffective| { &mut m.group },
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserEffective>(
-            "PathUnlinkEventUserEffective",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventUserEffective>(
+            "InodeUnlinkEventUserEffective",
             27,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventUserEffective {
+impl ::protobuf::Message for InodeUnlinkEventUserEffective {
     fn is_initialized(&self) -> bool {
         for v in &self.group {
             if !v.is_initialized() {
@@ -9585,16 +9585,16 @@ impl ::protobuf::Message for PathUnlinkEventUserEffective {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventUserEffective {
-        PathUnlinkEventUserEffective::new()
+    fn new() -> InodeUnlinkEventUserEffective {
+        InodeUnlinkEventUserEffective::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 27)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventUserEffective {
-        static instance: PathUnlinkEventUserEffective = PathUnlinkEventUserEffective {
+    fn default_instance() -> &'static InodeUnlinkEventUserEffective {
+        static instance: InodeUnlinkEventUserEffective = InodeUnlinkEventUserEffective {
             id: ::std::option::Option::None,
             name: ::std::option::Option::None,
             group: ::protobuf::MessageField::none(),
@@ -9605,7 +9605,7 @@ impl ::protobuf::Message for PathUnlinkEventUserEffective {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventUserEffective {
+impl ::protobuf::Clear for InodeUnlinkEventUserEffective {
     fn clear(&mut self) {
         self.id = ::std::option::Option::None;
         self.name = ::std::option::Option::None;
@@ -9614,36 +9614,36 @@ impl ::protobuf::Clear for PathUnlinkEventUserEffective {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventUserEffective {
+impl ::std::fmt::Debug for InodeUnlinkEventUserEffective {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventUserEffective {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventUserEffective {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEventUser {
+pub struct InodeUnlinkEventUser {
     // message fields
     id: ::std::option::Option<::std::string::String>,
     name: ::std::option::Option<::std::string::String>,
-    pub group: ::protobuf::MessageField<PathUnlinkEventUserGroup>,
-    pub effective: ::protobuf::MessageField<PathUnlinkEventUserEffective>,
+    pub group: ::protobuf::MessageField<InodeUnlinkEventUserGroup>,
+    pub effective: ::protobuf::MessageField<InodeUnlinkEventUserEffective>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEventUser {
-    fn default() -> &'a PathUnlinkEventUser {
-        <PathUnlinkEventUser as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventUser {
+    fn default() -> &'a InodeUnlinkEventUser {
+        <InodeUnlinkEventUser as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEventUser {
-    pub fn new() -> PathUnlinkEventUser {
+impl InodeUnlinkEventUser {
+    pub fn new() -> InodeUnlinkEventUser {
         ::std::default::Default::default()
     }
 
@@ -9723,35 +9723,35 @@ impl PathUnlinkEventUser {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "id",
-            |m: &PathUnlinkEventUser| { &m.id },
-            |m: &mut PathUnlinkEventUser| { &mut m.id },
-            PathUnlinkEventUser::get_id,
+            |m: &InodeUnlinkEventUser| { &m.id },
+            |m: &mut InodeUnlinkEventUser| { &mut m.id },
+            InodeUnlinkEventUser::get_id,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "name",
-            |m: &PathUnlinkEventUser| { &m.name },
-            |m: &mut PathUnlinkEventUser| { &mut m.name },
-            PathUnlinkEventUser::get_name,
+            |m: &InodeUnlinkEventUser| { &m.name },
+            |m: &mut InodeUnlinkEventUser| { &mut m.name },
+            InodeUnlinkEventUser::get_name,
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventUserGroup>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventUserGroup>(
             "group",
-            |m: &PathUnlinkEventUser| { &m.group },
-            |m: &mut PathUnlinkEventUser| { &mut m.group },
+            |m: &InodeUnlinkEventUser| { &m.group },
+            |m: &mut InodeUnlinkEventUser| { &mut m.group },
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventUserEffective>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventUserEffective>(
             "effective",
-            |m: &PathUnlinkEventUser| { &m.effective },
-            |m: &mut PathUnlinkEventUser| { &mut m.effective },
+            |m: &InodeUnlinkEventUser| { &m.effective },
+            |m: &mut InodeUnlinkEventUser| { &mut m.effective },
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUser>(
-            "PathUnlinkEventUser",
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventUser>(
+            "InodeUnlinkEventUser",
             28,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEventUser {
+impl ::protobuf::Message for InodeUnlinkEventUser {
     fn is_initialized(&self) -> bool {
         for v in &self.group {
             if !v.is_initialized() {
@@ -9848,16 +9848,16 @@ impl ::protobuf::Message for PathUnlinkEventUser {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEventUser {
-        PathUnlinkEventUser::new()
+    fn new() -> InodeUnlinkEventUser {
+        InodeUnlinkEventUser::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
         ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 28)
     }
 
-    fn default_instance() -> &'static PathUnlinkEventUser {
-        static instance: PathUnlinkEventUser = PathUnlinkEventUser {
+    fn default_instance() -> &'static InodeUnlinkEventUser {
+        static instance: InodeUnlinkEventUser = InodeUnlinkEventUser {
             id: ::std::option::Option::None,
             name: ::std::option::Option::None,
             group: ::protobuf::MessageField::none(),
@@ -9869,7 +9869,7 @@ impl ::protobuf::Message for PathUnlinkEventUser {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEventUser {
+impl ::protobuf::Clear for InodeUnlinkEventUser {
     fn clear(&mut self) {
         self.id = ::std::option::Option::None;
         self.name = ::std::option::Option::None;
@@ -9879,37 +9879,200 @@ impl ::protobuf::Clear for PathUnlinkEventUser {
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEventUser {
+impl ::std::fmt::Debug for InodeUnlinkEventUser {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEventUser {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventUser {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct PathUnlinkEvent {
+pub struct InodeUnlinkEventFile {
     // message fields
-    timestamp: ::std::option::Option<u64>,
-    pub event: ::protobuf::MessageField<PathUnlinkEventEvent>,
-    pub host: ::protobuf::MessageField<PathUnlinkEventHost>,
-    pub process: ::protobuf::MessageField<PathUnlinkEventProcess>,
-    pub user: ::protobuf::MessageField<PathUnlinkEventUser>,
+    path: ::std::option::Option<::std::string::String>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::rt::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a PathUnlinkEvent {
-    fn default() -> &'a PathUnlinkEvent {
-        <PathUnlinkEvent as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a InodeUnlinkEventFile {
+    fn default() -> &'a InodeUnlinkEventFile {
+        <InodeUnlinkEventFile as ::protobuf::Message>::default_instance()
     }
 }
 
-impl PathUnlinkEvent {
-    pub fn new() -> PathUnlinkEvent {
+impl InodeUnlinkEventFile {
+    pub fn new() -> InodeUnlinkEventFile {
+        ::std::default::Default::default()
+    }
+
+    // optional string path = 1;
+
+    pub fn get_path(&self) -> &str {
+        match self.path.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_path(&mut self) {
+        self.path = ::std::option::Option::None;
+    }
+
+    pub fn has_path(&self) -> bool {
+        self.path.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_path(&mut self, v: ::std::string::String) {
+        self.path = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_path(&mut self) -> &mut ::std::string::String {
+        if self.path.is_none() {
+            self.path = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.path.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_path(&mut self) -> ::std::string::String {
+        self.path.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "path",
+            |m: &InodeUnlinkEventFile| { &m.path },
+            |m: &mut InodeUnlinkEventFile| { &mut m.path },
+            InodeUnlinkEventFile::get_path,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEventFile>(
+            "InodeUnlinkEventFile",
+            29,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for InodeUnlinkEventFile {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.path = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.path.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.path.as_ref() {
+            os.write_string(1, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> InodeUnlinkEventFile {
+        InodeUnlinkEventFile::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 29)
+    }
+
+    fn default_instance() -> &'static InodeUnlinkEventFile {
+        static instance: InodeUnlinkEventFile = InodeUnlinkEventFile {
+            path: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for InodeUnlinkEventFile {
+    fn clear(&mut self) {
+        self.path = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for InodeUnlinkEventFile {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEventFile {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct InodeUnlinkEvent {
+    // message fields
+    timestamp: ::std::option::Option<u64>,
+    pub event: ::protobuf::MessageField<InodeUnlinkEventEvent>,
+    pub host: ::protobuf::MessageField<InodeUnlinkEventHost>,
+    pub process: ::protobuf::MessageField<InodeUnlinkEventProcess>,
+    pub user: ::protobuf::MessageField<InodeUnlinkEventUser>,
+    pub file: ::protobuf::MessageField<InodeUnlinkEventFile>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a InodeUnlinkEvent {
+    fn default() -> &'a InodeUnlinkEvent {
+        <InodeUnlinkEvent as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl InodeUnlinkEvent {
+    pub fn new() -> InodeUnlinkEvent {
         ::std::default::Default::default()
     }
 
@@ -9936,39 +10099,44 @@ impl PathUnlinkEvent {
         let mut fields = ::std::vec::Vec::new();
         fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
             "timestamp",
-            |m: &PathUnlinkEvent| { &m.timestamp },
-            |m: &mut PathUnlinkEvent| { &mut m.timestamp },
-            PathUnlinkEvent::get_timestamp,
+            |m: &InodeUnlinkEvent| { &m.timestamp },
+            |m: &mut InodeUnlinkEvent| { &mut m.timestamp },
+            InodeUnlinkEvent::get_timestamp,
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventEvent>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventEvent>(
             "event",
-            |m: &PathUnlinkEvent| { &m.event },
-            |m: &mut PathUnlinkEvent| { &mut m.event },
+            |m: &InodeUnlinkEvent| { &m.event },
+            |m: &mut InodeUnlinkEvent| { &mut m.event },
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventHost>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventHost>(
             "host",
-            |m: &PathUnlinkEvent| { &m.host },
-            |m: &mut PathUnlinkEvent| { &mut m.host },
+            |m: &InodeUnlinkEvent| { &m.host },
+            |m: &mut InodeUnlinkEvent| { &mut m.host },
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventProcess>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventProcess>(
             "process",
-            |m: &PathUnlinkEvent| { &m.process },
-            |m: &mut PathUnlinkEvent| { &mut m.process },
+            |m: &InodeUnlinkEvent| { &m.process },
+            |m: &mut InodeUnlinkEvent| { &mut m.process },
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEventUser>(
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventUser>(
             "user",
-            |m: &PathUnlinkEvent| { &m.user },
-            |m: &mut PathUnlinkEvent| { &mut m.user },
+            |m: &InodeUnlinkEvent| { &m.user },
+            |m: &mut InodeUnlinkEvent| { &mut m.user },
         ));
-        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEvent>(
-            "PathUnlinkEvent",
-            29,
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEventFile>(
+            "file",
+            |m: &InodeUnlinkEvent| { &m.file },
+            |m: &mut InodeUnlinkEvent| { &mut m.file },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<InodeUnlinkEvent>(
+            "InodeUnlinkEvent",
+            30,
             fields,
         )
     }
 }
 
-impl ::protobuf::Message for PathUnlinkEvent {
+impl ::protobuf::Message for InodeUnlinkEvent {
     fn is_initialized(&self) -> bool {
         for v in &self.event {
             if !v.is_initialized() {
@@ -9986,6 +10154,11 @@ impl ::protobuf::Message for PathUnlinkEvent {
             }
         };
         for v in &self.user {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.file {
             if !v.is_initialized() {
                 return false;
             }
@@ -10014,6 +10187,9 @@ impl ::protobuf::Message for PathUnlinkEvent {
                 },
                 5 => {
                     ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.user)?;
+                },
+                6 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.file)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -10046,6 +10222,10 @@ impl ::protobuf::Message for PathUnlinkEvent {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
+        if let Some(v) = self.file.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -10067,6 +10247,9 @@ impl ::protobuf::Message for PathUnlinkEvent {
         if let Some(v) = self.user.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
         }
+        if let Some(v) = self.file.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(6, v, os)?;
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -10083,21 +10266,22 @@ impl ::protobuf::Message for PathUnlinkEvent {
         &mut self.unknown_fields
     }
 
-    fn new() -> PathUnlinkEvent {
-        PathUnlinkEvent::new()
+    fn new() -> InodeUnlinkEvent {
+        InodeUnlinkEvent::new()
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 29)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 30)
     }
 
-    fn default_instance() -> &'static PathUnlinkEvent {
-        static instance: PathUnlinkEvent = PathUnlinkEvent {
+    fn default_instance() -> &'static InodeUnlinkEvent {
+        static instance: InodeUnlinkEvent = InodeUnlinkEvent {
             timestamp: ::std::option::Option::None,
             event: ::protobuf::MessageField::none(),
             host: ::protobuf::MessageField::none(),
             process: ::protobuf::MessageField::none(),
             user: ::protobuf::MessageField::none(),
+            file: ::protobuf::MessageField::none(),
             unknown_fields: ::protobuf::UnknownFields::new(),
             cached_size: ::protobuf::rt::CachedSize::new(),
         };
@@ -10105,24 +10289,25 @@ impl ::protobuf::Message for PathUnlinkEvent {
     }
 }
 
-impl ::protobuf::Clear for PathUnlinkEvent {
+impl ::protobuf::Clear for InodeUnlinkEvent {
     fn clear(&mut self) {
         self.timestamp = ::std::option::Option::None;
         self.event.clear();
         self.host.clear();
         self.process.clear();
         self.user.clear();
+        self.file.clear();
         self.unknown_fields.clear();
     }
 }
 
-impl ::std::fmt::Debug for PathUnlinkEvent {
+impl ::std::fmt::Debug for InodeUnlinkEvent {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for PathUnlinkEvent {
+impl ::protobuf::reflect::ProtobufValue for InodeUnlinkEvent {
     type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -10132,7 +10317,7 @@ pub struct Event {
     event_type: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<event::EventType>>,
     pub bprm_check_security_event_t: ::protobuf::MessageField<BprmCheckSecurityEvent>,
     pub path_rename_event_t: ::protobuf::MessageField<PathRenameEvent>,
-    pub path_unlink_event_t: ::protobuf::MessageField<PathUnlinkEvent>,
+    pub inode_unlink_event_t: ::protobuf::MessageField<InodeUnlinkEvent>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::rt::CachedSize,
@@ -10189,14 +10374,14 @@ impl Event {
             |m: &Event| { &m.path_rename_event_t },
             |m: &mut Event| { &mut m.path_rename_event_t },
         ));
-        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEvent>(
-            "path_unlink_event_t",
-            |m: &Event| { &m.path_unlink_event_t },
-            |m: &mut Event| { &mut m.path_unlink_event_t },
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, InodeUnlinkEvent>(
+            "inode_unlink_event_t",
+            |m: &Event| { &m.inode_unlink_event_t },
+            |m: &mut Event| { &mut m.inode_unlink_event_t },
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<Event>(
             "Event",
-            30,
+            31,
             fields,
         )
     }
@@ -10217,7 +10402,7 @@ impl ::protobuf::Message for Event {
                 return false;
             }
         };
-        for v in &self.path_unlink_event_t {
+        for v in &self.inode_unlink_event_t {
             if !v.is_initialized() {
                 return false;
             }
@@ -10242,7 +10427,7 @@ impl ::protobuf::Message for Event {
                     ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.path_rename_event_t)?;
                 },
                 4 => {
-                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.path_unlink_event_t)?;
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.inode_unlink_event_t)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -10267,7 +10452,7 @@ impl ::protobuf::Message for Event {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
-        if let Some(v) = self.path_unlink_event_t.as_ref() {
+        if let Some(v) = self.inode_unlink_event_t.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
@@ -10286,7 +10471,7 @@ impl ::protobuf::Message for Event {
         if let Some(v) = self.path_rename_event_t.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
         }
-        if let Some(v) = self.path_unlink_event_t.as_ref() {
+        if let Some(v) = self.inode_unlink_event_t.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -10310,7 +10495,7 @@ impl ::protobuf::Message for Event {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 30)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 31)
     }
 
     fn default_instance() -> &'static Event {
@@ -10318,7 +10503,7 @@ impl ::protobuf::Message for Event {
             event_type: ::std::option::Option::None,
             bprm_check_security_event_t: ::protobuf::MessageField::none(),
             path_rename_event_t: ::protobuf::MessageField::none(),
-            path_unlink_event_t: ::protobuf::MessageField::none(),
+            inode_unlink_event_t: ::protobuf::MessageField::none(),
             unknown_fields: ::protobuf::UnknownFields::new(),
             cached_size: ::protobuf::rt::CachedSize::new(),
         };
@@ -10331,7 +10516,7 @@ impl ::protobuf::Clear for Event {
         self.event_type = ::std::option::Option::None;
         self.bprm_check_security_event_t.clear();
         self.path_rename_event_t.clear();
-        self.path_unlink_event_t.clear();
+        self.inode_unlink_event_t.clear();
         self.unknown_fields.clear();
     }
 }
@@ -10352,7 +10537,7 @@ pub mod event {
     pub enum EventType {
         BPRMCHECKSECURITYEVENT = 0,
         PATHRENAMEEVENT = 1,
-        PATHUNLINKEVENT = 2,
+        INODEUNLINKEVENT = 2,
     }
 
     impl ::protobuf::ProtobufEnum for EventType {
@@ -10364,7 +10549,7 @@ pub mod event {
             match value {
                 0 => ::std::option::Option::Some(EventType::BPRMCHECKSECURITYEVENT),
                 1 => ::std::option::Option::Some(EventType::PATHRENAMEEVENT),
-                2 => ::std::option::Option::Some(EventType::PATHUNLINKEVENT),
+                2 => ::std::option::Option::Some(EventType::INODEUNLINKEVENT),
                 _ => ::std::option::Option::None
             }
         }
@@ -10373,7 +10558,7 @@ pub mod event {
             static values: &'static [EventType] = &[
                 EventType::BPRMCHECKSECURITYEVENT,
                 EventType::PATHRENAMEEVENT,
-                EventType::PATHUNLINKEVENT,
+                EventType::INODEUNLINKEVENT,
             ];
             values
         }
@@ -10501,65 +10686,68 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x04host\x18\x03\x20\x01(\x0b2#.probe.protobuf.PathRenameEventHostR\x04h\
     ostB\0\x12B\n\x07process\x18\x04\x20\x01(\x0b2&.probe.protobuf.PathRenam\
     eEventProcessR\x07processB\0\x129\n\x04user\x18\x05\x20\x01(\x0b2#.probe\
-    .protobuf.PathRenameEventUserR\x04userB\0:\0\"\x88\x02\n\x14PathUnlinkEv\
-    entEvent\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04kind\
+    .protobuf.PathRenameEventUserR\x04userB\0:\0\"\x89\x02\n\x15InodeUnlinkE\
+    ventEvent\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04kind\
     \x18\x02\x20\x01(\tR\x04kindB\0\x12\x1c\n\x08category\x18\x03\x20\x01(\t\
     R\x08categoryB\0\x12\x18\n\x06action\x18\x04\x20\x01(\tR\x06actionB\0\
     \x12\x1a\n\nfield_type\x18\x05\x20\x01(\tR\x04typeB\0\x12\x18\n\x06modul\
     e\x18\x06\x20\x01(\tR\x06moduleB\0\x12\x1c\n\x08provider\x18\x07\x20\x01\
     (\tR\x08providerB\0\x12\x1c\n\x08sequence\x18\x08\x20\x01(\x04R\x08seque\
-    nceB\0\x12\x1c\n\x08ingested\x18\t\x20\x01(\x04R\x08ingestedB\0:\0\"e\n\
-    \x15PathUnlinkEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\tR\x04t\
-    ypeB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12\x18\n\x06ker\
-    nel\x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\xae\x01\n\x13PathUnlinkEventHo\
-    st\x12\x1c\n\x08hostname\x18\x01\x20\x01(\tR\x08hostnameB\0\x12\x10\n\
+    nceB\0\x12\x1c\n\x08ingested\x18\t\x20\x01(\x04R\x08ingestedB\0:\0\"f\n\
+    \x16InodeUnlinkEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\tR\x04\
+    typeB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12\x18\n\x06ke\
+    rnel\x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\xb0\x01\n\x14InodeUnlinkEvent\
+    Host\x12\x1c\n\x08hostname\x18\x01\x20\x01(\tR\x08hostnameB\0\x12\x10\n\
     \x02ip\x18\x02\x20\x03(\tR\x02ipB\0\x12\x12\n\x03mac\x18\x03\x20\x03(\tR\
-    \x03macB\0\x12\x18\n\x06uptime\x18\x04\x20\x01(\x04R\x06uptimeB\0\x127\n\
-    \x02os\x18\x05\x20\x01(\x0b2%.probe.protobuf.PathUnlinkEventHostOsR\x02o\
-    sB\0:\0\"\x92\x02\n\x1cPathUnlinkEventProcessParent\x12\x12\n\x03pid\x18\
-    \x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tent\
-    ity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x20\n\nar\
-    gs_count\x18\x04\x20\x01(\x04R\nargs_countB\0\x12\x14\n\x04args\x18\x05\
-    \x20\x03(\tR\x04argsB\0\x12\x14\n\x04ppid\x18\x06\x20\x01(\rR\x04ppidB\0\
-    \x12\x16\n\x05start\x18\x07\x20\x01(\x04R\x05startB\0\x12\x1e\n\tthread_\
-    id\x18\x08\x20\x01(\x04R\tthread.idB\0\x12\x20\n\nexecutable\x18\t\x20\
-    \x01(\tR\nexecutableB\0:\0\"\xfa\x02\n\x16PathUnlinkEventProcess\x12\x12\
-    \n\x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\
-    \x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\
-    \x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\x04ppidB\0\x12\x20\n\nexecutable\
-    \x18\x05\x20\x01(\tR\nexecutableB\0\x12\x20\n\nargs_count\x18\x06\x20\
-    \x01(\x04R\nargs_countB\0\x12\x16\n\x05start\x18\x07\x20\x01(\x04R\x05st\
-    artB\0\x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\0\x12$\n\
-    \x0ccommand_line\x18\t\x20\x01(\tR\x0ccommand_lineB\0\x12\x14\n\x04args\
-    \x18\n\x20\x03(\tR\x04argsB\0\x12F\n\x06parent\x18\x0b\x20\x01(\x0b2,.pr\
-    obe.protobuf.PathUnlinkEventProcessParentR\x06parentB\0:\0\"D\n\x18PathU\
-    nlinkEventUserGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\
-    \n\x04name\x18\x02\x20\x01(\tR\x04nameB\0:\0\"M\n!PathUnlinkEventUserEff\
-    ectiveGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04na\
-    me\x18\x02\x20\x01(\tR\x04nameB\0:\0\"\x93\x01\n\x1cPathUnlinkEventUserE\
-    ffective\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\
-    \x18\x02\x20\x01(\tR\x04nameB\0\x12I\n\x05group\x18\x03\x20\x01(\x0b21.p\
-    robe.protobuf.PathUnlinkEventUserEffectiveGroupR\x05groupB\0:\0\"\xcf\
-    \x01\n\x13PathUnlinkEventUser\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\
-    \0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12@\n\x05group\x18\
-    \x03\x20\x01(\x0b2(.probe.protobuf.PathUnlinkEventUserGroupR\x05groupB\0\
-    \x12L\n\teffective\x18\x04\x20\x01(\x0b2,.probe.protobuf.PathUnlinkEvent\
-    UserEffectiveR\teffectiveB\0:\0\"\xac\x02\n\x0fPathUnlinkEvent\x12\x1f\n\
-    \ttimestamp\x18\x01\x20\x01(\x04R\n@timestampB\0\x12<\n\x05event\x18\x02\
-    \x20\x01(\x0b2$.probe.protobuf.PathUnlinkEventEventR\x05eventB\0\x129\n\
-    \x04host\x18\x03\x20\x01(\x0b2#.probe.protobuf.PathUnlinkEventHostR\x04h\
-    ostB\0\x12B\n\x07process\x18\x04\x20\x01(\x0b2&.probe.protobuf.PathUnlin\
-    kEventProcessR\x07processB\0\x129\n\x04user\x18\x05\x20\x01(\x0b2#.probe\
-    .protobuf.PathUnlinkEventUserR\x04userB\0:\0\"\xb2\x03\n\x05Event\x12@\n\
-    \nevent_type\x18\x01\x20\x02(\x0e2\x1f.probe.protobuf.Event.EventTypeR\t\
-    eventTypeB\0\x12f\n\x1bbprm_check_security_event_t\x18\x02\x20\x01(\x0b2\
-    &.probe.protobuf.BprmCheckSecurityEventR\x17bprmCheckSecurityEventTB\0\
-    \x12P\n\x13path_rename_event_t\x18\x03\x20\x01(\x0b2\x1f.probe.protobuf.\
-    PathRenameEventR\x10pathRenameEventTB\0\x12P\n\x13path_unlink_event_t\
-    \x18\x04\x20\x01(\x0b2\x1f.probe.protobuf.PathUnlinkEventR\x10pathUnlink\
-    EventTB\0\"Y\n\tEventType\x12\x1c\n\x16BPRMCHECKSECURITYEVENT\x10\0\x1a\
-    \0\x12\x15\n\x0fPATHRENAMEEVENT\x10\x01\x1a\0\x12\x15\n\x0fPATHUNLINKEVE\
-    NT\x10\x02\x1a\0\x1a\0:\0B\x02H\x01b\x06proto2\
+    \x03macB\0\x12\x18\n\x06uptime\x18\x04\x20\x01(\x04R\x06uptimeB\0\x128\n\
+    \x02os\x18\x05\x20\x01(\x0b2&.probe.protobuf.InodeUnlinkEventHostOsR\x02\
+    osB\0:\0\"\x93\x02\n\x1dInodeUnlinkEventProcessParent\x12\x12\n\x03pid\
+    \x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\
+    \tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x20\
+    \n\nargs_count\x18\x04\x20\x01(\x04R\nargs_countB\0\x12\x14\n\x04args\
+    \x18\x05\x20\x03(\tR\x04argsB\0\x12\x14\n\x04ppid\x18\x06\x20\x01(\rR\
+    \x04ppidB\0\x12\x16\n\x05start\x18\x07\x20\x01(\x04R\x05startB\0\x12\x1e\
+    \n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\0\x12\x20\n\nexecutable\
+    \x18\t\x20\x01(\tR\nexecutableB\0:\0\"\xfc\x02\n\x17InodeUnlinkEventProc\
+    ess\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\
+    \x18\x02\x20\x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\
+    \x04nameB\0\x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\x04ppidB\0\x12\x20\n\n\
+    executable\x18\x05\x20\x01(\tR\nexecutableB\0\x12\x20\n\nargs_count\x18\
+    \x06\x20\x01(\x04R\nargs_countB\0\x12\x16\n\x05start\x18\x07\x20\x01(\
+    \x04R\x05startB\0\x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\
+    \0\x12$\n\x0ccommand_line\x18\t\x20\x01(\tR\x0ccommand_lineB\0\x12\x14\n\
+    \x04args\x18\n\x20\x03(\tR\x04argsB\0\x12G\n\x06parent\x18\x0b\x20\x01(\
+    \x0b2-.probe.protobuf.InodeUnlinkEventProcessParentR\x06parentB\0:\0\"E\
+    \n\x19InodeUnlinkEventUserGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02i\
+    dB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0:\0\"N\n\"InodeUnli\
+    nkEventUserEffectiveGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\
+    \x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0:\0\"\x95\x01\n\x1dInod\
+    eUnlinkEventUserEffective\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\
+    \x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12J\n\x05group\x18\
+    \x03\x20\x01(\x0b22.probe.protobuf.InodeUnlinkEventUserEffectiveGroupR\
+    \x05groupB\0:\0\"\xd2\x01\n\x14InodeUnlinkEventUser\x12\x10\n\x02id\x18\
+    \x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\
+    \0\x12A\n\x05group\x18\x03\x20\x01(\x0b2).probe.protobuf.InodeUnlinkEven\
+    tUserGroupR\x05groupB\0\x12M\n\teffective\x18\x04\x20\x01(\x0b2-.probe.p\
+    rotobuf.InodeUnlinkEventUserEffectiveR\teffectiveB\0:\0\".\n\x14InodeUnl\
+    inkEventFile\x12\x14\n\x04path\x18\x01\x20\x01(\tR\x04pathB\0:\0\"\xed\
+    \x02\n\x10InodeUnlinkEvent\x12\x1f\n\ttimestamp\x18\x01\x20\x01(\x04R\n@\
+    timestampB\0\x12=\n\x05event\x18\x02\x20\x01(\x0b2%.probe.protobuf.Inode\
+    UnlinkEventEventR\x05eventB\0\x12:\n\x04host\x18\x03\x20\x01(\x0b2$.prob\
+    e.protobuf.InodeUnlinkEventHostR\x04hostB\0\x12C\n\x07process\x18\x04\
+    \x20\x01(\x0b2'.probe.protobuf.InodeUnlinkEventProcessR\x07processB\0\
+    \x12:\n\x04user\x18\x05\x20\x01(\x0b2$.probe.protobuf.InodeUnlinkEventUs\
+    erR\x04userB\0\x12:\n\x04file\x18\x06\x20\x01(\x0b2$.probe.protobuf.Inod\
+    eUnlinkEventFileR\x04fileB\0:\0\"\xb6\x03\n\x05Event\x12@\n\nevent_type\
+    \x18\x01\x20\x02(\x0e2\x1f.probe.protobuf.Event.EventTypeR\teventTypeB\0\
+    \x12f\n\x1bbprm_check_security_event_t\x18\x02\x20\x01(\x0b2&.probe.prot\
+    obuf.BprmCheckSecurityEventR\x17bprmCheckSecurityEventTB\0\x12P\n\x13pat\
+    h_rename_event_t\x18\x03\x20\x01(\x0b2\x1f.probe.protobuf.PathRenameEven\
+    tR\x10pathRenameEventTB\0\x12S\n\x14inode_unlink_event_t\x18\x04\x20\x01\
+    (\x0b2\x20.probe.protobuf.InodeUnlinkEventR\x11inodeUnlinkEventTB\0\"Z\n\
+    \tEventType\x12\x1c\n\x16BPRMCHECKSECURITYEVENT\x10\0\x1a\0\x12\x15\n\
+    \x0fPATHRENAMEEVENT\x10\x01\x1a\0\x12\x16\n\x10INODEUNLINKEVENT\x10\x02\
+    \x1a\0\x1a\0:\0B\x02H\x01b\x06proto2\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
@@ -10596,16 +10784,17 @@ pub fn file_descriptor() -> ::protobuf::reflect::FileDescriptor {
         messages.push(PathRenameEventUserEffective::generated_message_descriptor_data());
         messages.push(PathRenameEventUser::generated_message_descriptor_data());
         messages.push(PathRenameEvent::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventEvent::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventHostOs::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventHost::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventProcessParent::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventProcess::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventUserGroup::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventUserEffectiveGroup::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventUserEffective::generated_message_descriptor_data());
-        messages.push(PathUnlinkEventUser::generated_message_descriptor_data());
-        messages.push(PathUnlinkEvent::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventEvent::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventHostOs::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventHost::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventProcessParent::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventProcess::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventUserGroup::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventUserEffectiveGroup::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventUserEffective::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventUser::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEventFile::generated_message_descriptor_data());
+        messages.push(InodeUnlinkEvent::generated_message_descriptor_data());
         messages.push(Event::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
         enums.push(event::EventType::generated_enum_descriptor_data());
