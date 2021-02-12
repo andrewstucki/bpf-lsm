@@ -74,24 +74,22 @@ TRACEPOINT(sched, sched_process_free, void *ctx) {
 }
 
 COMPLETE_LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm)
-COMPLETE_LSM_HOOK(path_rename, rename-file, const struct path *old_dir, struct dentry *old_dentry, const struct path *new_dir, struct dentry *new_dentry)
 
-// this isn't the greatest place to capture paths, but utilities like rm
-// generally check inode attributes prior to calling unlink
-SLEEPABLE_LSM_HOOK(inode_getattr, const struct path *path) {
-  struct task_struct *current_task = (struct task_struct *)bpf_get_current_task();
-  struct cached_file *cached = create_cached_file(current_task);
+// this isn't the greatest place to capture paths, but generally there's
+// an inode permission check some time prior to unlinking the file
+NOEVENT_LSM_HOOK(inode_getattr, const struct path *path) {
+  struct cached_file *cached = get_or_create_cached_file(path->dentry->d_inode);
   if (cached) {
     bpf_d_path((struct path *)path, cached->path, MAX_PATH_SIZE);
   }
   return 0;
 }
-LSM_HOOK(inode_unlink, unlink-file, struct inode *dir, struct dentry *dentry) {
+LSM_HOOK(inode_unlink, unlink - file, struct inode *dir,
+         struct dentry *victim) {
   initialize_event();
-  struct cached_file *cached = get_cached_file(current_task);
+  struct cached_file *cached = get_cached_file(victim->d_inode);
   if (cached) {
     memcpy(event->file.path, cached->path, MAX_PATH_SIZE);
   }
-  delete_cached_file(current_task);
   return 0;
 }

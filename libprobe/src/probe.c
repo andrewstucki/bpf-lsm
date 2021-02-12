@@ -61,13 +61,14 @@ struct state *new_state(struct state_configuration config) {
   if (!s) {
     goto cleanup;
   }
+  s->obj = NULL;
+  s->rb = NULL;
+  s->handlers = NULL;
+  NULL_HOOKS(s, ALL_HOOKS);
   s->handlers = new_handlers();
   if (!s->handlers) {
     goto cleanup;
   }
-  s->obj = NULL;
-
-  NULL_HOOKS(s, ALL_HOOKS);
   s->obj = probe_bpf__open();
   if (!s->obj) {
     goto cleanup;
@@ -104,7 +105,8 @@ void poll_state(struct state *s, int timeout) {
   }
 }
 
-void cache_process(struct state *s, pid_t pid, const struct cached_process *process) {
+void cache_process(struct state *s, pid_t pid,
+                   const struct cached_process *process) {
   // this copies the data at the pointer into the kernel
   bpf_map_update_elem(bpf_map__fd(s->obj->maps.processes), &pid, process,
                       BPF_ANY);

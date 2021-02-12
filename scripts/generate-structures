@@ -12,7 +12,7 @@ from jinja2 import Template
 CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
 SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "schemas"))
 OUTPUT_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "src"))
-LSM_MODULES = ["bprm_check_security", "path_rename", "inode_unlink"]
+LSM_MODULES = ["bprm_check_security", "inode_unlink"]
 SLEEPABLE_LSM_MODULES = ["inode_getattr"]
 TRACEPOINTS = [
     ("syscalls", "sys_enter_execve"),

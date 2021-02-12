@@ -61,31 +61,20 @@ INLINE_STATIC void delete_cached_process(struct task_struct *task) {
 const struct cached_file empty_cached_file = {};
 
 struct {
-  __uint(type, BPF_MAP_TYPE_HASH);
-  __uint(max_entries, 10240);
-  __type(key, pid_t);
+  __uint(type, BPF_MAP_TYPE_INODE_STORAGE);
+  __uint(map_flags, BPF_F_NO_PREALLOC);
+  __type(key, int);
   __type(value, struct cached_file);
 } files SEC(".maps");
 
 INLINE_STATIC struct cached_file *
-create_cached_file(struct task_struct *task) {
-  // we store by the kernel task
-  pid_t pid = BPF_CORE_READ(task, pid);
-  bpf_map_update_elem(&files, &pid, &empty_cached_file, BPF_ANY);
-  return bpf_map_lookup_elem(&files, &pid);
+get_or_create_cached_file(struct inode *inode) {
+  return bpf_inode_storage_get(&files, inode, 0,
+                               BPF_LOCAL_STORAGE_GET_F_CREATE);
 }
 
-INLINE_STATIC struct cached_file *
-get_cached_file(struct task_struct *task) {
-  // we store by the kernel task
-  pid_t pid = BPF_CORE_READ(task, pid);
-  return bpf_map_lookup_elem(&files, &pid);
-}
-
-INLINE_STATIC void delete_cached_file(struct task_struct *task) {
-  // we store by the kernel task
-  pid_t pid = BPF_CORE_READ(task, pid);
-  bpf_map_delete_elem(&files, &pid);
+INLINE_STATIC struct cached_file *get_cached_file(struct inode *inode) {
+  return bpf_inode_storage_get(&files, inode, 0, 0);
 }
 
 #define TRACEPOINT(family, module, ctx)                                        \
@@ -123,6 +112,10 @@ INLINE_STATIC void delete_cached_file(struct task_struct *task) {
 
 #define SLEEPABLE_LSM_HOOK(module, ...)                                        \
   SEC("lsm.s/" #module)                                                        \
+  int BPF_PROG(module##_hook, ##__VA_ARGS__)
+
+#define NOEVENT_LSM_HOOK(module, ...)                                          \
+  SEC("lsm/" #module)                                                          \
   int BPF_PROG(module##_hook, ##__VA_ARGS__)
 
 #define LSM_HOOK(module, prefix, ...)                                          \
