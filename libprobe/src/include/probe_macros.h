@@ -4,7 +4,9 @@
 /*
  * general macros for variadic expansions
  */
-#define GET_MACRO(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, NAME, ...) NAME
+#define GET_MACRO(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13,  \
+                  NAME, ...)                                                   \
+  NAME
 
 #define FE_0(WHAT)
 #define FE_1(WHAT, _ctx) WHAT(_ctx)
@@ -16,9 +18,13 @@
 #define FE_7(WHAT, _ctx, ...) WHAT(_ctx) FE_6(WHAT, __VA_ARGS__)
 #define FE_8(WHAT, _ctx, ...) WHAT(_ctx) FE_7(WHAT, __VA_ARGS__)
 #define FE_9(WHAT, _ctx, ...) WHAT(_ctx) FE_8(WHAT, __VA_ARGS__)
+#define FE_10(WHAT, _ctx, ...) WHAT(_ctx) FE_9(WHAT, __VA_ARGS__)
+#define FE_11(WHAT, _ctx, ...) WHAT(_ctx) FE_10(WHAT, __VA_ARGS__)
+#define FE_12(WHAT, _ctx, ...) WHAT(_ctx) FE_11(WHAT, __VA_ARGS__)
+#define FE_13(WHAT, _ctx, ...) WHAT(_ctx) FE_12(WHAT, __VA_ARGS__)
 #define FOR_EACH0(action, ...)                                                 \
-  GET_MACRO(_0, __VA_ARGS__, FE_9, FE_8, FE_7, FE_6, FE_5, FE_4, FE_3, FE_2,   \
-            FE_1, FE_0)                                                        \
+  GET_MACRO(_0, __VA_ARGS__, FE_13, FE_12, FE_11, FE_10, FE_9, FE_8, FE_7,     \
+            FE_6, FE_5, FE_4, FE_3, FE_2, FE_1, FE_0)                          \
   (action, __VA_ARGS__)
 
 #define FE1_0(WHAT)
@@ -31,9 +37,17 @@
 #define FE1_7(WHAT, _ctx, _x, ...) WHAT(_ctx, _x) FE1_6(WHAT, _ctx, __VA_ARGS__)
 #define FE1_8(WHAT, _ctx, _x, ...) WHAT(_ctx, _x) FE1_7(WHAT, _ctx, __VA_ARGS__)
 #define FE1_9(WHAT, _ctx, _x, ...) WHAT(_ctx, _x) FE1_8(WHAT, _ctx, __VA_ARGS__)
+#define FE1_10(WHAT, _ctx, _x, ...)                                            \
+  WHAT(_ctx, _x) FE1_9(WHAT, _ctx, __VA_ARGS__)
+#define FE1_11(WHAT, _ctx, _x, ...)                                            \
+  WHAT(_ctx, _x) FE1_10(WHAT, _ctx, __VA_ARGS__)
+#define FE1_12(WHAT, _ctx, _x, ...)                                            \
+  WHAT(_ctx, _x) FE1_11(WHAT, _ctx, __VA_ARGS__)
+#define FE1_13(WHAT, _ctx, _x, ...)                                            \
+  WHAT(_ctx, _x) FE1_12(WHAT, _ctx, __VA_ARGS__)
 #define FOR_EACH1(action, _ctx, ...)                                           \
-  GET_MACRO(_0, __VA_ARGS__, FE1_9, FE1_8, FE1_7, FE1_6, FE1_5, FE1_4, FE1_3,  \
-            FE1_2, FE1_1, FE1_0)                                               \
+  GET_MACRO(_0, __VA_ARGS__, FE1_13, FE1_12, FE1_11, FE1_10, FE1_9, FE1_8,     \
+            FE1_7, FE1_6, FE1_5, FE1_4, FE1_3, FE1_2, FE1_1, FE1_0)            \
   (action, _ctx, __VA_ARGS__)
 
 #define FE2_0(WHAT)
@@ -54,9 +68,17 @@
   WHAT(_ctx, _x, _y) FE2_7(WHAT, _ctx, _x, __VA_ARGS__)
 #define FE2_9(WHAT, _ctx, _x, _y, ...)                                         \
   WHAT(_ctx, _x, _y) FE2_8(WHAT, _ctx, _x, __VA_ARGS__)
+#define FE2_10(WHAT, _ctx, _x, _y, ...)                                        \
+  WHAT(_ctx, _x, _y) FE2_9(WHAT, _ctx, _x, __VA_ARGS__)
+#define FE2_11(WHAT, _ctx, _x, _y, ...)                                        \
+  WHAT(_ctx, _x, _y) FE2_10(WHAT, _ctx, _x, __VA_ARGS__)
+#define FE2_12(WHAT, _ctx, _x, _y, ...)                                        \
+  WHAT(_ctx, _x, _y) FE2_11(WHAT, _ctx, _x, __VA_ARGS__)
+#define FE2_13(WHAT, _ctx, _x, _y, ...)                                        \
+  WHAT(_ctx, _x, _y) FE2_12(WHAT, _ctx, _x, __VA_ARGS__)
 #define FOR_EACH2(action, _ctx, _x, ...)                                       \
-  GET_MACRO(_0, __VA_ARGS__, FE2_9, FE2_8, FE2_7, FE2_6, FE2_5, FE2_4, FE2_3,  \
-            FE2_2, FE2_1, FE2_0)                                               \
+  GET_MACRO(_0, __VA_ARGS__, FE2_13, FE2_12, FE2_11, FE2_10, FE2_9, FE2_8,     \
+            FE2_7, FE2_6, FE2_5, FE2_4, FE2_3, FE2_2, FE2_1, FE2_0)            \
   (action, _ctx, _x, __VA_ARGS__)
 
 /*

@@ -74,4 +74,5 @@ TRACEPOINT(sched, sched_process_free, void *ctx) {
 }
 
 COMPLETE_LSM_HOOK(bprm_check_security, execution, struct linux_binprm *bprm)
+COMPLETE_LSM_HOOK(path_rename, rename-file, const struct path *old_dir, struct dentry *old_dentry, const struct path *new_dir, struct dentry *new_dentry)
 COMPLETE_LSM_HOOK(path_unlink, unlink-file, const struct path *dir, struct dentry *dentry)

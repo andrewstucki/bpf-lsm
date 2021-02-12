@@ -12,7 +12,7 @@ from jinja2 import Template
 CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
 SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "schemas"))
 OUTPUT_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "src"))
-BPF_MODULES = ["bprm_check_security", "path_unlink"]
+BPF_MODULES = ["bprm_check_security", "path_rename", "path_unlink"]
 TRACEPOINTS = [
     ("syscalls", "sys_enter_execve"),
     ("syscalls", "sys_exit_fork"),

@@ -3393,6 +3393,3373 @@ impl ::protobuf::reflect::ProtobufValue for BprmCheckSecurityEvent {
 }
 
 #[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventEvent {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    kind: ::std::option::Option<::std::string::String>,
+    category: ::std::option::Option<::std::string::String>,
+    action: ::std::option::Option<::std::string::String>,
+    field_type: ::std::option::Option<::std::string::String>,
+    module: ::std::option::Option<::std::string::String>,
+    provider: ::std::option::Option<::std::string::String>,
+    sequence: ::std::option::Option<u64>,
+    ingested: ::std::option::Option<u64>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventEvent {
+    fn default() -> &'a PathRenameEventEvent {
+        <PathRenameEventEvent as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventEvent {
+    pub fn new() -> PathRenameEventEvent {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string kind = 2;
+
+    pub fn get_kind(&self) -> &str {
+        match self.kind.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_kind(&mut self) {
+        self.kind = ::std::option::Option::None;
+    }
+
+    pub fn has_kind(&self) -> bool {
+        self.kind.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_kind(&mut self, v: ::std::string::String) {
+        self.kind = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_kind(&mut self) -> &mut ::std::string::String {
+        if self.kind.is_none() {
+            self.kind = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.kind.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_kind(&mut self) -> ::std::string::String {
+        self.kind.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string category = 3;
+
+    pub fn get_category(&self) -> &str {
+        match self.category.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_category(&mut self) {
+        self.category = ::std::option::Option::None;
+    }
+
+    pub fn has_category(&self) -> bool {
+        self.category.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_category(&mut self, v: ::std::string::String) {
+        self.category = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_category(&mut self) -> &mut ::std::string::String {
+        if self.category.is_none() {
+            self.category = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.category.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_category(&mut self) -> ::std::string::String {
+        self.category.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string action = 4;
+
+    pub fn get_action(&self) -> &str {
+        match self.action.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_action(&mut self) {
+        self.action = ::std::option::Option::None;
+    }
+
+    pub fn has_action(&self) -> bool {
+        self.action.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_action(&mut self, v: ::std::string::String) {
+        self.action = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_action(&mut self) -> &mut ::std::string::String {
+        if self.action.is_none() {
+            self.action = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.action.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_action(&mut self) -> ::std::string::String {
+        self.action.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string field_type = 5;
+
+    pub fn get_field_type(&self) -> &str {
+        match self.field_type.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_field_type(&mut self) {
+        self.field_type = ::std::option::Option::None;
+    }
+
+    pub fn has_field_type(&self) -> bool {
+        self.field_type.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_field_type(&mut self, v: ::std::string::String) {
+        self.field_type = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_field_type(&mut self) -> &mut ::std::string::String {
+        if self.field_type.is_none() {
+            self.field_type = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.field_type.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_field_type(&mut self) -> ::std::string::String {
+        self.field_type.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string module = 6;
+
+    pub fn get_module(&self) -> &str {
+        match self.module.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_module(&mut self) {
+        self.module = ::std::option::Option::None;
+    }
+
+    pub fn has_module(&self) -> bool {
+        self.module.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_module(&mut self, v: ::std::string::String) {
+        self.module = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_module(&mut self) -> &mut ::std::string::String {
+        if self.module.is_none() {
+            self.module = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.module.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_module(&mut self) -> ::std::string::String {
+        self.module.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string provider = 7;
+
+    pub fn get_provider(&self) -> &str {
+        match self.provider.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_provider(&mut self) {
+        self.provider = ::std::option::Option::None;
+    }
+
+    pub fn has_provider(&self) -> bool {
+        self.provider.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_provider(&mut self, v: ::std::string::String) {
+        self.provider = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_provider(&mut self) -> &mut ::std::string::String {
+        if self.provider.is_none() {
+            self.provider = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.provider.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_provider(&mut self) -> ::std::string::String {
+        self.provider.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint64 sequence = 8;
+
+    pub fn get_sequence(&self) -> u64 {
+        self.sequence.unwrap_or(0)
+    }
+
+    pub fn clear_sequence(&mut self) {
+        self.sequence = ::std::option::Option::None;
+    }
+
+    pub fn has_sequence(&self) -> bool {
+        self.sequence.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_sequence(&mut self, v: u64) {
+        self.sequence = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 ingested = 9;
+
+    pub fn get_ingested(&self) -> u64 {
+        self.ingested.unwrap_or(0)
+    }
+
+    pub fn clear_ingested(&mut self) {
+        self.ingested = ::std::option::Option::None;
+    }
+
+    pub fn has_ingested(&self) -> bool {
+        self.ingested.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_ingested(&mut self, v: u64) {
+        self.ingested = ::std::option::Option::Some(v);
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathRenameEventEvent| { &m.id },
+            |m: &mut PathRenameEventEvent| { &mut m.id },
+            PathRenameEventEvent::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "kind",
+            |m: &PathRenameEventEvent| { &m.kind },
+            |m: &mut PathRenameEventEvent| { &mut m.kind },
+            PathRenameEventEvent::get_kind,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "category",
+            |m: &PathRenameEventEvent| { &m.category },
+            |m: &mut PathRenameEventEvent| { &mut m.category },
+            PathRenameEventEvent::get_category,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "action",
+            |m: &PathRenameEventEvent| { &m.action },
+            |m: &mut PathRenameEventEvent| { &mut m.action },
+            PathRenameEventEvent::get_action,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "field_type",
+            |m: &PathRenameEventEvent| { &m.field_type },
+            |m: &mut PathRenameEventEvent| { &mut m.field_type },
+            PathRenameEventEvent::get_field_type,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "module",
+            |m: &PathRenameEventEvent| { &m.module },
+            |m: &mut PathRenameEventEvent| { &mut m.module },
+            PathRenameEventEvent::get_module,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "provider",
+            |m: &PathRenameEventEvent| { &m.provider },
+            |m: &mut PathRenameEventEvent| { &mut m.provider },
+            PathRenameEventEvent::get_provider,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "sequence",
+            |m: &PathRenameEventEvent| { &m.sequence },
+            |m: &mut PathRenameEventEvent| { &mut m.sequence },
+            PathRenameEventEvent::get_sequence,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "ingested",
+            |m: &PathRenameEventEvent| { &m.ingested },
+            |m: &mut PathRenameEventEvent| { &mut m.ingested },
+            PathRenameEventEvent::get_ingested,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventEvent>(
+            "PathRenameEventEvent",
+            10,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventEvent {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.kind = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.category = ::std::option::Option::Some(is.read_string()?);
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.action = ::std::option::Option::Some(is.read_string()?);
+                },
+                5 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.field_type = ::std::option::Option::Some(is.read_string()?);
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.module = ::std::option::Option::Some(is.read_string()?);
+                },
+                7 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.provider = ::std::option::Option::Some(is.read_string()?);
+                },
+                8 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.sequence = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                9 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ingested = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.kind.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.category.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        if let Some(v) = self.action.as_ref() {
+            my_size += ::protobuf::rt::string_size(4, &v);
+        }
+        if let Some(v) = self.field_type.as_ref() {
+            my_size += ::protobuf::rt::string_size(5, &v);
+        }
+        if let Some(v) = self.module.as_ref() {
+            my_size += ::protobuf::rt::string_size(6, &v);
+        }
+        if let Some(v) = self.provider.as_ref() {
+            my_size += ::protobuf::rt::string_size(7, &v);
+        }
+        if let Some(v) = self.sequence {
+            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.ingested {
+            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.kind.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.category.as_ref() {
+            os.write_string(3, v)?;
+        }
+        if let Some(v) = self.action.as_ref() {
+            os.write_string(4, v)?;
+        }
+        if let Some(v) = self.field_type.as_ref() {
+            os.write_string(5, v)?;
+        }
+        if let Some(v) = self.module.as_ref() {
+            os.write_string(6, v)?;
+        }
+        if let Some(v) = self.provider.as_ref() {
+            os.write_string(7, v)?;
+        }
+        if let Some(v) = self.sequence {
+            os.write_uint64(8, v)?;
+        }
+        if let Some(v) = self.ingested {
+            os.write_uint64(9, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventEvent {
+        PathRenameEventEvent::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
+    }
+
+    fn default_instance() -> &'static PathRenameEventEvent {
+        static instance: PathRenameEventEvent = PathRenameEventEvent {
+            id: ::std::option::Option::None,
+            kind: ::std::option::Option::None,
+            category: ::std::option::Option::None,
+            action: ::std::option::Option::None,
+            field_type: ::std::option::Option::None,
+            module: ::std::option::Option::None,
+            provider: ::std::option::Option::None,
+            sequence: ::std::option::Option::None,
+            ingested: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventEvent {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.kind = ::std::option::Option::None;
+        self.category = ::std::option::Option::None;
+        self.action = ::std::option::Option::None;
+        self.field_type = ::std::option::Option::None;
+        self.module = ::std::option::Option::None;
+        self.provider = ::std::option::Option::None;
+        self.sequence = ::std::option::Option::None;
+        self.ingested = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventEvent {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventEvent {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventHostOs {
+    // message fields
+    field_type: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    kernel: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventHostOs {
+    fn default() -> &'a PathRenameEventHostOs {
+        <PathRenameEventHostOs as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventHostOs {
+    pub fn new() -> PathRenameEventHostOs {
+        ::std::default::Default::default()
+    }
+
+    // optional string field_type = 1;
+
+    pub fn get_field_type(&self) -> &str {
+        match self.field_type.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_field_type(&mut self) {
+        self.field_type = ::std::option::Option::None;
+    }
+
+    pub fn has_field_type(&self) -> bool {
+        self.field_type.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_field_type(&mut self, v: ::std::string::String) {
+        self.field_type = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_field_type(&mut self) -> &mut ::std::string::String {
+        if self.field_type.is_none() {
+            self.field_type = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.field_type.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_field_type(&mut self) -> ::std::string::String {
+        self.field_type.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string kernel = 3;
+
+    pub fn get_kernel(&self) -> &str {
+        match self.kernel.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_kernel(&mut self) {
+        self.kernel = ::std::option::Option::None;
+    }
+
+    pub fn has_kernel(&self) -> bool {
+        self.kernel.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_kernel(&mut self, v: ::std::string::String) {
+        self.kernel = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_kernel(&mut self) -> &mut ::std::string::String {
+        if self.kernel.is_none() {
+            self.kernel = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.kernel.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_kernel(&mut self) -> ::std::string::String {
+        self.kernel.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "field_type",
+            |m: &PathRenameEventHostOs| { &m.field_type },
+            |m: &mut PathRenameEventHostOs| { &mut m.field_type },
+            PathRenameEventHostOs::get_field_type,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathRenameEventHostOs| { &m.name },
+            |m: &mut PathRenameEventHostOs| { &mut m.name },
+            PathRenameEventHostOs::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "kernel",
+            |m: &PathRenameEventHostOs| { &m.kernel },
+            |m: &mut PathRenameEventHostOs| { &mut m.kernel },
+            PathRenameEventHostOs::get_kernel,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventHostOs>(
+            "PathRenameEventHostOs",
+            11,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventHostOs {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.field_type = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.kernel = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.field_type.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.kernel.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.field_type.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.kernel.as_ref() {
+            os.write_string(3, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventHostOs {
+        PathRenameEventHostOs::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 11)
+    }
+
+    fn default_instance() -> &'static PathRenameEventHostOs {
+        static instance: PathRenameEventHostOs = PathRenameEventHostOs {
+            field_type: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            kernel: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventHostOs {
+    fn clear(&mut self) {
+        self.field_type = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.kernel = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventHostOs {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventHostOs {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventHost {
+    // message fields
+    hostname: ::std::option::Option<::std::string::String>,
+    pub ip: ::std::vec::Vec<::std::string::String>,
+    pub mac: ::std::vec::Vec<::std::string::String>,
+    uptime: ::std::option::Option<u64>,
+    pub os: ::protobuf::MessageField<PathRenameEventHostOs>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventHost {
+    fn default() -> &'a PathRenameEventHost {
+        <PathRenameEventHost as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventHost {
+    pub fn new() -> PathRenameEventHost {
+        ::std::default::Default::default()
+    }
+
+    // optional string hostname = 1;
+
+    pub fn get_hostname(&self) -> &str {
+        match self.hostname.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_hostname(&mut self) {
+        self.hostname = ::std::option::Option::None;
+    }
+
+    pub fn has_hostname(&self) -> bool {
+        self.hostname.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_hostname(&mut self, v: ::std::string::String) {
+        self.hostname = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_hostname(&mut self) -> &mut ::std::string::String {
+        if self.hostname.is_none() {
+            self.hostname = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.hostname.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_hostname(&mut self) -> ::std::string::String {
+        self.hostname.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint64 uptime = 4;
+
+    pub fn get_uptime(&self) -> u64 {
+        self.uptime.unwrap_or(0)
+    }
+
+    pub fn clear_uptime(&mut self) {
+        self.uptime = ::std::option::Option::None;
+    }
+
+    pub fn has_uptime(&self) -> bool {
+        self.uptime.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_uptime(&mut self, v: u64) {
+        self.uptime = ::std::option::Option::Some(v);
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "hostname",
+            |m: &PathRenameEventHost| { &m.hostname },
+            |m: &mut PathRenameEventHost| { &mut m.hostname },
+            PathRenameEventHost::get_hostname,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "ip",
+            |m: &PathRenameEventHost| { &m.ip },
+            |m: &mut PathRenameEventHost| { &mut m.ip },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "mac",
+            |m: &PathRenameEventHost| { &m.mac },
+            |m: &mut PathRenameEventHost| { &mut m.mac },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "uptime",
+            |m: &PathRenameEventHost| { &m.uptime },
+            |m: &mut PathRenameEventHost| { &mut m.uptime },
+            PathRenameEventHost::get_uptime,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventHostOs>(
+            "os",
+            |m: &PathRenameEventHost| { &m.os },
+            |m: &mut PathRenameEventHost| { &mut m.os },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventHost>(
+            "PathRenameEventHost",
+            12,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventHost {
+    fn is_initialized(&self) -> bool {
+        for v in &self.os {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.hostname = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.ip)?;
+                },
+                3 => {
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.mac)?;
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.uptime = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                5 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.os)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.hostname.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        for value in &self.ip {
+            my_size += ::protobuf::rt::string_size(2, &value);
+        };
+        for value in &self.mac {
+            my_size += ::protobuf::rt::string_size(3, &value);
+        };
+        if let Some(v) = self.uptime {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.os.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.hostname.as_ref() {
+            os.write_string(1, v)?;
+        }
+        for v in &self.ip {
+            os.write_string(2, &v)?;
+        };
+        for v in &self.mac {
+            os.write_string(3, &v)?;
+        };
+        if let Some(v) = self.uptime {
+            os.write_uint64(4, v)?;
+        }
+        if let Some(v) = self.os.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventHost {
+        PathRenameEventHost::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 12)
+    }
+
+    fn default_instance() -> &'static PathRenameEventHost {
+        static instance: PathRenameEventHost = PathRenameEventHost {
+            hostname: ::std::option::Option::None,
+            ip: ::std::vec::Vec::new(),
+            mac: ::std::vec::Vec::new(),
+            uptime: ::std::option::Option::None,
+            os: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventHost {
+    fn clear(&mut self) {
+        self.hostname = ::std::option::Option::None;
+        self.ip.clear();
+        self.mac.clear();
+        self.uptime = ::std::option::Option::None;
+        self.os.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventHost {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventHost {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventProcessParent {
+    // message fields
+    pid: ::std::option::Option<u32>,
+    entity_id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    args_count: ::std::option::Option<u64>,
+    pub args: ::std::vec::Vec<::std::string::String>,
+    ppid: ::std::option::Option<u32>,
+    start: ::std::option::Option<u64>,
+    thread_id: ::std::option::Option<u64>,
+    executable: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventProcessParent {
+    fn default() -> &'a PathRenameEventProcessParent {
+        <PathRenameEventProcessParent as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventProcessParent {
+    pub fn new() -> PathRenameEventProcessParent {
+        ::std::default::Default::default()
+    }
+
+    // optional uint32 pid = 1;
+
+    pub fn get_pid(&self) -> u32 {
+        self.pid.unwrap_or(0)
+    }
+
+    pub fn clear_pid(&mut self) {
+        self.pid = ::std::option::Option::None;
+    }
+
+    pub fn has_pid(&self) -> bool {
+        self.pid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_pid(&mut self, v: u32) {
+        self.pid = ::std::option::Option::Some(v);
+    }
+
+    // optional string entity_id = 2;
+
+    pub fn get_entity_id(&self) -> &str {
+        match self.entity_id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_entity_id(&mut self) {
+        self.entity_id = ::std::option::Option::None;
+    }
+
+    pub fn has_entity_id(&self) -> bool {
+        self.entity_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_entity_id(&mut self, v: ::std::string::String) {
+        self.entity_id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_entity_id(&mut self) -> &mut ::std::string::String {
+        if self.entity_id.is_none() {
+            self.entity_id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.entity_id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_entity_id(&mut self) -> ::std::string::String {
+        self.entity_id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 3;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint64 args_count = 4;
+
+    pub fn get_args_count(&self) -> u64 {
+        self.args_count.unwrap_or(0)
+    }
+
+    pub fn clear_args_count(&mut self) {
+        self.args_count = ::std::option::Option::None;
+    }
+
+    pub fn has_args_count(&self) -> bool {
+        self.args_count.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_args_count(&mut self, v: u64) {
+        self.args_count = ::std::option::Option::Some(v);
+    }
+
+    // optional uint32 ppid = 6;
+
+    pub fn get_ppid(&self) -> u32 {
+        self.ppid.unwrap_or(0)
+    }
+
+    pub fn clear_ppid(&mut self) {
+        self.ppid = ::std::option::Option::None;
+    }
+
+    pub fn has_ppid(&self) -> bool {
+        self.ppid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_ppid(&mut self, v: u32) {
+        self.ppid = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 start = 7;
+
+    pub fn get_start(&self) -> u64 {
+        self.start.unwrap_or(0)
+    }
+
+    pub fn clear_start(&mut self) {
+        self.start = ::std::option::Option::None;
+    }
+
+    pub fn has_start(&self) -> bool {
+        self.start.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_start(&mut self, v: u64) {
+        self.start = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 thread_id = 8;
+
+    pub fn get_thread_id(&self) -> u64 {
+        self.thread_id.unwrap_or(0)
+    }
+
+    pub fn clear_thread_id(&mut self) {
+        self.thread_id = ::std::option::Option::None;
+    }
+
+    pub fn has_thread_id(&self) -> bool {
+        self.thread_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_thread_id(&mut self, v: u64) {
+        self.thread_id = ::std::option::Option::Some(v);
+    }
+
+    // optional string executable = 9;
+
+    pub fn get_executable(&self) -> &str {
+        match self.executable.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_executable(&mut self) {
+        self.executable = ::std::option::Option::None;
+    }
+
+    pub fn has_executable(&self) -> bool {
+        self.executable.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_executable(&mut self, v: ::std::string::String) {
+        self.executable = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_executable(&mut self) -> &mut ::std::string::String {
+        if self.executable.is_none() {
+            self.executable = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.executable.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_executable(&mut self) -> ::std::string::String {
+        self.executable.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "pid",
+            |m: &PathRenameEventProcessParent| { &m.pid },
+            |m: &mut PathRenameEventProcessParent| { &mut m.pid },
+            PathRenameEventProcessParent::get_pid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "entity_id",
+            |m: &PathRenameEventProcessParent| { &m.entity_id },
+            |m: &mut PathRenameEventProcessParent| { &mut m.entity_id },
+            PathRenameEventProcessParent::get_entity_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathRenameEventProcessParent| { &m.name },
+            |m: &mut PathRenameEventProcessParent| { &mut m.name },
+            PathRenameEventProcessParent::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "args_count",
+            |m: &PathRenameEventProcessParent| { &m.args_count },
+            |m: &mut PathRenameEventProcessParent| { &mut m.args_count },
+            PathRenameEventProcessParent::get_args_count,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "args",
+            |m: &PathRenameEventProcessParent| { &m.args },
+            |m: &mut PathRenameEventProcessParent| { &mut m.args },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "ppid",
+            |m: &PathRenameEventProcessParent| { &m.ppid },
+            |m: &mut PathRenameEventProcessParent| { &mut m.ppid },
+            PathRenameEventProcessParent::get_ppid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "start",
+            |m: &PathRenameEventProcessParent| { &m.start },
+            |m: &mut PathRenameEventProcessParent| { &mut m.start },
+            PathRenameEventProcessParent::get_start,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "thread_id",
+            |m: &PathRenameEventProcessParent| { &m.thread_id },
+            |m: &mut PathRenameEventProcessParent| { &mut m.thread_id },
+            PathRenameEventProcessParent::get_thread_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "executable",
+            |m: &PathRenameEventProcessParent| { &m.executable },
+            |m: &mut PathRenameEventProcessParent| { &mut m.executable },
+            PathRenameEventProcessParent::get_executable,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventProcessParent>(
+            "PathRenameEventProcessParent",
+            13,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventProcessParent {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.pid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.entity_id = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.args_count = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                5 => {
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.args)?;
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ppid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                7 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.start = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                8 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.thread_id = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                9 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.executable = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.pid {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        if let Some(v) = self.args_count {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        for value in &self.args {
+            my_size += ::protobuf::rt::string_size(5, &value);
+        };
+        if let Some(v) = self.ppid {
+            my_size += ::protobuf::rt::value_size(6, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.start {
+            my_size += ::protobuf::rt::value_size(7, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.thread_id {
+            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.executable.as_ref() {
+            my_size += ::protobuf::rt::string_size(9, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.pid {
+            os.write_uint32(1, v)?;
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(3, v)?;
+        }
+        if let Some(v) = self.args_count {
+            os.write_uint64(4, v)?;
+        }
+        for v in &self.args {
+            os.write_string(5, &v)?;
+        };
+        if let Some(v) = self.ppid {
+            os.write_uint32(6, v)?;
+        }
+        if let Some(v) = self.start {
+            os.write_uint64(7, v)?;
+        }
+        if let Some(v) = self.thread_id {
+            os.write_uint64(8, v)?;
+        }
+        if let Some(v) = self.executable.as_ref() {
+            os.write_string(9, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventProcessParent {
+        PathRenameEventProcessParent::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 13)
+    }
+
+    fn default_instance() -> &'static PathRenameEventProcessParent {
+        static instance: PathRenameEventProcessParent = PathRenameEventProcessParent {
+            pid: ::std::option::Option::None,
+            entity_id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            args_count: ::std::option::Option::None,
+            args: ::std::vec::Vec::new(),
+            ppid: ::std::option::Option::None,
+            start: ::std::option::Option::None,
+            thread_id: ::std::option::Option::None,
+            executable: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventProcessParent {
+    fn clear(&mut self) {
+        self.pid = ::std::option::Option::None;
+        self.entity_id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.args_count = ::std::option::Option::None;
+        self.args.clear();
+        self.ppid = ::std::option::Option::None;
+        self.start = ::std::option::Option::None;
+        self.thread_id = ::std::option::Option::None;
+        self.executable = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventProcessParent {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventProcessParent {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventProcess {
+    // message fields
+    pid: ::std::option::Option<u32>,
+    entity_id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    ppid: ::std::option::Option<u32>,
+    executable: ::std::option::Option<::std::string::String>,
+    args_count: ::std::option::Option<u64>,
+    start: ::std::option::Option<u64>,
+    thread_id: ::std::option::Option<u64>,
+    command_line: ::std::option::Option<::std::string::String>,
+    pub args: ::std::vec::Vec<::std::string::String>,
+    pub parent: ::protobuf::MessageField<PathRenameEventProcessParent>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventProcess {
+    fn default() -> &'a PathRenameEventProcess {
+        <PathRenameEventProcess as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventProcess {
+    pub fn new() -> PathRenameEventProcess {
+        ::std::default::Default::default()
+    }
+
+    // optional uint32 pid = 1;
+
+    pub fn get_pid(&self) -> u32 {
+        self.pid.unwrap_or(0)
+    }
+
+    pub fn clear_pid(&mut self) {
+        self.pid = ::std::option::Option::None;
+    }
+
+    pub fn has_pid(&self) -> bool {
+        self.pid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_pid(&mut self, v: u32) {
+        self.pid = ::std::option::Option::Some(v);
+    }
+
+    // optional string entity_id = 2;
+
+    pub fn get_entity_id(&self) -> &str {
+        match self.entity_id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_entity_id(&mut self) {
+        self.entity_id = ::std::option::Option::None;
+    }
+
+    pub fn has_entity_id(&self) -> bool {
+        self.entity_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_entity_id(&mut self, v: ::std::string::String) {
+        self.entity_id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_entity_id(&mut self) -> &mut ::std::string::String {
+        if self.entity_id.is_none() {
+            self.entity_id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.entity_id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_entity_id(&mut self) -> ::std::string::String {
+        self.entity_id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 3;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint32 ppid = 4;
+
+    pub fn get_ppid(&self) -> u32 {
+        self.ppid.unwrap_or(0)
+    }
+
+    pub fn clear_ppid(&mut self) {
+        self.ppid = ::std::option::Option::None;
+    }
+
+    pub fn has_ppid(&self) -> bool {
+        self.ppid.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_ppid(&mut self, v: u32) {
+        self.ppid = ::std::option::Option::Some(v);
+    }
+
+    // optional string executable = 5;
+
+    pub fn get_executable(&self) -> &str {
+        match self.executable.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_executable(&mut self) {
+        self.executable = ::std::option::Option::None;
+    }
+
+    pub fn has_executable(&self) -> bool {
+        self.executable.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_executable(&mut self, v: ::std::string::String) {
+        self.executable = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_executable(&mut self) -> &mut ::std::string::String {
+        if self.executable.is_none() {
+            self.executable = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.executable.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_executable(&mut self) -> ::std::string::String {
+        self.executable.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional uint64 args_count = 6;
+
+    pub fn get_args_count(&self) -> u64 {
+        self.args_count.unwrap_or(0)
+    }
+
+    pub fn clear_args_count(&mut self) {
+        self.args_count = ::std::option::Option::None;
+    }
+
+    pub fn has_args_count(&self) -> bool {
+        self.args_count.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_args_count(&mut self, v: u64) {
+        self.args_count = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 start = 7;
+
+    pub fn get_start(&self) -> u64 {
+        self.start.unwrap_or(0)
+    }
+
+    pub fn clear_start(&mut self) {
+        self.start = ::std::option::Option::None;
+    }
+
+    pub fn has_start(&self) -> bool {
+        self.start.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_start(&mut self, v: u64) {
+        self.start = ::std::option::Option::Some(v);
+    }
+
+    // optional uint64 thread_id = 8;
+
+    pub fn get_thread_id(&self) -> u64 {
+        self.thread_id.unwrap_or(0)
+    }
+
+    pub fn clear_thread_id(&mut self) {
+        self.thread_id = ::std::option::Option::None;
+    }
+
+    pub fn has_thread_id(&self) -> bool {
+        self.thread_id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_thread_id(&mut self, v: u64) {
+        self.thread_id = ::std::option::Option::Some(v);
+    }
+
+    // optional string command_line = 9;
+
+    pub fn get_command_line(&self) -> &str {
+        match self.command_line.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_command_line(&mut self) {
+        self.command_line = ::std::option::Option::None;
+    }
+
+    pub fn has_command_line(&self) -> bool {
+        self.command_line.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_command_line(&mut self, v: ::std::string::String) {
+        self.command_line = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_command_line(&mut self) -> &mut ::std::string::String {
+        if self.command_line.is_none() {
+            self.command_line = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.command_line.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_command_line(&mut self) -> ::std::string::String {
+        self.command_line.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "pid",
+            |m: &PathRenameEventProcess| { &m.pid },
+            |m: &mut PathRenameEventProcess| { &mut m.pid },
+            PathRenameEventProcess::get_pid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "entity_id",
+            |m: &PathRenameEventProcess| { &m.entity_id },
+            |m: &mut PathRenameEventProcess| { &mut m.entity_id },
+            PathRenameEventProcess::get_entity_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathRenameEventProcess| { &m.name },
+            |m: &mut PathRenameEventProcess| { &mut m.name },
+            PathRenameEventProcess::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "ppid",
+            |m: &PathRenameEventProcess| { &m.ppid },
+            |m: &mut PathRenameEventProcess| { &mut m.ppid },
+            PathRenameEventProcess::get_ppid,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "executable",
+            |m: &PathRenameEventProcess| { &m.executable },
+            |m: &mut PathRenameEventProcess| { &mut m.executable },
+            PathRenameEventProcess::get_executable,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "args_count",
+            |m: &PathRenameEventProcess| { &m.args_count },
+            |m: &mut PathRenameEventProcess| { &mut m.args_count },
+            PathRenameEventProcess::get_args_count,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "start",
+            |m: &PathRenameEventProcess| { &m.start },
+            |m: &mut PathRenameEventProcess| { &mut m.start },
+            PathRenameEventProcess::get_start,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "thread_id",
+            |m: &PathRenameEventProcess| { &m.thread_id },
+            |m: &mut PathRenameEventProcess| { &mut m.thread_id },
+            PathRenameEventProcess::get_thread_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "command_line",
+            |m: &PathRenameEventProcess| { &m.command_line },
+            |m: &mut PathRenameEventProcess| { &mut m.command_line },
+            PathRenameEventProcess::get_command_line,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "args",
+            |m: &PathRenameEventProcess| { &m.args },
+            |m: &mut PathRenameEventProcess| { &mut m.args },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventProcessParent>(
+            "parent",
+            |m: &PathRenameEventProcess| { &m.parent },
+            |m: &mut PathRenameEventProcess| { &mut m.parent },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventProcess>(
+            "PathRenameEventProcess",
+            14,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventProcess {
+    fn is_initialized(&self) -> bool {
+        for v in &self.parent {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.pid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.entity_id = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                4 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ppid = ::std::option::Option::Some(is.read_uint32()?);
+                },
+                5 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.executable = ::std::option::Option::Some(is.read_string()?);
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.args_count = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                7 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.start = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                8 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.thread_id = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                9 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.command_line = ::std::option::Option::Some(is.read_string()?);
+                },
+                10 => {
+                    ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.args)?;
+                },
+                11 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.parent)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.pid {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(3, &v);
+        }
+        if let Some(v) = self.ppid {
+            my_size += ::protobuf::rt::value_size(4, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.executable.as_ref() {
+            my_size += ::protobuf::rt::string_size(5, &v);
+        }
+        if let Some(v) = self.args_count {
+            my_size += ::protobuf::rt::value_size(6, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.start {
+            my_size += ::protobuf::rt::value_size(7, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.thread_id {
+            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.command_line.as_ref() {
+            my_size += ::protobuf::rt::string_size(9, &v);
+        }
+        for value in &self.args {
+            my_size += ::protobuf::rt::string_size(10, &value);
+        };
+        if let Some(v) = self.parent.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.pid {
+            os.write_uint32(1, v)?;
+        }
+        if let Some(v) = self.entity_id.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(3, v)?;
+        }
+        if let Some(v) = self.ppid {
+            os.write_uint32(4, v)?;
+        }
+        if let Some(v) = self.executable.as_ref() {
+            os.write_string(5, v)?;
+        }
+        if let Some(v) = self.args_count {
+            os.write_uint64(6, v)?;
+        }
+        if let Some(v) = self.start {
+            os.write_uint64(7, v)?;
+        }
+        if let Some(v) = self.thread_id {
+            os.write_uint64(8, v)?;
+        }
+        if let Some(v) = self.command_line.as_ref() {
+            os.write_string(9, v)?;
+        }
+        for v in &self.args {
+            os.write_string(10, &v)?;
+        };
+        if let Some(v) = self.parent.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(11, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventProcess {
+        PathRenameEventProcess::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 14)
+    }
+
+    fn default_instance() -> &'static PathRenameEventProcess {
+        static instance: PathRenameEventProcess = PathRenameEventProcess {
+            pid: ::std::option::Option::None,
+            entity_id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            ppid: ::std::option::Option::None,
+            executable: ::std::option::Option::None,
+            args_count: ::std::option::Option::None,
+            start: ::std::option::Option::None,
+            thread_id: ::std::option::Option::None,
+            command_line: ::std::option::Option::None,
+            args: ::std::vec::Vec::new(),
+            parent: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventProcess {
+    fn clear(&mut self) {
+        self.pid = ::std::option::Option::None;
+        self.entity_id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.ppid = ::std::option::Option::None;
+        self.executable = ::std::option::Option::None;
+        self.args_count = ::std::option::Option::None;
+        self.start = ::std::option::Option::None;
+        self.thread_id = ::std::option::Option::None;
+        self.command_line = ::std::option::Option::None;
+        self.args.clear();
+        self.parent.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventProcess {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventProcess {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventUserGroup {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventUserGroup {
+    fn default() -> &'a PathRenameEventUserGroup {
+        <PathRenameEventUserGroup as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventUserGroup {
+    pub fn new() -> PathRenameEventUserGroup {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathRenameEventUserGroup| { &m.id },
+            |m: &mut PathRenameEventUserGroup| { &mut m.id },
+            PathRenameEventUserGroup::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathRenameEventUserGroup| { &m.name },
+            |m: &mut PathRenameEventUserGroup| { &mut m.name },
+            PathRenameEventUserGroup::get_name,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventUserGroup>(
+            "PathRenameEventUserGroup",
+            15,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventUserGroup {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventUserGroup {
+        PathRenameEventUserGroup::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 15)
+    }
+
+    fn default_instance() -> &'static PathRenameEventUserGroup {
+        static instance: PathRenameEventUserGroup = PathRenameEventUserGroup {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventUserGroup {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventUserGroup {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventUserGroup {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventUserEffectiveGroup {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventUserEffectiveGroup {
+    fn default() -> &'a PathRenameEventUserEffectiveGroup {
+        <PathRenameEventUserEffectiveGroup as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventUserEffectiveGroup {
+    pub fn new() -> PathRenameEventUserEffectiveGroup {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathRenameEventUserEffectiveGroup| { &m.id },
+            |m: &mut PathRenameEventUserEffectiveGroup| { &mut m.id },
+            PathRenameEventUserEffectiveGroup::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathRenameEventUserEffectiveGroup| { &m.name },
+            |m: &mut PathRenameEventUserEffectiveGroup| { &mut m.name },
+            PathRenameEventUserEffectiveGroup::get_name,
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventUserEffectiveGroup>(
+            "PathRenameEventUserEffectiveGroup",
+            16,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventUserEffectiveGroup {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventUserEffectiveGroup {
+        PathRenameEventUserEffectiveGroup::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 16)
+    }
+
+    fn default_instance() -> &'static PathRenameEventUserEffectiveGroup {
+        static instance: PathRenameEventUserEffectiveGroup = PathRenameEventUserEffectiveGroup {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventUserEffectiveGroup {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventUserEffectiveGroup {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventUserEffectiveGroup {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventUserEffective {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    pub group: ::protobuf::MessageField<PathRenameEventUserEffectiveGroup>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventUserEffective {
+    fn default() -> &'a PathRenameEventUserEffective {
+        <PathRenameEventUserEffective as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventUserEffective {
+    pub fn new() -> PathRenameEventUserEffective {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathRenameEventUserEffective| { &m.id },
+            |m: &mut PathRenameEventUserEffective| { &mut m.id },
+            PathRenameEventUserEffective::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathRenameEventUserEffective| { &m.name },
+            |m: &mut PathRenameEventUserEffective| { &mut m.name },
+            PathRenameEventUserEffective::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventUserEffectiveGroup>(
+            "group",
+            |m: &PathRenameEventUserEffective| { &m.group },
+            |m: &mut PathRenameEventUserEffective| { &mut m.group },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventUserEffective>(
+            "PathRenameEventUserEffective",
+            17,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventUserEffective {
+    fn is_initialized(&self) -> bool {
+        for v in &self.group {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.group)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.group.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.group.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventUserEffective {
+        PathRenameEventUserEffective::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 17)
+    }
+
+    fn default_instance() -> &'static PathRenameEventUserEffective {
+        static instance: PathRenameEventUserEffective = PathRenameEventUserEffective {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            group: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventUserEffective {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.group.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventUserEffective {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventUserEffective {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEventUser {
+    // message fields
+    id: ::std::option::Option<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    pub group: ::protobuf::MessageField<PathRenameEventUserGroup>,
+    pub effective: ::protobuf::MessageField<PathRenameEventUserEffective>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEventUser {
+    fn default() -> &'a PathRenameEventUser {
+        <PathRenameEventUser as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEventUser {
+    pub fn new() -> PathRenameEventUser {
+        ::std::default::Default::default()
+    }
+
+    // optional string id = 1;
+
+    pub fn get_id(&self) -> &str {
+        match self.id.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_id(&mut self) {
+        self.id = ::std::option::Option::None;
+    }
+
+    pub fn has_id(&self) -> bool {
+        self.id.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_id(&mut self, v: ::std::string::String) {
+        self.id = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_id(&mut self) -> &mut ::std::string::String {
+        if self.id.is_none() {
+            self.id = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.id.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_id(&mut self) -> ::std::string::String {
+        self.id.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string name = 2;
+
+    pub fn get_name(&self) -> &str {
+        match self.name.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_name(&mut self) {
+        self.name = ::std::option::Option::None;
+    }
+
+    pub fn has_name(&self) -> bool {
+        self.name.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        if self.name.is_none() {
+            self.name = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.name.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "id",
+            |m: &PathRenameEventUser| { &m.id },
+            |m: &mut PathRenameEventUser| { &mut m.id },
+            PathRenameEventUser::get_id,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &PathRenameEventUser| { &m.name },
+            |m: &mut PathRenameEventUser| { &mut m.name },
+            PathRenameEventUser::get_name,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventUserGroup>(
+            "group",
+            |m: &PathRenameEventUser| { &m.group },
+            |m: &mut PathRenameEventUser| { &mut m.group },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventUserEffective>(
+            "effective",
+            |m: &PathRenameEventUser| { &m.effective },
+            |m: &mut PathRenameEventUser| { &mut m.effective },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEventUser>(
+            "PathRenameEventUser",
+            18,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEventUser {
+    fn is_initialized(&self) -> bool {
+        for v in &self.group {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.effective {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.id = ::std::option::Option::Some(is.read_string()?);
+                },
+                2 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
+                },
+                3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.group)?;
+                },
+                4 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.effective)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.id.as_ref() {
+            my_size += ::protobuf::rt::string_size(1, &v);
+        }
+        if let Some(v) = self.name.as_ref() {
+            my_size += ::protobuf::rt::string_size(2, &v);
+        }
+        if let Some(v) = self.group.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if let Some(v) = self.effective.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.id.as_ref() {
+            os.write_string(1, v)?;
+        }
+        if let Some(v) = self.name.as_ref() {
+            os.write_string(2, v)?;
+        }
+        if let Some(v) = self.group.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        if let Some(v) = self.effective.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEventUser {
+        PathRenameEventUser::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 18)
+    }
+
+    fn default_instance() -> &'static PathRenameEventUser {
+        static instance: PathRenameEventUser = PathRenameEventUser {
+            id: ::std::option::Option::None,
+            name: ::std::option::Option::None,
+            group: ::protobuf::MessageField::none(),
+            effective: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEventUser {
+    fn clear(&mut self) {
+        self.id = ::std::option::Option::None;
+        self.name = ::std::option::Option::None;
+        self.group.clear();
+        self.effective.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEventUser {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEventUser {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
+pub struct PathRenameEvent {
+    // message fields
+    timestamp: ::std::option::Option<u64>,
+    pub event: ::protobuf::MessageField<PathRenameEventEvent>,
+    pub host: ::protobuf::MessageField<PathRenameEventHost>,
+    pub process: ::protobuf::MessageField<PathRenameEventProcess>,
+    pub user: ::protobuf::MessageField<PathRenameEventUser>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a PathRenameEvent {
+    fn default() -> &'a PathRenameEvent {
+        <PathRenameEvent as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl PathRenameEvent {
+    pub fn new() -> PathRenameEvent {
+        ::std::default::Default::default()
+    }
+
+    // optional uint64 timestamp = 1;
+
+    pub fn get_timestamp(&self) -> u64 {
+        self.timestamp.unwrap_or(0)
+    }
+
+    pub fn clear_timestamp(&mut self) {
+        self.timestamp = ::std::option::Option::None;
+    }
+
+    pub fn has_timestamp(&self) -> bool {
+        self.timestamp.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_timestamp(&mut self, v: u64) {
+        self.timestamp = ::std::option::Option::Some(v);
+    }
+
+    fn generated_message_descriptor_data() -> ::protobuf::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "timestamp",
+            |m: &PathRenameEvent| { &m.timestamp },
+            |m: &mut PathRenameEvent| { &mut m.timestamp },
+            PathRenameEvent::get_timestamp,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventEvent>(
+            "event",
+            |m: &PathRenameEvent| { &m.event },
+            |m: &mut PathRenameEvent| { &mut m.event },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventHost>(
+            "host",
+            |m: &PathRenameEvent| { &m.host },
+            |m: &mut PathRenameEvent| { &mut m.host },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventProcess>(
+            "process",
+            |m: &PathRenameEvent| { &m.process },
+            |m: &mut PathRenameEvent| { &mut m.process },
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEventUser>(
+            "user",
+            |m: &PathRenameEvent| { &m.user },
+            |m: &mut PathRenameEvent| { &mut m.user },
+        ));
+        ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathRenameEvent>(
+            "PathRenameEvent",
+            19,
+            fields,
+        )
+    }
+}
+
+impl ::protobuf::Message for PathRenameEvent {
+    fn is_initialized(&self) -> bool {
+        for v in &self.event {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.host {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.process {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.user {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.timestamp = ::std::option::Option::Some(is.read_uint64()?);
+                },
+                2 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.event)?;
+                },
+                3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.host)?;
+                },
+                4 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.process)?;
+                },
+                5 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.user)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.timestamp {
+            my_size += ::protobuf::rt::value_size(1, v, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.event.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if let Some(v) = self.host.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if let Some(v) = self.process.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if let Some(v) = self.user.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(v) = self.timestamp {
+            os.write_uint64(1, v)?;
+        }
+        if let Some(v) = self.event.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
+        }
+        if let Some(v) = self.host.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        if let Some(v) = self.process.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
+        }
+        if let Some(v) = self.user.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(5, v, os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> PathRenameEvent {
+        PathRenameEvent::new()
+    }
+
+    fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 19)
+    }
+
+    fn default_instance() -> &'static PathRenameEvent {
+        static instance: PathRenameEvent = PathRenameEvent {
+            timestamp: ::std::option::Option::None,
+            event: ::protobuf::MessageField::none(),
+            host: ::protobuf::MessageField::none(),
+            process: ::protobuf::MessageField::none(),
+            user: ::protobuf::MessageField::none(),
+            unknown_fields: ::protobuf::UnknownFields::new(),
+            cached_size: ::protobuf::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl ::protobuf::Clear for PathRenameEvent {
+    fn clear(&mut self) {
+        self.timestamp = ::std::option::Option::None;
+        self.event.clear();
+        self.host.clear();
+        self.process.clear();
+        self.user.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for PathRenameEvent {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for PathRenameEvent {
+    type RuntimeType = ::protobuf::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+#[derive(PartialEq,Clone,Default)]
 pub struct PathUnlinkEventEvent {
     // message fields
     id: ::std::option::Option<::std::string::String>,
@@ -3768,7 +7135,7 @@ impl PathUnlinkEventEvent {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventEvent>(
             "PathUnlinkEventEvent",
-            10,
+            20,
             fields,
         )
     }
@@ -3930,7 +7297,7 @@ impl ::protobuf::Message for PathUnlinkEventEvent {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 20)
     }
 
     fn default_instance() -> &'static PathUnlinkEventEvent {
@@ -4128,7 +7495,7 @@ impl PathUnlinkEventHostOs {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventHostOs>(
             "PathUnlinkEventHostOs",
-            11,
+            21,
             fields,
         )
     }
@@ -4218,7 +7585,7 @@ impl ::protobuf::Message for PathUnlinkEventHostOs {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 11)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 21)
     }
 
     fn default_instance() -> &'static PathUnlinkEventHostOs {
@@ -4362,7 +7729,7 @@ impl PathUnlinkEventHost {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventHost>(
             "PathUnlinkEventHost",
-            12,
+            22,
             fields,
         )
     }
@@ -4473,7 +7840,7 @@ impl ::protobuf::Message for PathUnlinkEventHost {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 12)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 22)
     }
 
     fn default_instance() -> &'static PathUnlinkEventHost {
@@ -4799,7 +8166,7 @@ impl PathUnlinkEventProcessParent {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventProcessParent>(
             "PathUnlinkEventProcessParent",
-            13,
+            23,
             fields,
         )
     }
@@ -4958,7 +8325,7 @@ impl ::protobuf::Message for PathUnlinkEventProcessParent {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 13)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 23)
     }
 
     fn default_instance() -> &'static PathUnlinkEventProcessParent {
@@ -5341,7 +8708,7 @@ impl PathUnlinkEventProcess {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventProcess>(
             "PathUnlinkEventProcess",
-            14,
+            24,
             fields,
         )
     }
@@ -5527,7 +8894,7 @@ impl ::protobuf::Message for PathUnlinkEventProcess {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 14)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 24)
     }
 
     fn default_instance() -> &'static PathUnlinkEventProcess {
@@ -5686,7 +9053,7 @@ impl PathUnlinkEventUserGroup {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserGroup>(
             "PathUnlinkEventUserGroup",
-            15,
+            25,
             fields,
         )
     }
@@ -5764,7 +9131,7 @@ impl ::protobuf::Message for PathUnlinkEventUserGroup {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 15)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 25)
     }
 
     fn default_instance() -> &'static PathUnlinkEventUserGroup {
@@ -5905,7 +9272,7 @@ impl PathUnlinkEventUserEffectiveGroup {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserEffectiveGroup>(
             "PathUnlinkEventUserEffectiveGroup",
-            16,
+            26,
             fields,
         )
     }
@@ -5983,7 +9350,7 @@ impl ::protobuf::Message for PathUnlinkEventUserEffectiveGroup {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 16)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 26)
     }
 
     fn default_instance() -> &'static PathUnlinkEventUserEffectiveGroup {
@@ -6130,7 +9497,7 @@ impl PathUnlinkEventUserEffective {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUserEffective>(
             "PathUnlinkEventUserEffective",
-            17,
+            27,
             fields,
         )
     }
@@ -6223,7 +9590,7 @@ impl ::protobuf::Message for PathUnlinkEventUserEffective {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 17)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 27)
     }
 
     fn default_instance() -> &'static PathUnlinkEventUserEffective {
@@ -6378,7 +9745,7 @@ impl PathUnlinkEventUser {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEventUser>(
             "PathUnlinkEventUser",
-            18,
+            28,
             fields,
         )
     }
@@ -6486,7 +9853,7 @@ impl ::protobuf::Message for PathUnlinkEventUser {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 18)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 28)
     }
 
     fn default_instance() -> &'static PathUnlinkEventUser {
@@ -6595,7 +9962,7 @@ impl PathUnlinkEvent {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<PathUnlinkEvent>(
             "PathUnlinkEvent",
-            19,
+            29,
             fields,
         )
     }
@@ -6721,7 +10088,7 @@ impl ::protobuf::Message for PathUnlinkEvent {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 19)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 29)
     }
 
     fn default_instance() -> &'static PathUnlinkEvent {
@@ -6764,6 +10131,7 @@ pub struct Event {
     // message fields
     event_type: ::std::option::Option<::protobuf::ProtobufEnumOrUnknown<event::EventType>>,
     pub bprm_check_security_event_t: ::protobuf::MessageField<BprmCheckSecurityEvent>,
+    pub path_rename_event_t: ::protobuf::MessageField<PathRenameEvent>,
     pub path_unlink_event_t: ::protobuf::MessageField<PathUnlinkEvent>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -6816,6 +10184,11 @@ impl Event {
             |m: &Event| { &m.bprm_check_security_event_t },
             |m: &mut Event| { &mut m.bprm_check_security_event_t },
         ));
+        fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathRenameEvent>(
+            "path_rename_event_t",
+            |m: &Event| { &m.path_rename_event_t },
+            |m: &mut Event| { &mut m.path_rename_event_t },
+        ));
         fields.push(::protobuf::reflect::rt::v2::make_message_field_accessor::<_, PathUnlinkEvent>(
             "path_unlink_event_t",
             |m: &Event| { &m.path_unlink_event_t },
@@ -6823,7 +10196,7 @@ impl Event {
         ));
         ::protobuf::reflect::GeneratedMessageDescriptorData::new_2::<Event>(
             "Event",
-            20,
+            30,
             fields,
         )
     }
@@ -6835,6 +10208,11 @@ impl ::protobuf::Message for Event {
             return false;
         }
         for v in &self.bprm_check_security_event_t {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.path_rename_event_t {
             if !v.is_initialized() {
                 return false;
             }
@@ -6861,6 +10239,9 @@ impl ::protobuf::Message for Event {
                     ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.bprm_check_security_event_t)?;
                 },
                 3 => {
+                    ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.path_rename_event_t)?;
+                },
+                4 => {
                     ::protobuf::rt::read_singular_message_into_field(wire_type, is, &mut self.path_unlink_event_t)?;
                 },
                 _ => {
@@ -6882,6 +10263,10 @@ impl ::protobuf::Message for Event {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
         }
+        if let Some(v) = self.path_rename_event_t.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
         if let Some(v) = self.path_unlink_event_t.as_ref() {
             let len = v.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
@@ -6898,8 +10283,11 @@ impl ::protobuf::Message for Event {
         if let Some(v) = self.bprm_check_security_event_t.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(2, v, os)?;
         }
-        if let Some(v) = self.path_unlink_event_t.as_ref() {
+        if let Some(v) = self.path_rename_event_t.as_ref() {
             ::protobuf::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
+        if let Some(v) = self.path_unlink_event_t.as_ref() {
+            ::protobuf::rt::write_message_field_with_cached_size(4, v, os)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -6922,13 +10310,14 @@ impl ::protobuf::Message for Event {
     }
 
     fn descriptor_static() -> ::protobuf::reflect::MessageDescriptor {
-        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 20)
+        ::protobuf::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 30)
     }
 
     fn default_instance() -> &'static Event {
         static instance: Event = Event {
             event_type: ::std::option::Option::None,
             bprm_check_security_event_t: ::protobuf::MessageField::none(),
+            path_rename_event_t: ::protobuf::MessageField::none(),
             path_unlink_event_t: ::protobuf::MessageField::none(),
             unknown_fields: ::protobuf::UnknownFields::new(),
             cached_size: ::protobuf::rt::CachedSize::new(),
@@ -6941,6 +10330,7 @@ impl ::protobuf::Clear for Event {
     fn clear(&mut self) {
         self.event_type = ::std::option::Option::None;
         self.bprm_check_security_event_t.clear();
+        self.path_rename_event_t.clear();
         self.path_unlink_event_t.clear();
         self.unknown_fields.clear();
     }
@@ -6961,7 +10351,8 @@ pub mod event {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     pub enum EventType {
         BPRMCHECKSECURITYEVENT = 0,
-        PATHUNLINKEVENT = 1,
+        PATHRENAMEEVENT = 1,
+        PATHUNLINKEVENT = 2,
     }
 
     impl ::protobuf::ProtobufEnum for EventType {
@@ -6972,7 +10363,8 @@ pub mod event {
         fn from_i32(value: i32) -> ::std::option::Option<EventType> {
             match value {
                 0 => ::std::option::Option::Some(EventType::BPRMCHECKSECURITYEVENT),
-                1 => ::std::option::Option::Some(EventType::PATHUNLINKEVENT),
+                1 => ::std::option::Option::Some(EventType::PATHRENAMEEVENT),
+                2 => ::std::option::Option::Some(EventType::PATHUNLINKEVENT),
                 _ => ::std::option::Option::None
             }
         }
@@ -6980,6 +10372,7 @@ pub mod event {
         fn values() -> &'static [Self] {
             static values: &'static [EventType] = &[
                 EventType::BPRMCHECKSECURITYEVENT,
+                EventType::PATHRENAMEEVENT,
                 EventType::PATHUNLINKEVENT,
             ];
             values
@@ -7059,7 +10452,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     *.probe.protobuf.BprmCheckSecurityEventHostR\x04hostB\0\x12I\n\x07proces\
     s\x18\x04\x20\x01(\x0b2-.probe.protobuf.BprmCheckSecurityEventProcessR\
     \x07processB\0\x12@\n\x04user\x18\x05\x20\x01(\x0b2*.probe.protobuf.Bprm\
-    CheckSecurityEventUserR\x04userB\0:\0\"\x88\x02\n\x14PathUnlinkEventEven\
+    CheckSecurityEventUserR\x04userB\0:\0\"\x88\x02\n\x14PathRenameEventEven\
     t\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04kind\x18\x02\
     \x20\x01(\tR\x04kindB\0\x12\x1c\n\x08category\x18\x03\x20\x01(\tR\x08cat\
     egoryB\0\x12\x18\n\x06action\x18\x04\x20\x01(\tR\x06actionB\0\x12\x1a\n\
@@ -7067,22 +10460,71 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x20\x01(\tR\x06moduleB\0\x12\x1c\n\x08provider\x18\x07\x20\x01(\tR\x08p\
     roviderB\0\x12\x1c\n\x08sequence\x18\x08\x20\x01(\x04R\x08sequenceB\0\
     \x12\x1c\n\x08ingested\x18\t\x20\x01(\x04R\x08ingestedB\0:\0\"e\n\x15Pat\
-    hUnlinkEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\tR\x04typeB\0\
+    hRenameEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\tR\x04typeB\0\
     \x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12\x18\n\x06kernel\
-    \x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\xae\x01\n\x13PathUnlinkEventHost\
+    \x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\xae\x01\n\x13PathRenameEventHost\
     \x12\x1c\n\x08hostname\x18\x01\x20\x01(\tR\x08hostnameB\0\x12\x10\n\x02i\
     p\x18\x02\x20\x03(\tR\x02ipB\0\x12\x12\n\x03mac\x18\x03\x20\x03(\tR\x03m\
     acB\0\x12\x18\n\x06uptime\x18\x04\x20\x01(\x04R\x06uptimeB\0\x127\n\x02o\
-    s\x18\x05\x20\x01(\x0b2%.probe.protobuf.PathUnlinkEventHostOsR\x02osB\0:\
-    \0\"\x92\x02\n\x1cPathUnlinkEventProcessParent\x12\x12\n\x03pid\x18\x01\
+    s\x18\x05\x20\x01(\x0b2%.probe.protobuf.PathRenameEventHostOsR\x02osB\0:\
+    \0\"\x92\x02\n\x1cPathRenameEventProcessParent\x12\x12\n\x03pid\x18\x01\
     \x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tentity_\
     idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x20\n\nargs_c\
     ount\x18\x04\x20\x01(\x04R\nargs_countB\0\x12\x14\n\x04args\x18\x05\x20\
     \x03(\tR\x04argsB\0\x12\x14\n\x04ppid\x18\x06\x20\x01(\rR\x04ppidB\0\x12\
     \x16\n\x05start\x18\x07\x20\x01(\x04R\x05startB\0\x12\x1e\n\tthread_id\
     \x18\x08\x20\x01(\x04R\tthread.idB\0\x12\x20\n\nexecutable\x18\t\x20\x01\
-    (\tR\nexecutableB\0:\0\"\xfa\x02\n\x16PathUnlinkEventProcess\x12\x12\n\
+    (\tR\nexecutableB\0:\0\"\xfa\x02\n\x16PathRenameEventProcess\x12\x12\n\
     \x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\
+    \x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\
+    \x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\x04ppidB\0\x12\x20\n\nexecutable\
+    \x18\x05\x20\x01(\tR\nexecutableB\0\x12\x20\n\nargs_count\x18\x06\x20\
+    \x01(\x04R\nargs_countB\0\x12\x16\n\x05start\x18\x07\x20\x01(\x04R\x05st\
+    artB\0\x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\0\x12$\n\
+    \x0ccommand_line\x18\t\x20\x01(\tR\x0ccommand_lineB\0\x12\x14\n\x04args\
+    \x18\n\x20\x03(\tR\x04argsB\0\x12F\n\x06parent\x18\x0b\x20\x01(\x0b2,.pr\
+    obe.protobuf.PathRenameEventProcessParentR\x06parentB\0:\0\"D\n\x18PathR\
+    enameEventUserGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\
+    \n\x04name\x18\x02\x20\x01(\tR\x04nameB\0:\0\"M\n!PathRenameEventUserEff\
+    ectiveGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04na\
+    me\x18\x02\x20\x01(\tR\x04nameB\0:\0\"\x93\x01\n\x1cPathRenameEventUserE\
+    ffective\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\
+    \x18\x02\x20\x01(\tR\x04nameB\0\x12I\n\x05group\x18\x03\x20\x01(\x0b21.p\
+    robe.protobuf.PathRenameEventUserEffectiveGroupR\x05groupB\0:\0\"\xcf\
+    \x01\n\x13PathRenameEventUser\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\
+    \0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12@\n\x05group\x18\
+    \x03\x20\x01(\x0b2(.probe.protobuf.PathRenameEventUserGroupR\x05groupB\0\
+    \x12L\n\teffective\x18\x04\x20\x01(\x0b2,.probe.protobuf.PathRenameEvent\
+    UserEffectiveR\teffectiveB\0:\0\"\xac\x02\n\x0fPathRenameEvent\x12\x1f\n\
+    \ttimestamp\x18\x01\x20\x01(\x04R\n@timestampB\0\x12<\n\x05event\x18\x02\
+    \x20\x01(\x0b2$.probe.protobuf.PathRenameEventEventR\x05eventB\0\x129\n\
+    \x04host\x18\x03\x20\x01(\x0b2#.probe.protobuf.PathRenameEventHostR\x04h\
+    ostB\0\x12B\n\x07process\x18\x04\x20\x01(\x0b2&.probe.protobuf.PathRenam\
+    eEventProcessR\x07processB\0\x129\n\x04user\x18\x05\x20\x01(\x0b2#.probe\
+    .protobuf.PathRenameEventUserR\x04userB\0:\0\"\x88\x02\n\x14PathUnlinkEv\
+    entEvent\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04kind\
+    \x18\x02\x20\x01(\tR\x04kindB\0\x12\x1c\n\x08category\x18\x03\x20\x01(\t\
+    R\x08categoryB\0\x12\x18\n\x06action\x18\x04\x20\x01(\tR\x06actionB\0\
+    \x12\x1a\n\nfield_type\x18\x05\x20\x01(\tR\x04typeB\0\x12\x18\n\x06modul\
+    e\x18\x06\x20\x01(\tR\x06moduleB\0\x12\x1c\n\x08provider\x18\x07\x20\x01\
+    (\tR\x08providerB\0\x12\x1c\n\x08sequence\x18\x08\x20\x01(\x04R\x08seque\
+    nceB\0\x12\x1c\n\x08ingested\x18\t\x20\x01(\x04R\x08ingestedB\0:\0\"e\n\
+    \x15PathUnlinkEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\tR\x04t\
+    ypeB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12\x18\n\x06ker\
+    nel\x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\xae\x01\n\x13PathUnlinkEventHo\
+    st\x12\x1c\n\x08hostname\x18\x01\x20\x01(\tR\x08hostnameB\0\x12\x10\n\
+    \x02ip\x18\x02\x20\x03(\tR\x02ipB\0\x12\x12\n\x03mac\x18\x03\x20\x03(\tR\
+    \x03macB\0\x12\x18\n\x06uptime\x18\x04\x20\x01(\x04R\x06uptimeB\0\x127\n\
+    \x02os\x18\x05\x20\x01(\x0b2%.probe.protobuf.PathUnlinkEventHostOsR\x02o\
+    sB\0:\0\"\x92\x02\n\x1cPathUnlinkEventProcessParent\x12\x12\n\x03pid\x18\
+    \x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tent\
+    ity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x20\n\nar\
+    gs_count\x18\x04\x20\x01(\x04R\nargs_countB\0\x12\x14\n\x04args\x18\x05\
+    \x20\x03(\tR\x04argsB\0\x12\x14\n\x04ppid\x18\x06\x20\x01(\rR\x04ppidB\0\
+    \x12\x16\n\x05start\x18\x07\x20\x01(\x04R\x05startB\0\x12\x1e\n\tthread_\
+    id\x18\x08\x20\x01(\x04R\tthread.idB\0\x12\x20\n\nexecutable\x18\t\x20\
+    \x01(\tR\nexecutableB\0:\0\"\xfa\x02\n\x16PathUnlinkEventProcess\x12\x12\
+    \n\x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\
     \x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\
     \x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\x04ppidB\0\x12\x20\n\nexecutable\
     \x18\x05\x20\x01(\tR\nexecutableB\0\x12\x20\n\nargs_count\x18\x06\x20\
@@ -7108,14 +10550,16 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x04host\x18\x03\x20\x01(\x0b2#.probe.protobuf.PathUnlinkEventHostR\x04h\
     ostB\0\x12B\n\x07process\x18\x04\x20\x01(\x0b2&.probe.protobuf.PathUnlin\
     kEventProcessR\x07processB\0\x129\n\x04user\x18\x05\x20\x01(\x0b2#.probe\
-    .protobuf.PathUnlinkEventUserR\x04userB\0:\0\"\xc9\x02\n\x05Event\x12@\n\
+    .protobuf.PathUnlinkEventUserR\x04userB\0:\0\"\xb2\x03\n\x05Event\x12@\n\
     \nevent_type\x18\x01\x20\x02(\x0e2\x1f.probe.protobuf.Event.EventTypeR\t\
     eventTypeB\0\x12f\n\x1bbprm_check_security_event_t\x18\x02\x20\x01(\x0b2\
     &.probe.protobuf.BprmCheckSecurityEventR\x17bprmCheckSecurityEventTB\0\
-    \x12P\n\x13path_unlink_event_t\x18\x03\x20\x01(\x0b2\x1f.probe.protobuf.\
-    PathUnlinkEventR\x10pathUnlinkEventTB\0\"B\n\tEventType\x12\x1c\n\x16BPR\
-    MCHECKSECURITYEVENT\x10\0\x1a\0\x12\x15\n\x0fPATHUNLINKEVENT\x10\x01\x1a\
-    \0\x1a\0:\0B\x02H\x01b\x06proto2\
+    \x12P\n\x13path_rename_event_t\x18\x03\x20\x01(\x0b2\x1f.probe.protobuf.\
+    PathRenameEventR\x10pathRenameEventTB\0\x12P\n\x13path_unlink_event_t\
+    \x18\x04\x20\x01(\x0b2\x1f.probe.protobuf.PathUnlinkEventR\x10pathUnlink\
+    EventTB\0\"Y\n\tEventType\x12\x1c\n\x16BPRMCHECKSECURITYEVENT\x10\0\x1a\
+    \0\x12\x15\n\x0fPATHRENAMEEVENT\x10\x01\x1a\0\x12\x15\n\x0fPATHUNLINKEVE\
+    NT\x10\x02\x1a\0\x1a\0:\0B\x02H\x01b\x06proto2\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
@@ -7142,6 +10586,16 @@ pub fn file_descriptor() -> ::protobuf::reflect::FileDescriptor {
         messages.push(BprmCheckSecurityEventUserEffective::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEventUser::generated_message_descriptor_data());
         messages.push(BprmCheckSecurityEvent::generated_message_descriptor_data());
+        messages.push(PathRenameEventEvent::generated_message_descriptor_data());
+        messages.push(PathRenameEventHostOs::generated_message_descriptor_data());
+        messages.push(PathRenameEventHost::generated_message_descriptor_data());
+        messages.push(PathRenameEventProcessParent::generated_message_descriptor_data());
+        messages.push(PathRenameEventProcess::generated_message_descriptor_data());
+        messages.push(PathRenameEventUserGroup::generated_message_descriptor_data());
+        messages.push(PathRenameEventUserEffectiveGroup::generated_message_descriptor_data());
+        messages.push(PathRenameEventUserEffective::generated_message_descriptor_data());
+        messages.push(PathRenameEventUser::generated_message_descriptor_data());
+        messages.push(PathRenameEvent::generated_message_descriptor_data());
         messages.push(PathUnlinkEventEvent::generated_message_descriptor_data());
         messages.push(PathUnlinkEventHostOs::generated_message_descriptor_data());
         messages.push(PathUnlinkEventHost::generated_message_descriptor_data());
