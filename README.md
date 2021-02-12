@@ -31,9 +31,9 @@ In the first terminal you should see an event that looks like:
 
 ```json
 {
-  "@timestamp": "1613078719",
+  "@timestamp": "1613149814",
   "event": {
-    "id": "f0790fc3-9fd5-4cd7-8c21-46bf6a69cf58",
+    "id": "11c3ce30-ff30-4e1f-bf59-ad8a4851fd9a",
     "kind": "event",
     "category": "process",
     "action": "execution-denied",
@@ -51,7 +51,7 @@ In the first terminal you should see an event that looks like:
     "mac": [
       "02:45:b3:9e:e7:35"
     ],
-    "uptime": "214423",
+    "uptime": "238884",
     "os": {
       "type": "linux",
       "name": "Ubuntu",
@@ -59,14 +59,14 @@ In the first terminal you should see an event that looks like:
     }
   },
   "process": {
-    "pid": 194007,
-    "entity_id": "38bdfcbbce162ca8b2c8cb2e7de9c2d37c36c149ede53ef73d9befec4bcae7ca",
+    "pid": 214904,
+    "entity_id": "698d5f16ba47c2808140278a9e4127f95f9cd514e8156a9572f8f262f7adb10a",
     "name": "ls",
-    "ppid": 194007,
+    "ppid": 185070,
     "executable": "/usr/bin/ls",
     "args_count": "2",
-    "start": "1613078719",
-    "thread.id": "194007",
+    "start": "1613149814",
+    "thread.id": "214904",
     "command_line": "ls --color=auto",
     "args": [
       "ls",
@@ -74,14 +74,14 @@ In the first terminal you should see an event that looks like:
     ],
     "parent": {
       "pid": 185070,
-      "entity_id": "df23d2f4a718fb3c2a1ca5ea1ad1c1c6f792b601aa43aa4db2fd774d39d808cf",
+      "entity_id": "2adab6f443f9827e3473403b54d3808467a9bafb5950594d3beb67ca0d691c75",
       "name": "bash",
       "args_count": "1",
       "args": [
         "-bash"
       ],
-      "ppid": 185070,
-      "start": "1613074686",
+      "ppid": 185069,
+      "start": "1613121319",
       "thread.id": "185070",
       "executable": "/usr/bin/bash"
     }
@@ -117,16 +117,16 @@ rm: cannot remove 'test.txt': Operation not permitted
 
 ```json
 {
-  "@timestamp": "1613149326",
+  "@timestamp": "1613149749",
   "event": {
-    "id": "3adee720-f4e4-42fe-822b-7ab8e724d78e",
+    "id": "5e3f9cd4-291a-469f-8b73-35eff181a917",
     "kind": "event",
     "category": "file",
     "action": "unlink-denied",
     "type": "info",
     "module": "bpf-lsm",
     "provider": "inode-unlink",
-    "sequence": "6"
+    "sequence": "3"
   },
   "host": {
     "hostname": "ubuntu-hirsute",
@@ -137,7 +137,7 @@ rm: cannot remove 'test.txt': Operation not permitted
     "mac": [
       "02:45:b3:9e:e7:35"
     ],
-    "uptime": "238396",
+    "uptime": "238819",
     "os": {
       "type": "linux",
       "name": "Ubuntu",
@@ -145,22 +145,22 @@ rm: cannot remove 'test.txt': Operation not permitted
     }
   },
   "process": {
-    "pid": 214487,
-    "entity_id": "d1bd8eae2b9ed69c90458f6aab8530d45ebe933fca3a81cb520d99289fd89ba2",
+    "pid": 214840,
+    "entity_id": "f70111f169cd7dea79d78de015ff48ebf6209292d77df45e227dbbdc97bfcac5",
     "name": "rm",
-    "ppid": 214487,
+    "ppid": 214839,
     "executable": "/usr/bin/rm",
     "args_count": "2",
-    "start": "1613149326",
-    "thread.id": "214487",
+    "start": "1613149749",
+    "thread.id": "214840",
     "command_line": "rm test.txt",
     "args": [
       "rm",
       "test.txt"
     ],
     "parent": {
-      "pid": 214486,
-      "entity_id": "465aa1ffa013ebeed0838554c64166ee0c6b69a3f47026eba69f866e9e732831",
+      "pid": 214839,
+      "entity_id": "2ad02210f987bee9cb66bf8949d83594d42d1d13fc647fbc255cab0c62ddb7b6",
       "name": "sudo",
       "args_count": "3",
       "args": [
@@ -168,9 +168,9 @@ rm: cannot remove 'test.txt': Operation not permitted
         "rm",
         "test.txt"
       ],
-      "ppid": 214486,
-      "start": "1613149326",
-      "thread.id": "214486",
+      "ppid": 185070,
+      "start": "1613149749",
+      "thread.id": "214839",
       "executable": "/usr/bin/sudo"
     }
   },

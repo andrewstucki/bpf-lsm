@@ -100,7 +100,7 @@ INLINE_STATIC struct cached_file *get_cached_file(struct inode *inode) {
 #define __basic_process_info_for_task(x, task, ...)                            \
   x.pid = BPF_CORE_READ(task, ##__VA_ARGS__, tgid);                            \
   x.thread__id = BPF_CORE_READ(task, ##__VA_ARGS__, pid);                      \
-  x.ppid = BPF_CORE_READ(task, ##__VA_ARGS__, tgid);                           \
+  x.ppid = BPF_CORE_READ(task, ##__VA_ARGS__, real_parent, tgid);              \
   x.start = adjust_timestamp(BPF_CORE_READ(task, ##__VA_ARGS__, start_time))
 
 #define __copy_cached_process(x, cached)                                       \
