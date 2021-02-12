@@ -123,7 +123,7 @@ rm: cannot remove 'test.txt': Operation not permitted
     "kind": "event",
     "category": "file",
     "action": "unlink-denied",
-    "type": "info",
+    "type": "deletion",
     "module": "bpf-lsm",
     "provider": "inode-unlink",
     "sequence": "3"

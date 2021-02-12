@@ -65,7 +65,7 @@ impl TransformationHandler for Handler {
         let event = e.event.get_mut_ref();
         event.set_kind("event".to_string());
         event.set_category("file".to_string());
-        event.set_field_type("info".to_string());
+        event.set_field_type("deletion".to_string());
         event.set_module("bpf-lsm".to_string());
         event.set_provider("inode-unlink".to_string());
 
