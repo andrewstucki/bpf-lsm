@@ -84,8 +84,7 @@ NOEVENT_LSM_HOOK(inode_getattr, const struct path *path) {
   }
   return 0;
 }
-LSM_HOOK(inode_unlink, unlink - file, struct inode *dir,
-         struct dentry *victim) {
+LSM_HOOK(inode_unlink, unlink, struct inode *dir, struct dentry *victim) {
   initialize_event();
   struct cached_file *cached = get_cached_file(victim->d_inode);
   if (cached) {
