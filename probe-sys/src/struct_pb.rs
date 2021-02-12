@@ -33,6 +33,7 @@ pub struct BprmCheckSecurityEventEvent {
     category: ::std::option::Option<::std::string::String>,
     action: ::std::option::Option<::std::string::String>,
     field_type: ::std::option::Option<::std::string::String>,
+    outcome: ::std::option::Option<::std::string::String>,
     module: ::std::option::Option<::std::string::String>,
     provider: ::std::option::Option<::std::string::String>,
     sequence: ::std::option::Option<u64>,
@@ -233,7 +234,43 @@ impl BprmCheckSecurityEventEvent {
         self.field_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string module = 6;
+    // optional string outcome = 6;
+
+    pub fn get_outcome(&self) -> &str {
+        match self.outcome.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_outcome(&mut self) {
+        self.outcome = ::std::option::Option::None;
+    }
+
+    pub fn has_outcome(&self) -> bool {
+        self.outcome.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_outcome(&mut self, v: ::std::string::String) {
+        self.outcome = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_outcome(&mut self) -> &mut ::std::string::String {
+        if self.outcome.is_none() {
+            self.outcome = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.outcome.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_outcome(&mut self) -> ::std::string::String {
+        self.outcome.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string module = 7;
 
     pub fn get_module(&self) -> &str {
         match self.module.as_ref() {
@@ -269,7 +306,7 @@ impl BprmCheckSecurityEventEvent {
         self.module.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string provider = 7;
+    // optional string provider = 8;
 
     pub fn get_provider(&self) -> &str {
         match self.provider.as_ref() {
@@ -305,7 +342,7 @@ impl BprmCheckSecurityEventEvent {
         self.provider.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional uint64 sequence = 8;
+    // optional uint64 sequence = 9;
 
     pub fn get_sequence(&self) -> u64 {
         self.sequence.unwrap_or(0)
@@ -324,7 +361,7 @@ impl BprmCheckSecurityEventEvent {
         self.sequence = ::std::option::Option::Some(v);
     }
 
-    // optional uint64 ingested = 9;
+    // optional uint64 ingested = 10;
 
     pub fn get_ingested(&self) -> u64 {
         self.ingested.unwrap_or(0)
@@ -374,6 +411,12 @@ impl BprmCheckSecurityEventEvent {
             |m: &BprmCheckSecurityEventEvent| { &m.field_type },
             |m: &mut BprmCheckSecurityEventEvent| { &mut m.field_type },
             BprmCheckSecurityEventEvent::get_field_type,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "outcome",
+            |m: &BprmCheckSecurityEventEvent| { &m.outcome },
+            |m: &mut BprmCheckSecurityEventEvent| { &mut m.outcome },
+            BprmCheckSecurityEventEvent::get_outcome,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "module",
@@ -450,21 +493,27 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.module = ::std::option::Option::Some(is.read_string()?);
+                    self.outcome = ::std::option::Option::Some(is.read_string()?);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.provider = ::std::option::Option::Some(is.read_string()?);
+                    self.module = ::std::option::Option::Some(is.read_string()?);
                 },
                 8 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.provider = ::std::option::Option::Some(is.read_string()?);
+                },
+                9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     self.sequence = ::std::option::Option::Some(is.read_uint64()?);
                 },
-                9 => {
+                10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
@@ -497,17 +546,20 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
         if let Some(v) = self.field_type.as_ref() {
             my_size += ::protobuf::rt::string_size(5, &v);
         }
-        if let Some(v) = self.module.as_ref() {
+        if let Some(v) = self.outcome.as_ref() {
             my_size += ::protobuf::rt::string_size(6, &v);
         }
-        if let Some(v) = self.provider.as_ref() {
+        if let Some(v) = self.module.as_ref() {
             my_size += ::protobuf::rt::string_size(7, &v);
         }
+        if let Some(v) = self.provider.as_ref() {
+            my_size += ::protobuf::rt::string_size(8, &v);
+        }
         if let Some(v) = self.sequence {
-            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.ingested {
-            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(10, v, ::protobuf::wire_format::WireTypeVarint);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -530,17 +582,20 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
         if let Some(v) = self.field_type.as_ref() {
             os.write_string(5, v)?;
         }
-        if let Some(v) = self.module.as_ref() {
+        if let Some(v) = self.outcome.as_ref() {
             os.write_string(6, v)?;
         }
-        if let Some(v) = self.provider.as_ref() {
+        if let Some(v) = self.module.as_ref() {
             os.write_string(7, v)?;
         }
+        if let Some(v) = self.provider.as_ref() {
+            os.write_string(8, v)?;
+        }
         if let Some(v) = self.sequence {
-            os.write_uint64(8, v)?;
+            os.write_uint64(9, v)?;
         }
         if let Some(v) = self.ingested {
-            os.write_uint64(9, v)?;
+            os.write_uint64(10, v)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -573,6 +628,7 @@ impl ::protobuf::Message for BprmCheckSecurityEventEvent {
             category: ::std::option::Option::None,
             action: ::std::option::Option::None,
             field_type: ::std::option::Option::None,
+            outcome: ::std::option::Option::None,
             module: ::std::option::Option::None,
             provider: ::std::option::Option::None,
             sequence: ::std::option::Option::None,
@@ -591,6 +647,7 @@ impl ::protobuf::Clear for BprmCheckSecurityEventEvent {
         self.category = ::std::option::Option::None;
         self.action = ::std::option::Option::None;
         self.field_type = ::std::option::Option::None;
+        self.outcome = ::std::option::Option::None;
         self.module = ::std::option::Option::None;
         self.provider = ::std::option::Option::None;
         self.sequence = ::std::option::Option::None;
@@ -3400,6 +3457,7 @@ pub struct InodeUnlinkEventEvent {
     category: ::std::option::Option<::std::string::String>,
     action: ::std::option::Option<::std::string::String>,
     field_type: ::std::option::Option<::std::string::String>,
+    outcome: ::std::option::Option<::std::string::String>,
     module: ::std::option::Option<::std::string::String>,
     provider: ::std::option::Option<::std::string::String>,
     sequence: ::std::option::Option<u64>,
@@ -3600,7 +3658,43 @@ impl InodeUnlinkEventEvent {
         self.field_type.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string module = 6;
+    // optional string outcome = 6;
+
+    pub fn get_outcome(&self) -> &str {
+        match self.outcome.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_outcome(&mut self) {
+        self.outcome = ::std::option::Option::None;
+    }
+
+    pub fn has_outcome(&self) -> bool {
+        self.outcome.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_outcome(&mut self, v: ::std::string::String) {
+        self.outcome = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_outcome(&mut self) -> &mut ::std::string::String {
+        if self.outcome.is_none() {
+            self.outcome = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.outcome.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_outcome(&mut self) -> ::std::string::String {
+        self.outcome.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string module = 7;
 
     pub fn get_module(&self) -> &str {
         match self.module.as_ref() {
@@ -3636,7 +3730,7 @@ impl InodeUnlinkEventEvent {
         self.module.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional string provider = 7;
+    // optional string provider = 8;
 
     pub fn get_provider(&self) -> &str {
         match self.provider.as_ref() {
@@ -3672,7 +3766,7 @@ impl InodeUnlinkEventEvent {
         self.provider.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
-    // optional uint64 sequence = 8;
+    // optional uint64 sequence = 9;
 
     pub fn get_sequence(&self) -> u64 {
         self.sequence.unwrap_or(0)
@@ -3691,7 +3785,7 @@ impl InodeUnlinkEventEvent {
         self.sequence = ::std::option::Option::Some(v);
     }
 
-    // optional uint64 ingested = 9;
+    // optional uint64 ingested = 10;
 
     pub fn get_ingested(&self) -> u64 {
         self.ingested.unwrap_or(0)
@@ -3741,6 +3835,12 @@ impl InodeUnlinkEventEvent {
             |m: &InodeUnlinkEventEvent| { &m.field_type },
             |m: &mut InodeUnlinkEventEvent| { &mut m.field_type },
             InodeUnlinkEventEvent::get_field_type,
+        ));
+        fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "outcome",
+            |m: &InodeUnlinkEventEvent| { &m.outcome },
+            |m: &mut InodeUnlinkEventEvent| { &mut m.outcome },
+            InodeUnlinkEventEvent::get_outcome,
         ));
         fields.push(::protobuf::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "module",
@@ -3817,21 +3917,27 @@ impl ::protobuf::Message for InodeUnlinkEventEvent {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.module = ::std::option::Option::Some(is.read_string()?);
+                    self.outcome = ::std::option::Option::Some(is.read_string()?);
                 },
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.provider = ::std::option::Option::Some(is.read_string()?);
+                    self.module = ::std::option::Option::Some(is.read_string()?);
                 },
                 8 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.provider = ::std::option::Option::Some(is.read_string()?);
+                },
+                9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     self.sequence = ::std::option::Option::Some(is.read_uint64()?);
                 },
-                9 => {
+                10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
@@ -3864,17 +3970,20 @@ impl ::protobuf::Message for InodeUnlinkEventEvent {
         if let Some(v) = self.field_type.as_ref() {
             my_size += ::protobuf::rt::string_size(5, &v);
         }
-        if let Some(v) = self.module.as_ref() {
+        if let Some(v) = self.outcome.as_ref() {
             my_size += ::protobuf::rt::string_size(6, &v);
         }
-        if let Some(v) = self.provider.as_ref() {
+        if let Some(v) = self.module.as_ref() {
             my_size += ::protobuf::rt::string_size(7, &v);
         }
+        if let Some(v) = self.provider.as_ref() {
+            my_size += ::protobuf::rt::string_size(8, &v);
+        }
         if let Some(v) = self.sequence {
-            my_size += ::protobuf::rt::value_size(8, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
         }
         if let Some(v) = self.ingested {
-            my_size += ::protobuf::rt::value_size(9, v, ::protobuf::wire_format::WireTypeVarint);
+            my_size += ::protobuf::rt::value_size(10, v, ::protobuf::wire_format::WireTypeVarint);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -3897,17 +4006,20 @@ impl ::protobuf::Message for InodeUnlinkEventEvent {
         if let Some(v) = self.field_type.as_ref() {
             os.write_string(5, v)?;
         }
-        if let Some(v) = self.module.as_ref() {
+        if let Some(v) = self.outcome.as_ref() {
             os.write_string(6, v)?;
         }
-        if let Some(v) = self.provider.as_ref() {
+        if let Some(v) = self.module.as_ref() {
             os.write_string(7, v)?;
         }
+        if let Some(v) = self.provider.as_ref() {
+            os.write_string(8, v)?;
+        }
         if let Some(v) = self.sequence {
-            os.write_uint64(8, v)?;
+            os.write_uint64(9, v)?;
         }
         if let Some(v) = self.ingested {
-            os.write_uint64(9, v)?;
+            os.write_uint64(10, v)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -3940,6 +4052,7 @@ impl ::protobuf::Message for InodeUnlinkEventEvent {
             category: ::std::option::Option::None,
             action: ::std::option::Option::None,
             field_type: ::std::option::Option::None,
+            outcome: ::std::option::Option::None,
             module: ::std::option::Option::None,
             provider: ::std::option::Option::None,
             sequence: ::std::option::Option::None,
@@ -3958,6 +4071,7 @@ impl ::protobuf::Clear for InodeUnlinkEventEvent {
         self.category = ::std::option::Option::None;
         self.action = ::std::option::Option::None;
         self.field_type = ::std::option::Option::None;
+        self.outcome = ::std::option::Option::None;
         self.module = ::std::option::Option::None;
         self.provider = ::std::option::Option::None;
         self.sequence = ::std::option::Option::None;
@@ -7421,120 +7535,121 @@ pub mod event {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\x0cstruct.proto\x12\x0eprobe.protobuf\"\x8f\x02\n\x1bBprmCheckSecurit\
+    \n\x0cstruct.proto\x12\x0eprobe.protobuf\"\xab\x02\n\x1bBprmCheckSecurit\
     yEventEvent\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04ki\
     nd\x18\x02\x20\x01(\tR\x04kindB\0\x12\x1c\n\x08category\x18\x03\x20\x01(\
     \tR\x08categoryB\0\x12\x18\n\x06action\x18\x04\x20\x01(\tR\x06actionB\0\
-    \x12\x1a\n\nfield_type\x18\x05\x20\x01(\tR\x04typeB\0\x12\x18\n\x06modul\
-    e\x18\x06\x20\x01(\tR\x06moduleB\0\x12\x1c\n\x08provider\x18\x07\x20\x01\
-    (\tR\x08providerB\0\x12\x1c\n\x08sequence\x18\x08\x20\x01(\x04R\x08seque\
-    nceB\0\x12\x1c\n\x08ingested\x18\t\x20\x01(\x04R\x08ingestedB\0:\0\"l\n\
-    \x1cBprmCheckSecurityEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\
-    \tR\x04typeB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12\x18\
-    \n\x06kernel\x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\xbc\x01\n\x1aBprmChec\
-    kSecurityEventHost\x12\x1c\n\x08hostname\x18\x01\x20\x01(\tR\x08hostname\
-    B\0\x12\x10\n\x02ip\x18\x02\x20\x03(\tR\x02ipB\0\x12\x12\n\x03mac\x18\
-    \x03\x20\x03(\tR\x03macB\0\x12\x18\n\x06uptime\x18\x04\x20\x01(\x04R\x06\
-    uptimeB\0\x12>\n\x02os\x18\x05\x20\x01(\x0b2,.probe.protobuf.BprmCheckSe\
-    curityEventHostOsR\x02osB\0:\0\"\x99\x02\n#BprmCheckSecurityEventProcess\
-    Parent\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_\
-    id\x18\x02\x20\x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\
-    \tR\x04nameB\0\x12\x20\n\nargs_count\x18\x04\x20\x01(\x04R\nargs_countB\
-    \0\x12\x14\n\x04args\x18\x05\x20\x03(\tR\x04argsB\0\x12\x14\n\x04ppid\
-    \x18\x06\x20\x01(\rR\x04ppidB\0\x12\x16\n\x05start\x18\x07\x20\x01(\x04R\
-    \x05startB\0\x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\0\
-    \x12\x20\n\nexecutable\x18\t\x20\x01(\tR\nexecutableB\0:\0\"\x88\x03\n\
-    \x1dBprmCheckSecurityEventProcess\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\
-    \x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tentity_idB\0\x12\
-    \x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x14\n\x04ppid\x18\x04\
-    \x20\x01(\rR\x04ppidB\0\x12\x20\n\nexecutable\x18\x05\x20\x01(\tR\nexecu\
-    tableB\0\x12\x20\n\nargs_count\x18\x06\x20\x01(\x04R\nargs_countB\0\x12\
-    \x16\n\x05start\x18\x07\x20\x01(\x04R\x05startB\0\x12\x1e\n\tthread_id\
-    \x18\x08\x20\x01(\x04R\tthread.idB\0\x12$\n\x0ccommand_line\x18\t\x20\
-    \x01(\tR\x0ccommand_lineB\0\x12\x14\n\x04args\x18\n\x20\x03(\tR\x04argsB\
-    \0\x12M\n\x06parent\x18\x0b\x20\x01(\x0b23.probe.protobuf.BprmCheckSecur\
-    ityEventProcessParentR\x06parentB\0:\0\"K\n\x1fBprmCheckSecurityEventUse\
-    rGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\
-    \x18\x02\x20\x01(\tR\x04nameB\0:\0\"T\n(BprmCheckSecurityEventUserEffect\
-    iveGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\
-    \x18\x02\x20\x01(\tR\x04nameB\0:\0\"\xa1\x01\n#BprmCheckSecurityEventUse\
-    rEffective\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04nam\
-    e\x18\x02\x20\x01(\tR\x04nameB\0\x12P\n\x05group\x18\x03\x20\x01(\x0b28.\
-    probe.protobuf.BprmCheckSecurityEventUserEffectiveGroupR\x05groupB\0:\0\
-    \"\xe4\x01\n\x1aBprmCheckSecurityEventUser\x12\x10\n\x02id\x18\x01\x20\
-    \x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12G\
-    \n\x05group\x18\x03\x20\x01(\x0b2/.probe.protobuf.BprmCheckSecurityEvent\
-    UserGroupR\x05groupB\0\x12S\n\teffective\x18\x04\x20\x01(\x0b23.probe.pr\
-    otobuf.BprmCheckSecurityEventUserEffectiveR\teffectiveB\0:\0\"\xcf\x02\n\
-    \x16BprmCheckSecurityEvent\x12\x1f\n\ttimestamp\x18\x01\x20\x01(\x04R\n@\
-    timestampB\0\x12C\n\x05event\x18\x02\x20\x01(\x0b2+.probe.protobuf.BprmC\
-    heckSecurityEventEventR\x05eventB\0\x12@\n\x04host\x18\x03\x20\x01(\x0b2\
-    *.probe.protobuf.BprmCheckSecurityEventHostR\x04hostB\0\x12I\n\x07proces\
-    s\x18\x04\x20\x01(\x0b2-.probe.protobuf.BprmCheckSecurityEventProcessR\
-    \x07processB\0\x12@\n\x04user\x18\x05\x20\x01(\x0b2*.probe.protobuf.Bprm\
-    CheckSecurityEventUserR\x04userB\0:\0\"\x89\x02\n\x15InodeUnlinkEventEve\
-    nt\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04kind\x18\
-    \x02\x20\x01(\tR\x04kindB\0\x12\x1c\n\x08category\x18\x03\x20\x01(\tR\
-    \x08categoryB\0\x12\x18\n\x06action\x18\x04\x20\x01(\tR\x06actionB\0\x12\
-    \x1a\n\nfield_type\x18\x05\x20\x01(\tR\x04typeB\0\x12\x18\n\x06module\
-    \x18\x06\x20\x01(\tR\x06moduleB\0\x12\x1c\n\x08provider\x18\x07\x20\x01(\
-    \tR\x08providerB\0\x12\x1c\n\x08sequence\x18\x08\x20\x01(\x04R\x08sequen\
-    ceB\0\x12\x1c\n\x08ingested\x18\t\x20\x01(\x04R\x08ingestedB\0:\0\"f\n\
-    \x16InodeUnlinkEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\tR\x04\
-    typeB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12\x18\n\x06ke\
-    rnel\x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\xb0\x01\n\x14InodeUnlinkEvent\
-    Host\x12\x1c\n\x08hostname\x18\x01\x20\x01(\tR\x08hostnameB\0\x12\x10\n\
+    \x12\x1a\n\nfield_type\x18\x05\x20\x01(\tR\x04typeB\0\x12\x1a\n\x07outco\
+    me\x18\x06\x20\x01(\tR\x07outcomeB\0\x12\x18\n\x06module\x18\x07\x20\x01\
+    (\tR\x06moduleB\0\x12\x1c\n\x08provider\x18\x08\x20\x01(\tR\x08providerB\
+    \0\x12\x1c\n\x08sequence\x18\t\x20\x01(\x04R\x08sequenceB\0\x12\x1c\n\
+    \x08ingested\x18\n\x20\x01(\x04R\x08ingestedB\0:\0\"l\n\x1cBprmCheckSecu\
+    rityEventHostOs\x12\x1a\n\nfield_type\x18\x01\x20\x01(\tR\x04typeB\0\x12\
+    \x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12\x18\n\x06kernel\x18\
+    \x03\x20\x01(\tR\x06kernelB\0:\0\"\xbc\x01\n\x1aBprmCheckSecurityEventHo\
+    st\x12\x1c\n\x08hostname\x18\x01\x20\x01(\tR\x08hostnameB\0\x12\x10\n\
     \x02ip\x18\x02\x20\x03(\tR\x02ipB\0\x12\x12\n\x03mac\x18\x03\x20\x03(\tR\
-    \x03macB\0\x12\x18\n\x06uptime\x18\x04\x20\x01(\x04R\x06uptimeB\0\x128\n\
-    \x02os\x18\x05\x20\x01(\x0b2&.probe.protobuf.InodeUnlinkEventHostOsR\x02\
-    osB\0:\0\"\x93\x02\n\x1dInodeUnlinkEventProcessParent\x12\x12\n\x03pid\
-    \x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\
-    \tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\x12\x20\
-    \n\nargs_count\x18\x04\x20\x01(\x04R\nargs_countB\0\x12\x14\n\x04args\
-    \x18\x05\x20\x03(\tR\x04argsB\0\x12\x14\n\x04ppid\x18\x06\x20\x01(\rR\
-    \x04ppidB\0\x12\x16\n\x05start\x18\x07\x20\x01(\x04R\x05startB\0\x12\x1e\
-    \n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\0\x12\x20\n\nexecutable\
-    \x18\t\x20\x01(\tR\nexecutableB\0:\0\"\xfc\x02\n\x17InodeUnlinkEventProc\
-    ess\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\
-    \x18\x02\x20\x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\
-    \x04nameB\0\x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\x04ppidB\0\x12\x20\n\n\
-    executable\x18\x05\x20\x01(\tR\nexecutableB\0\x12\x20\n\nargs_count\x18\
-    \x06\x20\x01(\x04R\nargs_countB\0\x12\x16\n\x05start\x18\x07\x20\x01(\
-    \x04R\x05startB\0\x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\
-    \0\x12$\n\x0ccommand_line\x18\t\x20\x01(\tR\x0ccommand_lineB\0\x12\x14\n\
-    \x04args\x18\n\x20\x03(\tR\x04argsB\0\x12G\n\x06parent\x18\x0b\x20\x01(\
-    \x0b2-.probe.protobuf.InodeUnlinkEventProcessParentR\x06parentB\0:\0\"E\
-    \n\x19InodeUnlinkEventUserGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02i\
-    dB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0:\0\"N\n\"InodeUnli\
-    nkEventUserEffectiveGroup\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\
-    \x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0:\0\"\x95\x01\n\x1dInod\
-    eUnlinkEventUserEffective\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\
-    \x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12J\n\x05group\x18\
-    \x03\x20\x01(\x0b22.probe.protobuf.InodeUnlinkEventUserEffectiveGroupR\
-    \x05groupB\0:\0\"\xd2\x01\n\x14InodeUnlinkEventUser\x12\x10\n\x02id\x18\
+    \x03macB\0\x12\x18\n\x06uptime\x18\x04\x20\x01(\x04R\x06uptimeB\0\x12>\n\
+    \x02os\x18\x05\x20\x01(\x0b2,.probe.protobuf.BprmCheckSecurityEventHostO\
+    sR\x02osB\0:\0\"\x99\x02\n#BprmCheckSecurityEventProcessParent\x12\x12\n\
+    \x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\tentity_id\x18\x02\x20\
+    \x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\x01(\tR\x04nameB\0\
+    \x12\x20\n\nargs_count\x18\x04\x20\x01(\x04R\nargs_countB\0\x12\x14\n\
+    \x04args\x18\x05\x20\x03(\tR\x04argsB\0\x12\x14\n\x04ppid\x18\x06\x20\
+    \x01(\rR\x04ppidB\0\x12\x16\n\x05start\x18\x07\x20\x01(\x04R\x05startB\0\
+    \x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\0\x12\x20\n\nexe\
+    cutable\x18\t\x20\x01(\tR\nexecutableB\0:\0\"\x88\x03\n\x1dBprmCheckSecu\
+    rityEventProcess\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\
+    \n\tentity_id\x18\x02\x20\x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\
+    \x03\x20\x01(\tR\x04nameB\0\x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\x04ppi\
+    dB\0\x12\x20\n\nexecutable\x18\x05\x20\x01(\tR\nexecutableB\0\x12\x20\n\
+    \nargs_count\x18\x06\x20\x01(\x04R\nargs_countB\0\x12\x16\n\x05start\x18\
+    \x07\x20\x01(\x04R\x05startB\0\x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04\
+    R\tthread.idB\0\x12$\n\x0ccommand_line\x18\t\x20\x01(\tR\x0ccommand_line\
+    B\0\x12\x14\n\x04args\x18\n\x20\x03(\tR\x04argsB\0\x12M\n\x06parent\x18\
+    \x0b\x20\x01(\x0b23.probe.protobuf.BprmCheckSecurityEventProcessParentR\
+    \x06parentB\0:\0\"K\n\x1fBprmCheckSecurityEventUserGroup\x12\x10\n\x02id\
+    \x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04n\
+    ameB\0:\0\"T\n(BprmCheckSecurityEventUserEffectiveGroup\x12\x10\n\x02id\
+    \x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04n\
+    ameB\0:\0\"\xa1\x01\n#BprmCheckSecurityEventUserEffective\x12\x10\n\x02i\
+    d\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04\
+    nameB\0\x12P\n\x05group\x18\x03\x20\x01(\x0b28.probe.protobuf.BprmCheckS\
+    ecurityEventUserEffectiveGroupR\x05groupB\0:\0\"\xe4\x01\n\x1aBprmCheckS\
+    ecurityEventUser\x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\
+    \x04name\x18\x02\x20\x01(\tR\x04nameB\0\x12G\n\x05group\x18\x03\x20\x01(\
+    \x0b2/.probe.protobuf.BprmCheckSecurityEventUserGroupR\x05groupB\0\x12S\
+    \n\teffective\x18\x04\x20\x01(\x0b23.probe.protobuf.BprmCheckSecurityEve\
+    ntUserEffectiveR\teffectiveB\0:\0\"\xcf\x02\n\x16BprmCheckSecurityEvent\
+    \x12\x1f\n\ttimestamp\x18\x01\x20\x01(\x04R\n@timestampB\0\x12C\n\x05eve\
+    nt\x18\x02\x20\x01(\x0b2+.probe.protobuf.BprmCheckSecurityEventEventR\
+    \x05eventB\0\x12@\n\x04host\x18\x03\x20\x01(\x0b2*.probe.protobuf.BprmCh\
+    eckSecurityEventHostR\x04hostB\0\x12I\n\x07process\x18\x04\x20\x01(\x0b2\
+    -.probe.protobuf.BprmCheckSecurityEventProcessR\x07processB\0\x12@\n\x04\
+    user\x18\x05\x20\x01(\x0b2*.probe.protobuf.BprmCheckSecurityEventUserR\
+    \x04userB\0:\0\"\xa5\x02\n\x15InodeUnlinkEventEvent\x12\x10\n\x02id\x18\
+    \x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04kind\x18\x02\x20\x01(\tR\x04kindB\
+    \0\x12\x1c\n\x08category\x18\x03\x20\x01(\tR\x08categoryB\0\x12\x18\n\
+    \x06action\x18\x04\x20\x01(\tR\x06actionB\0\x12\x1a\n\nfield_type\x18\
+    \x05\x20\x01(\tR\x04typeB\0\x12\x1a\n\x07outcome\x18\x06\x20\x01(\tR\x07\
+    outcomeB\0\x12\x18\n\x06module\x18\x07\x20\x01(\tR\x06moduleB\0\x12\x1c\
+    \n\x08provider\x18\x08\x20\x01(\tR\x08providerB\0\x12\x1c\n\x08sequence\
+    \x18\t\x20\x01(\x04R\x08sequenceB\0\x12\x1c\n\x08ingested\x18\n\x20\x01(\
+    \x04R\x08ingestedB\0:\0\"f\n\x16InodeUnlinkEventHostOs\x12\x1a\n\nfield_\
+    type\x18\x01\x20\x01(\tR\x04typeB\0\x12\x14\n\x04name\x18\x02\x20\x01(\t\
+    R\x04nameB\0\x12\x18\n\x06kernel\x18\x03\x20\x01(\tR\x06kernelB\0:\0\"\
+    \xb0\x01\n\x14InodeUnlinkEventHost\x12\x1c\n\x08hostname\x18\x01\x20\x01\
+    (\tR\x08hostnameB\0\x12\x10\n\x02ip\x18\x02\x20\x03(\tR\x02ipB\0\x12\x12\
+    \n\x03mac\x18\x03\x20\x03(\tR\x03macB\0\x12\x18\n\x06uptime\x18\x04\x20\
+    \x01(\x04R\x06uptimeB\0\x128\n\x02os\x18\x05\x20\x01(\x0b2&.probe.protob\
+    uf.InodeUnlinkEventHostOsR\x02osB\0:\0\"\x93\x02\n\x1dInodeUnlinkEventPr\
+    ocessParent\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\x03pidB\0\x12\x1e\n\ten\
+    tity_id\x18\x02\x20\x01(\tR\tentity_idB\0\x12\x14\n\x04name\x18\x03\x20\
+    \x01(\tR\x04nameB\0\x12\x20\n\nargs_count\x18\x04\x20\x01(\x04R\nargs_co\
+    untB\0\x12\x14\n\x04args\x18\x05\x20\x03(\tR\x04argsB\0\x12\x14\n\x04ppi\
+    d\x18\x06\x20\x01(\rR\x04ppidB\0\x12\x16\n\x05start\x18\x07\x20\x01(\x04\
+    R\x05startB\0\x12\x1e\n\tthread_id\x18\x08\x20\x01(\x04R\tthread.idB\0\
+    \x12\x20\n\nexecutable\x18\t\x20\x01(\tR\nexecutableB\0:\0\"\xfc\x02\n\
+    \x17InodeUnlinkEventProcess\x12\x12\n\x03pid\x18\x01\x20\x01(\rR\x03pidB\
+    \0\x12\x1e\n\tentity_id\x18\x02\x20\x01(\tR\tentity_idB\0\x12\x14\n\x04n\
+    ame\x18\x03\x20\x01(\tR\x04nameB\0\x12\x14\n\x04ppid\x18\x04\x20\x01(\rR\
+    \x04ppidB\0\x12\x20\n\nexecutable\x18\x05\x20\x01(\tR\nexecutableB\0\x12\
+    \x20\n\nargs_count\x18\x06\x20\x01(\x04R\nargs_countB\0\x12\x16\n\x05sta\
+    rt\x18\x07\x20\x01(\x04R\x05startB\0\x12\x1e\n\tthread_id\x18\x08\x20\
+    \x01(\x04R\tthread.idB\0\x12$\n\x0ccommand_line\x18\t\x20\x01(\tR\x0ccom\
+    mand_lineB\0\x12\x14\n\x04args\x18\n\x20\x03(\tR\x04argsB\0\x12G\n\x06pa\
+    rent\x18\x0b\x20\x01(\x0b2-.probe.protobuf.InodeUnlinkEventProcessParent\
+    R\x06parentB\0:\0\"E\n\x19InodeUnlinkEventUserGroup\x12\x10\n\x02id\x18\
     \x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\
-    \0\x12A\n\x05group\x18\x03\x20\x01(\x0b2).probe.protobuf.InodeUnlinkEven\
-    tUserGroupR\x05groupB\0\x12M\n\teffective\x18\x04\x20\x01(\x0b2-.probe.p\
-    rotobuf.InodeUnlinkEventUserEffectiveR\teffectiveB\0:\0\"\x9c\x01\n\x14I\
-    nodeUnlinkEventFile\x12\x14\n\x04name\x18\x01\x20\x01(\tR\x04nameB\0\x12\
-    \x1e\n\tdirectory\x18\x02\x20\x01(\tR\tdirectoryB\0\x12\x14\n\x04path\
-    \x18\x03\x20\x01(\tR\x04pathB\0\x12\x1e\n\textension\x18\x04\x20\x01(\tR\
-    \textensionB\0\x12\x16\n\x05inode\x18\x05\x20\x01(\tR\x05inodeB\0:\0\"\
-    \xed\x02\n\x10InodeUnlinkEvent\x12\x1f\n\ttimestamp\x18\x01\x20\x01(\x04\
-    R\n@timestampB\0\x12=\n\x05event\x18\x02\x20\x01(\x0b2%.probe.protobuf.I\
-    nodeUnlinkEventEventR\x05eventB\0\x12:\n\x04host\x18\x03\x20\x01(\x0b2$.\
-    probe.protobuf.InodeUnlinkEventHostR\x04hostB\0\x12C\n\x07process\x18\
-    \x04\x20\x01(\x0b2'.probe.protobuf.InodeUnlinkEventProcessR\x07processB\
-    \0\x12:\n\x04user\x18\x05\x20\x01(\x0b2$.probe.protobuf.InodeUnlinkEvent\
-    UserR\x04userB\0\x12:\n\x04file\x18\x06\x20\x01(\x0b2$.probe.protobuf.In\
-    odeUnlinkEventFileR\x04fileB\0:\0\"\xcd\x02\n\x05Event\x12@\n\nevent_typ\
-    e\x18\x01\x20\x02(\x0e2\x1f.probe.protobuf.Event.EventTypeR\teventTypeB\
-    \0\x12f\n\x1bbprm_check_security_event_t\x18\x02\x20\x01(\x0b2&.probe.pr\
-    otobuf.BprmCheckSecurityEventR\x17bprmCheckSecurityEventTB\0\x12S\n\x14i\
-    node_unlink_event_t\x18\x03\x20\x01(\x0b2\x20.probe.protobuf.InodeUnlink\
-    EventR\x11inodeUnlinkEventTB\0\"C\n\tEventType\x12\x1c\n\x16BPRMCHECKSEC\
-    URITYEVENT\x10\0\x1a\0\x12\x16\n\x10INODEUNLINKEVENT\x10\x01\x1a\0\x1a\0\
-    :\0B\x02H\x01b\x06proto2\
+    \0:\0\"N\n\"InodeUnlinkEventUserEffectiveGroup\x12\x10\n\x02id\x18\x01\
+    \x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0:\
+    \0\"\x95\x01\n\x1dInodeUnlinkEventUserEffective\x12\x10\n\x02id\x18\x01\
+    \x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\x20\x01(\tR\x04nameB\0\
+    \x12J\n\x05group\x18\x03\x20\x01(\x0b22.probe.protobuf.InodeUnlinkEventU\
+    serEffectiveGroupR\x05groupB\0:\0\"\xd2\x01\n\x14InodeUnlinkEventUser\
+    \x12\x10\n\x02id\x18\x01\x20\x01(\tR\x02idB\0\x12\x14\n\x04name\x18\x02\
+    \x20\x01(\tR\x04nameB\0\x12A\n\x05group\x18\x03\x20\x01(\x0b2).probe.pro\
+    tobuf.InodeUnlinkEventUserGroupR\x05groupB\0\x12M\n\teffective\x18\x04\
+    \x20\x01(\x0b2-.probe.protobuf.InodeUnlinkEventUserEffectiveR\teffective\
+    B\0:\0\"\x9c\x01\n\x14InodeUnlinkEventFile\x12\x14\n\x04name\x18\x01\x20\
+    \x01(\tR\x04nameB\0\x12\x1e\n\tdirectory\x18\x02\x20\x01(\tR\tdirectoryB\
+    \0\x12\x14\n\x04path\x18\x03\x20\x01(\tR\x04pathB\0\x12\x1e\n\textension\
+    \x18\x04\x20\x01(\tR\textensionB\0\x12\x16\n\x05inode\x18\x05\x20\x01(\t\
+    R\x05inodeB\0:\0\"\xed\x02\n\x10InodeUnlinkEvent\x12\x1f\n\ttimestamp\
+    \x18\x01\x20\x01(\x04R\n@timestampB\0\x12=\n\x05event\x18\x02\x20\x01(\
+    \x0b2%.probe.protobuf.InodeUnlinkEventEventR\x05eventB\0\x12:\n\x04host\
+    \x18\x03\x20\x01(\x0b2$.probe.protobuf.InodeUnlinkEventHostR\x04hostB\0\
+    \x12C\n\x07process\x18\x04\x20\x01(\x0b2'.probe.protobuf.InodeUnlinkEven\
+    tProcessR\x07processB\0\x12:\n\x04user\x18\x05\x20\x01(\x0b2$.probe.prot\
+    obuf.InodeUnlinkEventUserR\x04userB\0\x12:\n\x04file\x18\x06\x20\x01(\
+    \x0b2$.probe.protobuf.InodeUnlinkEventFileR\x04fileB\0:\0\"\xcd\x02\n\
+    \x05Event\x12@\n\nevent_type\x18\x01\x20\x02(\x0e2\x1f.probe.protobuf.Ev\
+    ent.EventTypeR\teventTypeB\0\x12f\n\x1bbprm_check_security_event_t\x18\
+    \x02\x20\x01(\x0b2&.probe.protobuf.BprmCheckSecurityEventR\x17bprmCheckS\
+    ecurityEventTB\0\x12S\n\x14inode_unlink_event_t\x18\x03\x20\x01(\x0b2\
+    \x20.probe.protobuf.InodeUnlinkEventR\x11inodeUnlinkEventTB\0\"C\n\tEven\
+    tType\x12\x1c\n\x16BPRMCHECKSECURITYEVENT\x10\0\x1a\0\x12\x16\n\x10INODE\
+    UNLINKEVENT\x10\x01\x1a\0\x1a\0:\0B\x02H\x01b\x06proto2\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file

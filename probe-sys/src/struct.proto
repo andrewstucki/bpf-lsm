@@ -12,10 +12,11 @@ message BprmCheckSecurityEventEvent {
   optional string category = 3 [json_name="category"];
   optional string action = 4 [json_name="action"];
   optional string field_type = 5 [json_name="type"];
-  optional string module = 6 [json_name="module"];
-  optional string provider = 7 [json_name="provider"];
-  optional uint64 sequence = 8 [json_name="sequence"];
-  optional uint64 ingested = 9 [json_name="ingested"];
+  optional string outcome = 6 [json_name="outcome"];
+  optional string module = 7 [json_name="module"];
+  optional string provider = 8 [json_name="provider"];
+  optional uint64 sequence = 9 [json_name="sequence"];
+  optional uint64 ingested = 10 [json_name="ingested"];
 }
 message BprmCheckSecurityEventHostOs {
   optional string field_type = 1 [json_name="type"];
@@ -85,10 +86,11 @@ message InodeUnlinkEventEvent {
   optional string category = 3 [json_name="category"];
   optional string action = 4 [json_name="action"];
   optional string field_type = 5 [json_name="type"];
-  optional string module = 6 [json_name="module"];
-  optional string provider = 7 [json_name="provider"];
-  optional uint64 sequence = 8 [json_name="sequence"];
-  optional uint64 ingested = 9 [json_name="ingested"];
+  optional string outcome = 6 [json_name="outcome"];
+  optional string module = 7 [json_name="module"];
+  optional string provider = 8 [json_name="provider"];
+  optional uint64 sequence = 9 [json_name="sequence"];
+  optional uint64 ingested = 10 [json_name="ingested"];
 }
 message InodeUnlinkEventHostOs {
   optional string field_type = 1 [json_name="type"];

@@ -38,6 +38,7 @@ In the first terminal you should see an event that looks like:
     "category": "process",
     "action": "execution-denied",
     "type": "start",
+    "outcome": "failure",
     "module": "bpf-lsm",
     "provider": "bprm-check-security",
     "sequence": "0"
@@ -124,6 +125,7 @@ rm: cannot remove 'test.txt': Operation not permitted
     "category": "file",
     "action": "unlink-denied",
     "type": "deletion",
+    "outcome": "failure",
     "module": "bpf-lsm",
     "provider": "inode-unlink",
     "sequence": "3"

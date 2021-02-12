@@ -15,6 +15,7 @@
 
 struct bpf_bprm_check_security_event_event_t {
   char action[256];
+  char outcome[256];
 };
 struct bpf_bprm_check_security_event_process_parent_t {
   unsigned int pid;
@@ -87,6 +88,7 @@ struct query_bpf_bprm_check_security_event_t {
 
 struct bpf_inode_unlink_event_event_t {
   char action[256];
+  char outcome[256];
 };
 struct bpf_inode_unlink_event_process_parent_t {
   unsigned int pid;

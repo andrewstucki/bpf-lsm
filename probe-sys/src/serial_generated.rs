@@ -16,6 +16,7 @@ impl From<ffi::bprm_check_security_event_event_t> for BprmCheckSecurityEventEven
     fn from(e: ffi::bprm_check_security_event_event_t) -> Self {
         let mut event = Self::default();
         event.set_action(transform_string(e.action.into()));
+        event.set_outcome(transform_string(e.outcome.into()));
         event
     }
 }
@@ -232,6 +233,7 @@ impl From<ffi::inode_unlink_event_event_t> for InodeUnlinkEventEvent {
     fn from(e: ffi::inode_unlink_event_event_t) -> Self {
         let mut event = Self::default();
         event.set_action(transform_string(e.action.into()));
+        event.set_outcome(transform_string(e.outcome.into()));
         event
     }
 }

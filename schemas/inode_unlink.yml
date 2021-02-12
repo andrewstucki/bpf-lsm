@@ -25,6 +25,9 @@
       type: keyword
       enrichment: true
       description: Event type. The third categorization field in the hierarchy.
+    - name: outcome
+      type: keyword
+      description: The outcome of the event. The lowest level categorization field in the hierarchy.
     - name: module
       type: keyword
       enrichment: true

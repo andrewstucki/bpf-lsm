@@ -82,6 +82,8 @@ INLINE_STATIC struct cached_file *get_cached_file(struct inode *inode) {
   static int module##_hook(ctx)
 
 #define __check_rejection_filter(m, p, e, r)                                   \
+  const char success[] = "success";                                            \
+  const char failure[] = "failure";                                            \
   const char denied[] = "" #p "-denied";                                       \
   const char allowed[] = "" #p "-allowed";                                     \
   if (r == 0) { /* don't override what the user has set */                     \
@@ -90,12 +92,15 @@ INLINE_STATIC struct cached_file *get_cached_file(struct inode *inode) {
     if (size && *size > 0) {                                                   \
       if (___check_##m(*size, &m##_rejections, &event->m##_event_t)) {         \
         SET_STRING(e->event.action, denied);                                   \
+        SET_STRING(e->event.outcome, failure);                                 \
         r = -EPERM;                                                            \
       }                                                                        \
     }                                                                          \
   }                                                                            \
-  if (r == 0)                                                                  \
-    SET_STRING(e->event.action, allowed);
+  if (r == 0) {                                                                \
+    SET_STRING(e->event.action, allowed);                                      \
+    SET_STRING(e->event.outcome, success);                                     \
+  }
 
 #define __basic_process_info_for_task(x, task, ...)                            \
   x.pid = BPF_CORE_READ(task, ##__VA_ARGS__, tgid);                            \

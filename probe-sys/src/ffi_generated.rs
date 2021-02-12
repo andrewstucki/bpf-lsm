@@ -21,6 +21,7 @@ impl Default for cached_process {
 #[derive(Copy, Clone)]
 pub struct bprm_check_security_event_event_t {
     pub action: [c_char; 256],
+    pub outcome: [c_char; 256],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -86,6 +87,7 @@ pub type bprm_check_security_event_handler = extern "C" fn(ctx: *mut c_void, e: 
 #[derive(Copy, Clone)]
 pub struct inode_unlink_event_event_t {
     pub action: [c_char; 256],
+    pub outcome: [c_char; 256],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
