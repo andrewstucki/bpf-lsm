@@ -146,7 +146,11 @@ message InodeUnlinkEventUser {
   optional InodeUnlinkEventUserEffective effective = 4 [json_name="effective"];
 }
 message InodeUnlinkEventFile {
-  optional string path = 1 [json_name="path"];
+  optional string name = 1 [json_name="name"];
+  optional string directory = 2 [json_name="directory"];
+  optional string path = 3 [json_name="path"];
+  optional string extension = 4 [json_name="extension"];
+  optional string inode = 5 [json_name="inode"];
 }
 message InodeUnlinkEvent {
   optional uint64 timestamp = 1 [json_name="@timestamp"];

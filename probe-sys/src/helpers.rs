@@ -24,7 +24,7 @@ where
     }
 }
 
-pub(crate) fn int_to_string(v: u32) -> String {
+pub(crate) fn int_to_string(v: u64) -> String {
     v.to_string()
 }
 

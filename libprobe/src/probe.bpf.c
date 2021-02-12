@@ -89,6 +89,7 @@ LSM_HOOK(inode_unlink, unlink, struct inode *dir, struct dentry *victim) {
   struct cached_file *cached = get_cached_file(victim->d_inode);
   if (cached) {
     memcpy(event->file.path, cached->path, MAX_PATH_SIZE);
+    event->file.inode = victim->d_inode->i_ino;
   }
   return 0;
 }

@@ -160,26 +160,9 @@ impl QueryStruct for query_bpf_bprm_check_security_event_t {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct query_bpf_inode_unlink_event_process_parent_t {
-    pub name___operator: u8,
-    pub name: [c_char; 256],
-    pub executable___operator: u8,
-    pub executable: [c_char; 256],
-}
-
-impl Default for query_bpf_inode_unlink_event_process_parent_t {
-    fn default() -> Self {
-        unsafe { std::mem::zeroed() }
-    }
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct query_bpf_inode_unlink_event_process_t {
     pub name___operator: u8,
     pub name: [c_char; 256],
-    pub executable___operator: u8,
-    pub executable: [c_char; 256],
-    pub parent: query_bpf_inode_unlink_event_process_parent_t,
 }
 
 impl Default for query_bpf_inode_unlink_event_process_t {
@@ -254,36 +237,6 @@ impl QueryStruct for query_bpf_inode_unlink_event_t {
         value: String,
     ) -> Result<(), String> {
         match path.as_str() {
-            "process.parent.name" => {
-                if self.process.parent.name___operator != UNSET_OPERATOR {
-                    // we can only hold a single condition per variable for now
-                    return Err(format!("{} already in condition", path));
-                }
-                if value.len() < 256 {
-                    for (dest, src) in self.process.parent.name.iter_mut().zip(value.as_bytes().iter()) {
-                        *dest = *src as _;
-                    }
-                    self.process.parent.name___operator = operator_to_constant(operator);
-                    Ok(())
-                } else {
-                    Err(format!("process.parent.name is too long, maximum 256 characters, given value is {} characters", value.len()))
-                }
-            },
-            "process.parent.executable" => {
-                if self.process.parent.executable___operator != UNSET_OPERATOR {
-                    // we can only hold a single condition per variable for now
-                    return Err(format!("{} already in condition", path));
-                }
-                if value.len() < 256 {
-                    for (dest, src) in self.process.parent.executable.iter_mut().zip(value.as_bytes().iter()) {
-                        *dest = *src as _;
-                    }
-                    self.process.parent.executable___operator = operator_to_constant(operator);
-                    Ok(())
-                } else {
-                    Err(format!("process.parent.executable is too long, maximum 256 characters, given value is {} characters", value.len()))
-                }
-            },
             "process.name" => {
                 if self.process.name___operator != UNSET_OPERATOR {
                     // we can only hold a single condition per variable for now
@@ -297,21 +250,6 @@ impl QueryStruct for query_bpf_inode_unlink_event_t {
                     Ok(())
                 } else {
                     Err(format!("process.name is too long, maximum 256 characters, given value is {} characters", value.len()))
-                }
-            },
-            "process.executable" => {
-                if self.process.executable___operator != UNSET_OPERATOR {
-                    // we can only hold a single condition per variable for now
-                    return Err(format!("{} already in condition", path));
-                }
-                if value.len() < 256 {
-                    for (dest, src) in self.process.executable.iter_mut().zip(value.as_bytes().iter()) {
-                        *dest = *src as _;
-                    }
-                    self.process.executable___operator = operator_to_constant(operator);
-                    Ok(())
-                } else {
-                    Err(format!("process.executable is too long, maximum 256 characters, given value is {} characters", value.len()))
                 }
             },
             "file.path" => {

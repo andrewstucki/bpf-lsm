@@ -2,6 +2,7 @@ use probe_sys::{
     BprmCheckSecurityEvent, InodeUnlinkEvent, ProbeHandler, SerializableEvent, SerializableResult,
     TransformationHandler,
 };
+use std::path::Path;
 use uuid::Uuid;
 
 use crate::errors::Error;
@@ -67,6 +68,28 @@ impl TransformationHandler for Handler {
         event.set_field_type("info".to_string());
         event.set_module("bpf-lsm".to_string());
         event.set_provider("inode-unlink".to_string());
+
+        let process = e.process.get_mut_ref();
+        let command_line = process.args.join(" ");
+        process.set_command_line(command_line);
+        
+        let file = e.file.get_mut_ref();
+        let file_path = file.get_path();
+        let path = Path::new(file_path);
+        let file_name = path.file_name().map(|f| f.to_string_lossy().to_string());
+        let file_parent = path.parent().map(|f| f.to_string_lossy().to_string());
+        let file_extension = path.extension().map(|f| f.to_string_lossy().to_string());
+
+        for name in file_name {
+            file.set_name(name)
+        }
+        for parent in file_parent {
+            file.set_directory(parent)
+        }
+        for extension in file_extension {
+            file.set_extension(extension)
+        }
+
         Ok(e)
     }
 }

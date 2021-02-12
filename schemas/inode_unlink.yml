@@ -112,7 +112,6 @@
         final: u32
     - name: executable
       type: wildcard
-      queryable: string
       description: Absolute path to the process executable.
     - name: args_count
       type: long
@@ -160,7 +159,6 @@
           description: Unique identifier for the process.
         - name: name
           type: wildcard
-          queryable: string
           description: Process name.
         - name: args_count
           type: long
@@ -197,7 +195,6 @@
           description: Thread ID.
         - name: executable
           type: wildcard
-          queryable: string
           description: Absolute path to the process executable.
 - name: user
   description: Fields to describe the user relevant to the event.
@@ -276,7 +273,29 @@
   description: Fields describing files.
   type: group
   fields:
+    - name: name
+      type: wildcard
+      enrichment: true
+      description: Name of the file including the extension, without the directory.
+    - name: directory
+      type: wildcard
+      enrichment: true
+      description: Directory where the file is located.
     - name: path
       type: wildcard
       queryable: string
       description: Full path to the file, including the file name.
+    - name: extension
+      type: keyword
+      enrichment: true
+      description: File extension, excluding the leading dot.
+    - name: inode
+      type: keyword
+      description: Inode representing the file in the filesystem.
+      override:
+        c: unsigned long
+        rust: u64
+        final: String
+        proto: string
+        transform:
+          method: int_to_string

@@ -141,6 +141,7 @@ pub struct inode_unlink_event_user_t {
 #[derive(Copy, Clone)]
 pub struct inode_unlink_event_file_t {
     pub path: [c_char; 256],
+    pub inode: u64,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]

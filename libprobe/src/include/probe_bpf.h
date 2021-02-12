@@ -197,4 +197,15 @@ INLINE_STATIC void set_basename(char *x, const char *y, size_t len) {
   }
 }
 
+INLINE_STATIC void set_dirname(char *x, const char *y, size_t len) {
+  int last_slash = __last_index_of(y, '/', len) % len;
+  if (last_slash < 0)
+    return;
+  last_slash++;
+#pragma unroll
+  for (size_t i = 0; i < len && i < last_slash; i++) {
+    x[i] = y[i];
+  }
+}
+
 #endif // __PROBE_BPF_H

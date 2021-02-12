@@ -308,6 +308,7 @@ impl From<ffi::inode_unlink_event_file_t> for InodeUnlinkEventFile {
     fn from(e: ffi::inode_unlink_event_file_t) -> Self {
         let mut event = Self::default();
         event.set_path(transform_string(e.path.into()));
+        event.set_inode(int_to_string(e.inode.into()));
         event
     }
 }

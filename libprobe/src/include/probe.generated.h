@@ -128,6 +128,7 @@ struct bpf_inode_unlink_event_user_t {
 };
 struct bpf_inode_unlink_event_file_t {
   char path[256];
+  unsigned long inode;
 };
 struct bpf_inode_unlink_event_t {
   unsigned long __timestamp;
@@ -137,18 +138,9 @@ struct bpf_inode_unlink_event_t {
   struct bpf_inode_unlink_event_file_t file;
 };
 
-struct query_bpf_inode_unlink_event_process_parent_t {
-  char name___operator;
-  char name[256];
-  char executable___operator;
-  char executable[256];
-};
 struct query_bpf_inode_unlink_event_process_t {
   char name___operator;
   char name[256];
-  char executable___operator;
-  char executable[256];
-  struct query_bpf_inode_unlink_event_process_parent_t parent;
 };
 struct query_bpf_inode_unlink_event_user_t {
   char id___operator;
@@ -279,25 +271,10 @@ INLINE_STATIC int ___test_inode_unlink(
     } else if (rule->___absolute == FALSE_ABSOLUTE) {
       return 0;
     } else {
-      if (rule->process.parent.name___operator == EQUAL_OPERATOR) {
-        conditional_true = conditional_true && STRING_EQUALITY(event->process.parent.name,rule->process.parent.name);
-      } else if (rule->process.parent.name___operator == NOT_EQUAL_OPERATOR) {
-        conditional_true = conditional_true && STRING_INEQUALITY(event->process.parent.name, rule->process.parent.name);
-      }
-      if (rule->process.parent.executable___operator == EQUAL_OPERATOR) {
-        conditional_true = conditional_true && STRING_EQUALITY(event->process.parent.executable,rule->process.parent.executable);
-      } else if (rule->process.parent.executable___operator == NOT_EQUAL_OPERATOR) {
-        conditional_true = conditional_true && STRING_INEQUALITY(event->process.parent.executable, rule->process.parent.executable);
-      }
       if (rule->process.name___operator == EQUAL_OPERATOR) {
         conditional_true = conditional_true && STRING_EQUALITY(event->process.name,rule->process.name);
       } else if (rule->process.name___operator == NOT_EQUAL_OPERATOR) {
         conditional_true = conditional_true && STRING_INEQUALITY(event->process.name, rule->process.name);
-      }
-      if (rule->process.executable___operator == EQUAL_OPERATOR) {
-        conditional_true = conditional_true && STRING_EQUALITY(event->process.executable,rule->process.executable);
-      } else if (rule->process.executable___operator == NOT_EQUAL_OPERATOR) {
-        conditional_true = conditional_true && STRING_INEQUALITY(event->process.executable, rule->process.executable);
       }
       if (rule->user.id___operator == EQUAL_OPERATOR) {
         conditional_true = conditional_true && NUMBER_EQUALITY(event->user.id,rule->user.id);
