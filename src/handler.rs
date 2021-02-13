@@ -80,13 +80,13 @@ impl TransformationHandler for Handler {
         let file_parent = path.parent().map(|f| f.to_string_lossy().to_string());
         let file_extension = path.extension().map(|f| f.to_string_lossy().to_string());
 
-        for name in file_name {
+        if let Some(name) = file_name {
             file.set_name(name)
         }
-        for parent in file_parent {
+        if let Some(parent) = file_parent {
             file.set_directory(parent)
         }
-        for extension in file_extension {
+        if let Some(extension) = file_extension {
             file.set_extension(extension)
         }
 

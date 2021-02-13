@@ -65,8 +65,8 @@ fn run(c: &Context) {
     });
 
     let mut filters: Vec<&str> = vec![];
-    let filter = c.string_flag("filter").unwrap_or(String::from(""));
-    if filter != "" {
+    let filter = c.string_flag("filter").unwrap_or_else(|_| String::from(""));
+    if !filter.is_empty() {
         filters = filter.split(';').collect();
     }
 
@@ -97,7 +97,7 @@ fn run(c: &Context) {
     {
         Ok(probe) => match probe.apply(filters) {
             Err(e) => {
-                error!("error setting up probe: {}", e.to_string());
+                error!("error setting up probe: {}", e);
                 std::process::exit(1);
             }
             _ => loop {

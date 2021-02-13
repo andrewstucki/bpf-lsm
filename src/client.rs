@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use backoff::backoff::Backoff;
 use backoff::{ExponentialBackoff, SystemClock};
 use instant::Instant;
@@ -69,7 +71,7 @@ impl Client {
         }
         Self {
             base: url,
-            creds: creds,
+            creds,
             inner: agent_builder.build(),
         }
     }

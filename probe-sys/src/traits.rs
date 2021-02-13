@@ -11,7 +11,7 @@ pub trait ProbeHandler<U> {
 pub trait SerializableEvent {
     fn to_json(&self) -> SerializableResult<String>;
     fn to_bytes(&self) -> SerializableResult<Vec<u8>>;
-    fn enrich_common<'a>(&'a mut self) -> SerializableResult<&'a mut Self>;
+    fn enrich_common(&mut self) -> SerializableResult<&mut Self>;
     fn update_id(&mut self, id: &mut str);
     fn update_sequence(&mut self, seq: u64);
     fn suffix(&self) -> &'static str;

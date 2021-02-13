@@ -14,7 +14,7 @@ pub trait QueryWriter {
     // called on each statement of an and clause
     fn write_statement<'a>(
         &mut self,
-        field: &'a String,
+        field: &'a str,
         operator: &'a Operator,
         atom: &'a Atom,
     ) -> Result<(), String>;
@@ -27,7 +27,7 @@ pub trait QueryWriter {
 }
 
 pub trait QueryWriterFactory<T: QueryWriter> {
-    fn create<'a>(&self, operation: Operation, table: &'a str) -> Result<T, String>;
+    fn create(&self, operation: Operation, table: &str) -> Result<T, String>;
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -36,7 +36,7 @@ pub enum Operation {
     Filter,
 }
 
-fn parse_operation<'a>(i: &'a str) -> IResult<&'a str, Operation, VerboseError<&'a str>> {
+fn parse_operation(i: &str) -> IResult<&str, Operation, VerboseError<&str>> {
     alt((
         map(tag_no_case("REJECT"), |_| Operation::Reject),
         map(tag_no_case("FILTER"), |_| Operation::Filter),
@@ -68,7 +68,7 @@ impl fmt::Display for Table {
     }
 }
 
-fn parse_field<'a>(i: &'a str) -> IResult<&'a str, String, VerboseError<&'a str>> {
+fn parse_field(i: &str) -> IResult<&str, String, VerboseError<&str>> {
     map(
         take_while(|c: char| c == '_' || c == '.' || c.is_ascii_alphabetic()),
         |field: &str| field.to_string(),
@@ -81,7 +81,7 @@ pub enum Operator {
     NotEqual,
 }
 
-fn parse_operator<'a>(i: &'a str) -> IResult<&'a str, Operator, VerboseError<&'a str>> {
+fn parse_operator(i: &str) -> IResult<&str, Operator, VerboseError<&str>> {
     alt((
         map(tag("=="), |_| Operator::Equal),
         map(tag("!="), |_| Operator::NotEqual),
@@ -103,13 +103,13 @@ pub enum Atom {
     Number(u64),
 }
 
-fn parse_number<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>> {
+fn parse_number(i: &str) -> IResult<&str, Atom, VerboseError<&str>> {
     map_res(digit1, |digit_str: &str| {
         digit_str.parse::<u64>().map(Atom::Number)
     })(i)
 }
 
-fn parse_escape<'a>(i: &'a str) -> IResult<&'a str, String, VerboseError<&'a str>> {
+fn parse_escape(i: &str) -> IResult<&str, String, VerboseError<&str>> {
     escaped_transform(
         take_while1(|c: char| c == '.' || c == '_' || c == '/' || c.is_alphanumeric()),
         '\\',
@@ -121,17 +121,17 @@ fn parse_escape<'a>(i: &'a str) -> IResult<&'a str, String, VerboseError<&'a str
     )(i)
 }
 
-fn parse_string<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>> {
+fn parse_string(i: &str) -> IResult<&str, Atom, VerboseError<&str>> {
     map(
         context(
             "string",
             preceded(char('\"'), cut(terminated(parse_escape, char('\"')))),
         ),
-        |sym_str: String| Atom::String(sym_str),
+        Atom::String,
     )(i)
 }
 
-fn parse_atom<'a>(i: &'a str) -> IResult<&'a str, Atom, VerboseError<&'a str>> {
+fn parse_atom(i: &str) -> IResult<&str, Atom, VerboseError<&str>> {
     alt((parse_number, parse_string))(i)
 }
 
@@ -150,14 +150,14 @@ pub enum Expression {
     Statement(String, Operator, Atom),
 }
 
-fn parse_boolean<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<&'a str>> {
+fn parse_boolean(i: &str) -> IResult<&str, Expression, VerboseError<&str>> {
     alt((
         map(tag("true"), |_| Expression::Boolean(true)),
         map(tag("false"), |_| Expression::Boolean(false)),
     ))(i)
 }
 
-fn parse_statement<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<&'a str>> {
+fn parse_statement(i: &str) -> IResult<&str, Expression, VerboseError<&str>> {
     map(
         tuple((
             terminated(parse_field, multispace0),
@@ -168,7 +168,7 @@ fn parse_statement<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<
     )(i)
 }
 
-fn parse_expression<'a>(i: &'a str) -> IResult<&'a str, Expression, VerboseError<&'a str>> {
+fn parse_expression(i: &str) -> IResult<&str, Expression, VerboseError<&str>> {
     alt((parse_statement, parse_boolean))(i)
 }
 
@@ -205,14 +205,14 @@ impl AndClause {
         if self.truthy {
             return Some(self.value);
         }
-        return None;
+        None
     }
 
     pub fn try_reduce(&self) -> Option<Expression> {
         if self.expressions.len() == 1 {
             return Some(self.expressions[0].clone());
         }
-        return None;
+        None
     }
 
     pub fn add(&mut self, expression: Expression) -> &mut Self {
@@ -234,7 +234,7 @@ impl AndClause {
                 self.value = false;
                 return self;
             }
-            if self.expressions.len() == 0 {
+            if self.expressions.is_empty() {
                 self.truthy = true;
                 self.value = true;
             }
@@ -311,7 +311,7 @@ impl AndClause {
         self.expressions = other.expressions.clone()
     }
 
-    pub fn encode<'a, T>(&self, encoder: &'a mut T) -> Result<(), String>
+    pub fn encode<T>(&self, encoder: &mut T) -> Result<(), String>
     where
         T: QueryWriter,
     {
@@ -359,7 +359,7 @@ impl fmt::Display for AndClause {
     }
 }
 
-fn parse_and_clause<'a>(i: &'a str) -> IResult<&'a str, AndClause, VerboseError<&'a str>> {
+fn parse_and_clause(i: &str) -> IResult<&str, AndClause, VerboseError<&str>> {
     flat_map(
         terminated(parse_expression, multispace0),
         |initial: Expression| {
@@ -415,7 +415,7 @@ impl OrClause {
                 self.value = true;
                 return self;
             }
-            if self.subclauses.len() == 0 {
+            if self.subclauses.is_empty() {
                 self.truthy = true;
                 self.value = false;
             }
@@ -472,7 +472,7 @@ impl OrClause {
         self
     }
 
-    pub fn encode<'a, T>(&self, encoder: &'a mut T) -> Result<(), String>
+    pub fn encode<T>(&self, encoder: &mut T) -> Result<(), String>
     where
         T: QueryWriter,
     {
@@ -484,7 +484,7 @@ impl OrClause {
                 encoder.start_new_clause()?;
                 clause.encode(encoder)?
             }
-            if self.subclauses.len() > 0 {
+            if self.subclauses.is_empty() {
                 encoder.flush()?
             }
             Ok(())
@@ -510,7 +510,7 @@ impl fmt::Display for OrClause {
     }
 }
 
-fn parse_or_clause<'a>(i: &'a str) -> IResult<&'a str, OrClause, VerboseError<&'a str>> {
+fn parse_or_clause(i: &str) -> IResult<&str, OrClause, VerboseError<&str>> {
     // an or takes precedence, so we parse runs of ands first
     flat_map(parse_and_clause, |initial: AndClause| {
         fold_many0(
@@ -559,14 +559,14 @@ fn parse_rule<'a>(i: &'a str) -> IResult<&'a str, Rule, VerboseError<&'a str>> {
             ),
         )),
         |(operation, table, clause)| Rule {
-            operation: operation,
-            table: table,
-            clause: clause,
+            operation,
+            table,
+            clause,
         },
     ))(i)
 }
 
-pub fn compile<'a>(i: &'a str) -> Result<Rule, String> {
+pub fn compile(i: &str) -> Result<Rule, String> {
     parse_rule(i)
         .map_err(|e| e.to_string())
         .map(|(_, rule)| rule)

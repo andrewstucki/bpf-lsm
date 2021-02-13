@@ -12,17 +12,17 @@ mod traits;
 mod struct_pb;
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 mod compiler_generated;
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 #[allow(non_camel_case_types)]
 #[allow(non_snake_case)]
 mod ffi_generated;
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 mod probe_generated;
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 mod serial_generated;
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 mod transform_generated;
 
 pub use errors::{Error, SerializableResult, SerializationError};

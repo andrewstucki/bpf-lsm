@@ -16,11 +16,11 @@ pub(crate) struct InnerBpfQueryWriter<T: QueryStruct + Default + Copy + Debug + 
 impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T> {
     pub fn new(module: String, operation: Operation, limit: usize) -> Self {
         Self {
-            module: module,
-            operation: operation,
+            module,
+            operation,
             current: Default::default(),
             conditionals: vec![],
-            limit: limit,
+            limit,
         }
     }
 }
@@ -28,7 +28,7 @@ impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T>
 impl<T: QueryStruct + Default + Copy + Debug + PartialEq> QueryWriter for InnerBpfQueryWriter<T> {
     fn write_statement<'a>(
         &mut self,
-        field: &'a String,
+        field: &'a str,
         operator: &'a Operator,
         atom: &'a Atom,
     ) -> Result<(), String> {
@@ -51,7 +51,7 @@ impl<T: QueryStruct + Default + Copy + Debug + PartialEq> QueryWriter for InnerB
                 self.limit
             ));
         }
-        if self.conditionals.len() == 0 {
+        if self.conditionals.is_empty() {
             self.conditionals.push(self.current);
         }
         self.current = Default::default();
@@ -82,7 +82,7 @@ impl<T: QueryStruct + Default + Copy + Debug + PartialEq> InnerBpfQueryWriter<T>
         self.conditionals.push(self.current);
         for filter in &self.conditionals {
             if *filter != uninitialized {
-                probe.apply_rule(self.module.clone(), self.operation, filter.clone())
+                probe.apply_rule(self.module.clone(), self.operation, *filter)
             }
         }
         Ok(())
@@ -111,7 +111,7 @@ impl<'b> QueryWriterFactory<BpfQueryWriter<'b>> for BpfQueryWriterFactory<'b> {
         table: &'a str,
     ) -> Result<BpfQueryWriter<'b>, String> {
         Ok(BpfQueryWriter::new(
-            self.probe.clone(),
+            self.probe,
             table.to_string(),
             operation,
         ))

@@ -125,7 +125,7 @@ impl<'a> BpfQueryWriter<'a> {
 impl<'b> QueryWriter for BpfQueryWriter<'b> {
     fn write_statement<'a>(
         &mut self,
-        field: &'a String,
+        field: &'a str,
         operator: &'a Operator,
         atom: &'a Atom,
     ) -> Result<(), String> {
