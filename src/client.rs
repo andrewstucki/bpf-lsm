@@ -55,7 +55,7 @@ fn backoff() -> ExponentialBackoff {
 
 impl Client {
     pub fn new(
-        url: String,
+        base: String,
         creds: String,
         ignore_validatation: bool,
         timeout: std::time::Duration,
@@ -70,7 +70,7 @@ impl Client {
             agent_builder = agent_builder.tls_config(tls_config)
         }
         Self {
-            base: url,
+            base,
             creds,
             inner: agent_builder.build(),
         }
