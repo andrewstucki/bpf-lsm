@@ -14,32 +14,32 @@
 #include "probe_macros.h"
 
 struct handle_event_wrapper {
-  void *ctx;
-  void *handler;
+	void *ctx;
+	void *handler;
 };
 
 DECLARE_HANDLERS(EVENT_HOOKS);
 struct handlers {
-  DECLARE_HANDLER_WRAPPERS(EVENT_HOOKS);
+	DECLARE_HANDLER_WRAPPERS(EVENT_HOOKS);
 };
 
 struct state_configuration {
-  unsigned char debug;
-  DECLARE_HANDLER_CONFIGURATIONS(EVENT_HOOKS);
+	unsigned char debug;
+	DECLARE_HANDLER_CONFIGURATIONS(EVENT_HOOKS);
 };
 
 struct state {
-  struct probe_bpf *obj;
-  struct ring_buffer *rb;
-  struct handlers *handlers;
-  DECLARE_HOOKS(ALL_HOOKS);
-  struct bpf_link *creds_hook;
+	struct probe_bpf *obj;
+	struct ring_buffer *rb;
+	struct handlers *handlers;
+	DECLARE_HOOKS(ALL_HOOKS);
+	struct bpf_link *creds_hook;
 };
 
 struct state *new_state(struct state_configuration config);
 void poll_state(struct state *s, int timeout);
 void cache_process(struct state *s, pid_t pid,
-                   const struct cached_process *process);
+		   const struct cached_process *process);
 void destroy_state(struct state *self);
 
 #endif // __PROBE_H
