@@ -1,0 +1,37 @@
+{
+  "variables": {
+    "cloud_token": "{{ env `VAGRANT_CLOUD_TOKEN` }}",
+    "version": "5.11-rc6-{{timestamp}}"
+  },
+  "builders": [
+    {
+      "communicator": "ssh",
+      "source_path": "ubuntu/hirsute64",
+      "provider": "virtualbox",
+      "add_force": true,
+      "type": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "curl -s -o linux.deb https://andrewstucki-bpf-lsm-deb.s3.amazonaws.com/linux-image-5.11.0-rc6-bpf-lsm_5.11.0-rc6-bpf-lsm-1_amd64.deb",
+        "sudo dpkg -i linux.deb",
+        "rm linux.deb",
+        "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sudo sh -s -- -y",
+        "sudo apt-get update",
+        "sudo apt-get install -y lldb",
+        "sudo rm -rf /var/lib/apt/lists/*"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant-cloud",
+      "box_tag": "andrewstucki/bpf",
+      "access_token": "{{user `cloud_token`}}",
+      "version": "{{user `version`}}"
+    }
+  ]
+}
