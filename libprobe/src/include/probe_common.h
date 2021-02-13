@@ -22,19 +22,18 @@
 #define memmove(x, y, n) __builtin_memmove((x), (y), (n))
 #endif
 
-INLINE_STATIC int ___strncmp(const char *x, const char *y, unsigned int len)
-{
-	const char *a = x;
-	const char *b = y;
-	for (unsigned int i = 0; i < len; i++) {
-		if (!*a && !*b)
-			return 0; // we have a null byte at the same location
-		if (*a != *b)
-			return 1;
-		a++;
-		b++;
-	}
-	return 0;
+INLINE_STATIC int ___strncmp(const char *x, const char *y, unsigned int len) {
+  const char *a = x;
+  const char *b = y;
+  for (unsigned int i = 0; i < len; i++) {
+    if (!*a && !*b)
+      return 0; // we have a null byte at the same location
+    if (*a != *b)
+      return 1;
+    a++;
+    b++;
+  }
+  return 0;
 }
 
 #define SET_STRING(x, y) memcpy(x, y, ARR_LENGTH(x))
@@ -55,15 +54,15 @@ INLINE_STATIC int ___strncmp(const char *x, const char *y, unsigned int len)
 #define ARGSIZE 128
 
 struct cached_process {
-	char name[MAX_PATH_SIZE];
-	char executable[MAX_PATH_SIZE];
-	char args[MAX_ARGS][ARGSIZE];
-	unsigned long args_count;
-	int truncated;
+  char name[MAX_PATH_SIZE];
+  char executable[MAX_PATH_SIZE];
+  char args[MAX_ARGS][ARGSIZE];
+  unsigned long args_count;
+  int truncated;
 };
 
 struct cached_file {
-	char path[MAX_PATH_SIZE];
+  char path[MAX_PATH_SIZE];
 };
 
 #endif // __PROBE_COMMON_H
