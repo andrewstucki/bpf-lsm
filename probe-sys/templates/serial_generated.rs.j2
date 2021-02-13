@@ -1,3 +1,5 @@
+#![allow(clippy::all)]
+
 use machine_uid;
 use pnet::datalink::interfaces;
 use protobuf::json::print_to_string;

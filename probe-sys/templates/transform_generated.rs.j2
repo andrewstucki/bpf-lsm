@@ -1,3 +1,5 @@
+#![allow(clippy::all)]
+
 use protobuf::Message;
 
 use crate::errors::SerializableResult;

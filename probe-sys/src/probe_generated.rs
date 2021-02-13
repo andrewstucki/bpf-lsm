@@ -1,3 +1,5 @@
+#![allow(clippy::all)]
+
 use log::{debug, warn};
 use rule_compiler::{compile, Operation};
 use std::convert::TryInto;

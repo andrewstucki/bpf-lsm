@@ -1,3 +1,5 @@
+#![allow(clippy::all)]
+
 use rule_compiler::{Atom, Operation, Operator, QueryWriter};
 use std::convert::TryFrom;
 use std::os::raw::c_char;

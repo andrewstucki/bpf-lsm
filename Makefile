@@ -22,6 +22,16 @@ test: libprobe/libprobe.a
 	@echo "Running tests"
 	@$(CONTAINER) /bin/sh -c "RUSTFLAGS=-Ctarget-feature=+crt-static cargo test"
 
+.PHONY: lint
+lint:
+	@echo "Running lint"
+	@$(CONTAINER) /bin/sh -c "RUSTFLAGS=-Ctarget-feature=+crt-static cargo clippy"
+
+.PHONY: lint-fix
+lint-fix:
+	@echo "Running lint fix"
+	@$(CONTAINER) /bin/sh -c "RUSTFLAGS=-Ctarget-feature=+crt-static cargo clippy --fix -Z unstable-options"
+
 .PHONY: test-rule-compiler
 test-rule-compiler:
 	@echo "Running rule-compiler tests"

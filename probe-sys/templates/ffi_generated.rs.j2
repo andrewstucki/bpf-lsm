@@ -1,3 +1,5 @@
+#![allow(clippy::all)]
+
 use super::compiler_generated::*;
 use std::os::raw::{c_char, c_int, c_void};
 
