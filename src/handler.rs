@@ -72,7 +72,7 @@ impl TransformationHandler for Handler {
         let process = e.process.get_mut_ref();
         let command_line = process.args.join(" ");
         process.set_command_line(command_line);
-        
+
         let file = e.file.get_mut_ref();
         let file_path = file.get_path();
         let path = Path::new(file_path);
