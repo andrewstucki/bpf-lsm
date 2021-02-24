@@ -2,14 +2,23 @@ use log::{debug, error};
 use std::sync::mpsc::RecvTimeoutError;
 use std::time::{Duration, SystemTime};
 
+use crate::client::Client;
 use crate::globals::global_database;
 
 pub struct Batcher {}
 
 impl Batcher {
-    pub fn run(flush_rate: u64, max_batch_size: usize, max_batch_bytes: usize, workers: u32) {
+    pub fn run(
+        local: bool,
+        client: &Client,
+        flush_rate: u64,
+        max_batch_size: usize,
+        max_batch_bytes: usize,
+        workers: u32,
+    ) {
         let (mut tx, rx) = spmc::channel();
         for i in 0..workers {
+            let worker_client = client.clone();
             let transformer = probe_sys::Transformer::new(crate::handler::Handler {});
             let rx = rx.clone();
             let flush_timeout = Duration::new(flush_rate, 0);
@@ -45,8 +54,16 @@ impl Batcher {
                         || batch_size >= max_batch_size
                         || elapsed > flush_rate
                     {
+                        if !local {
+                            match worker_client.send_batch(&batch) {
+                                Err(e) => error!("error sending batch: {}", e),
+                                _ => {},
+                            }
+                        }
                         for (k, v) in &batch {
-                            println!("{}", v);
+                            if local {
+                                println!("{}", v);
+                            } 
                             match global_database().remove(k) {
                                 Ok(_) => debug!("worker {}: cleaned record", i),
                                 Err(e) => error!("worker {}: error removing record {:?}", i, e),

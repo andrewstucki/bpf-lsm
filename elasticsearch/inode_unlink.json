@@ -2,255 +2,257 @@
   "index_patterns": [
     "inode_unlink-*"
   ],
-  "mappings": {
-    "date_detection": false,
-    "dynamic_templates": [
-      {
-        "strings_as_keyword": {
-          "mapping": {
-            "ignore_above": 1024,
-            "type": "keyword"
-          },
-          "match_mapping_type": "string"
+  "template": {
+    "mappings": {
+      "date_detection": false,
+      "dynamic_templates": [
+        {
+          "strings_as_keyword": {
+            "mapping": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "match_mapping_type": "string"
+          }
+        }
+      ],
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "event": {
+          "properties": {
+            "id": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "kind": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "category": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "action": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "type": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "outcome": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "module": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "provider": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "sequence": {
+              "type": "long"
+            },
+            "ingested": {
+              "type": "date"
+            }
+          }
+        },
+        "host": {
+          "properties": {
+            "hostname": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "ip": {
+              "type": "ip"
+            },
+            "mac": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "uptime": {
+              "type": "long"
+            },
+            "os": {
+              "properties": {
+                "type": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "name": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "kernel": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            }
+          }
+        },
+        "process": {
+          "properties": {
+            "pid": {
+              "type": "long"
+            },
+            "entity_id": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "name": {
+              "type": "wildcard"
+            },
+            "ppid": {
+              "type": "long"
+            },
+            "executable": {
+              "type": "wildcard"
+            },
+            "args_count": {
+              "type": "long"
+            },
+            "start": {
+              "type": "date"
+            },
+            "thread": {
+              "properties": {
+                "id": {
+                  "type": "long"
+                }
+              }
+            },
+            "command_line": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "args": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "parent": {
+              "properties": {
+                "pid": {
+                  "type": "long"
+                },
+                "entity_id": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "name": {
+                  "type": "wildcard"
+                },
+                "args_count": {
+                  "type": "long"
+                },
+                "args": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "ppid": {
+                  "type": "long"
+                },
+                "start": {
+                  "type": "date"
+                },
+                "thread": {
+                  "properties": {
+                    "id": {
+                      "type": "long"
+                    }
+                  }
+                },
+                "executable": {
+                  "type": "wildcard"
+                }
+              }
+            }
+          }
+        },
+        "user": {
+          "properties": {
+            "id": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "name": {
+              "type": "wildcard"
+            },
+            "group": {
+              "properties": {
+                "id": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "name": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "effective": {
+              "properties": {
+                "id": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "name": {
+                  "type": "wildcard"
+                },
+                "group": {
+                  "properties": {
+                    "id": {
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    },
+                    "name": {
+                      "type": "keyword",
+                      "ignore_above": 1024
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "file": {
+          "properties": {
+            "name": {
+              "type": "wildcard"
+            },
+            "directory": {
+              "type": "wildcard"
+            },
+            "path": {
+              "type": "wildcard"
+            },
+            "extension": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "inode": {
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
         }
       }
-    ],
-    "properties": {
-      "@timestamp": {
-        "type": "date"
-      },
-      "event": {
-        "properties": {
-          "id": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "kind": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "category": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "action": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "type": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "outcome": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "module": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "provider": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "sequence": {
-            "type": "long"
-          },
-          "ingested": {
-            "type": "date"
+    },
+    "settings": {
+      "index": {
+        "mapping": {
+          "total_fields": {
+            "limit": 10000
           }
-        }
-      },
-      "host": {
-        "properties": {
-          "hostname": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "ip": {
-            "type": "ip"
-          },
-          "mac": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "uptime": {
-            "type": "long"
-          },
-          "os": {
-            "properties": {
-              "type": {
-                "type": "keyword",
-                "ignore_above": 1024
-              },
-              "name": {
-                "type": "keyword",
-                "ignore_above": 1024
-              },
-              "kernel": {
-                "type": "keyword",
-                "ignore_above": 1024
-              }
-            }
-          }
-        }
-      },
-      "process": {
-        "properties": {
-          "pid": {
-            "type": "long"
-          },
-          "entity_id": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "name": {
-            "type": "wildcard"
-          },
-          "ppid": {
-            "type": "long"
-          },
-          "executable": {
-            "type": "wildcard"
-          },
-          "args_count": {
-            "type": "long"
-          },
-          "start": {
-            "type": "date"
-          },
-          "thread": {
-            "properties": {
-              "id": {
-                "type": "long"
-              }
-            }
-          },
-          "command_line": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "args": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "parent": {
-            "properties": {
-              "pid": {
-                "type": "long"
-              },
-              "entity_id": {
-                "type": "keyword",
-                "ignore_above": 1024
-              },
-              "name": {
-                "type": "wildcard"
-              },
-              "args_count": {
-                "type": "long"
-              },
-              "args": {
-                "type": "keyword",
-                "ignore_above": 1024
-              },
-              "ppid": {
-                "type": "long"
-              },
-              "start": {
-                "type": "date"
-              },
-              "thread": {
-                "properties": {
-                  "id": {
-                    "type": "long"
-                  }
-                }
-              },
-              "executable": {
-                "type": "wildcard"
-              }
-            }
-          }
-        }
-      },
-      "user": {
-        "properties": {
-          "id": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "name": {
-            "type": "wildcard"
-          },
-          "group": {
-            "properties": {
-              "id": {
-                "type": "keyword",
-                "ignore_above": 1024
-              },
-              "name": {
-                "type": "keyword",
-                "ignore_above": 1024
-              }
-            }
-          },
-          "effective": {
-            "properties": {
-              "id": {
-                "type": "keyword",
-                "ignore_above": 1024
-              },
-              "name": {
-                "type": "wildcard"
-              },
-              "group": {
-                "properties": {
-                  "id": {
-                    "type": "keyword",
-                    "ignore_above": 1024
-                  },
-                  "name": {
-                    "type": "keyword",
-                    "ignore_above": 1024
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "file": {
-        "properties": {
-          "name": {
-            "type": "wildcard"
-          },
-          "directory": {
-            "type": "wildcard"
-          },
-          "path": {
-            "type": "wildcard"
-          },
-          "extension": {
-            "type": "keyword",
-            "ignore_above": 1024
-          },
-          "inode": {
-            "type": "keyword",
-            "ignore_above": 1024
-          }
-        }
+        },
+        "refresh_interval": "5s"
       }
     }
   },
-  "order": 1,
-  "settings": {
-    "index": {
-      "mapping": {
-        "total_fields": {
-          "limit": 10000
-        }
-      },
-      "refresh_interval": "5s"
-    }
-  }
+  "priority": 1
 }

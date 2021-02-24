@@ -1,6 +1,9 @@
 use log::error;
 use seahorse::{App, Context, Flag, FlagType};
 use std::convert::{TryFrom, TryInto};
+use std::time::Duration;
+
+use crate::client::Client;
 
 mod batcher;
 mod client;
@@ -47,6 +50,35 @@ fn main() {
             Flag::new("size", FlagType::Int)
                 .description("Maximum batch size (in bytes) before a flush occurs (default: 1MB)")
                 .alias("s"),
+        )
+        .flag(
+            Flag::new("host", FlagType::String)
+                .description(
+                    "Elasticsearch host that data is sent to (default: 'http://localhost:9200')",
+                )
+                .alias("h"),
+        )
+        .flag(
+            Flag::new("creds", FlagType::String)
+                .description("Credentials for Elasticsearch host")
+                .alias("c"),
+        )
+        .flag(
+            Flag::new("insecure", FlagType::Bool)
+                .description("Allow for insecure https connections to Elasticsearch host")
+                .alias("i"),
+        )
+        .flag(
+            Flag::new("timeout", FlagType::Int)
+                .description("Request timeout for Elasticsearch client (default: 5s)")
+                .alias("t"),
+        )
+        .flag(
+            Flag::new("local", FlagType::Bool)
+                .description(
+                    "Don't attempt to flush any output to Elasticsearch, just echo it to stdout",
+                )
+                .alias("l"),
         );
 
     app.run(args)
@@ -87,8 +119,26 @@ fn run(c: &Context) {
         .int_flag("flush")
         .map_or(30, |w| u64::try_from(w).unwrap_or(30));
 
+    let host = c
+        .string_flag("host")
+        .unwrap_or_else(|_| String::from("http://localhost:9200"));
+    let creds = c.string_flag("creds").ok();
+    let insecure = c.bool_flag("insecure");
+    let timeout = c
+        .int_flag("timeout")
+        .map_or(5, |t| u64::try_from(t).unwrap_or(5));
+    let local = c.bool_flag("local");
+
+    let client = Client::new(host, creds, insecure, Duration::new(timeout, 0));
+    match setup_templates(local, &client) {
+        Err(e) => {
+            error!("error setting up templates: {}", e);
+            std::process::exit(1);
+        }
+        _ => {}
+    }
     std::thread::spawn(move || loop {
-        batcher::Batcher::run(flush_rate, batch_size, batch_bytes, workers)
+        batcher::Batcher::run(local, &client, flush_rate, batch_size, batch_bytes, workers)
     });
 
     match probe_sys::Probe::new()
@@ -109,4 +159,12 @@ fn run(c: &Context) {
             std::process::exit(1);
         }
     }
+}
+
+fn setup_templates(local: bool, client: &Client) -> Result<(), String> {
+    if !local {
+        client.ensure_template("bprm_check_security")?;
+        client.ensure_template("inode_unlink")?;
+    }
+    Ok(())
 }
