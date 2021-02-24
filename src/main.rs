@@ -56,7 +56,7 @@ fn main() {
                 .description(
                     "Elasticsearch host that data is sent to (default: 'http://localhost:9200')",
                 )
-                .alias("h"),
+                .alias("H"),
         )
         .flag(
             Flag::new("creds", FlagType::String)

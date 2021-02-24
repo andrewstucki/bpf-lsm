@@ -17,7 +17,7 @@ In one VM ssh session:
 
 ```bash
 vagrant@ubuntu-hirsute:~$ sudo /vagrant/probe -b 1 -f \
-'reject bprm_check_security when user.id == 1000 and process.executable == "/usr/bin/ls"'
+'reject bprm_check_security when user.id == 1000 and process.executable == "/usr/bin/ls"' -l
 ```
 
 In another VM ssh session you should see something like the following happen:
@@ -45,13 +45,8 @@ In the first terminal you should see an event that looks like:
   },
   "host": {
     "hostname": "ubuntu-hirsute",
-    "ip": [
-      "10.0.2.15",
-      "fe80::45:b3ff:fe9e:e735"
-    ],
-    "mac": [
-      "02:45:b3:9e:e7:35"
-    ],
+    "ip": ["10.0.2.15", "fe80::45:b3ff:fe9e:e735"],
+    "mac": ["02:45:b3:9e:e7:35"],
     "uptime": "238884",
     "os": {
       "type": "linux",
@@ -69,18 +64,13 @@ In the first terminal you should see an event that looks like:
     "start": "1613149814",
     "thread.id": "214904",
     "command_line": "ls --color=auto",
-    "args": [
-      "ls",
-      "--color=auto"
-    ],
+    "args": ["ls", "--color=auto"],
     "parent": {
       "pid": 185070,
       "entity_id": "2adab6f443f9827e3473403b54d3808467a9bafb5950594d3beb67ca0d691c75",
       "name": "bash",
       "args_count": "1",
-      "args": [
-        "-bash"
-      ],
+      "args": ["-bash"],
       "ppid": 185069,
       "start": "1613121319",
       "thread.id": "185070",
@@ -132,13 +122,8 @@ rm: cannot remove 'test.txt': Operation not permitted
   },
   "host": {
     "hostname": "ubuntu-hirsute",
-    "ip": [
-      "10.0.2.15",
-      "fe80::45:b3ff:fe9e:e735"
-    ],
-    "mac": [
-      "02:45:b3:9e:e7:35"
-    ],
+    "ip": ["10.0.2.15", "fe80::45:b3ff:fe9e:e735"],
+    "mac": ["02:45:b3:9e:e7:35"],
     "uptime": "238819",
     "os": {
       "type": "linux",
@@ -156,20 +141,13 @@ rm: cannot remove 'test.txt': Operation not permitted
     "start": "1613149749",
     "thread.id": "214840",
     "command_line": "rm test.txt",
-    "args": [
-      "rm",
-      "test.txt"
-    ],
+    "args": ["rm", "test.txt"],
     "parent": {
       "pid": 214839,
       "entity_id": "2ad02210f987bee9cb66bf8949d83594d42d1d13fc647fbc255cab0c62ddb7b6",
       "name": "sudo",
       "args_count": "3",
-      "args": [
-        "sudo",
-        "rm",
-        "test.txt"
-      ],
+      "args": ["sudo", "rm", "test.txt"],
       "ppid": 185070,
       "start": "1613149749",
       "thread.id": "214839",
