@@ -12,9 +12,13 @@ pub(crate) fn convert_string_array<T>(size: u64, arr: Vec<T>) -> Vec<String>
 where
     T: Into<Vec<c_char>> + Copy,
 {
+    let max_length = arr.len();
     unsafe {
         let mut strings = vec![];
         for x in 0..size {
+            if size as usize >= max_length {
+                break
+            }
             let ptr: Vec<c_char> = arr[x as usize].into();
             let var = CStr::from_ptr(ptr.as_ptr());
             let printable = var.to_string_lossy().into_owned();
