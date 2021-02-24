@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 from os import path
-from glob import glob
 from yaml import load, Loader
-from typing import Any, NamedTuple
+from typing import NamedTuple
 import re
 import subprocess
 

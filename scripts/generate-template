@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+
+import json
+from json import JSONEncoder
+from os import path
+from yaml import load, Loader
+
+CURRENT_DIRECTORY = path.dirname(path.realpath(__file__))
+SCHEMAS_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..", "schemas"))
+OUTPUT_DIRECTORY = path.abspath(path.join(CURRENT_DIRECTORY, "..",
+                                          "elasticsearch"))
+MODULES = ["bprm_check_security", "inode_unlink"]
+
+
+class Field:
+    def __init__(self, field_type, ignore_above, properties):
+        self.type = field_type
+        self.ignore_above = ignore_above
+        self.properties = properties
+
+
+class FieldEncoder(JSONEncoder):
+    def default(self, o):
+        cleaned = {}
+        for (k, v) in o.__dict__.items():
+            if v is not None:
+                cleaned[k] = v
+        return cleaned
+
+
+def tweak(data, override=None):
+    fields = {}
+    for f in data:
+        if override == None:
+            name = f.get("name")
+        else:
+            name = override
+        ignore_above = None
+        properties = None
+        field_type = f.get("type")
+        if field_type == "keyword":
+            ignore_above = 1024
+        if field_type == "group":
+            field_type = None
+            properties = tweak(f.get("fields"))
+        if "." in name:
+            tokens = name.split(".", 1)
+            name = tokens[0]
+            rest = tokens[1]
+            field_type = None
+            properties = tweak([f], rest)
+        field = Field(field_type, ignore_above, properties)
+        fields[name] = field
+    return fields
+
+
+class Module:
+    def __init__(self, filename):
+        with open(filename) as file:
+            self.name = path.splitext(path.basename(filename))[0]
+            self.data = load(file, Loader=Loader)
+        self.schema = {}
+
+    def __wrap(self, fields):
+        return {
+            "index_patterns": [
+                "%s-*" % self.name
+            ],
+            "mappings": {
+                "date_detection": False,
+                "dynamic_templates": [
+                    {
+                        "strings_as_keyword": {
+                            "mapping": {
+                                "ignore_above": 1024,
+                                "type": "keyword"
+                            },
+                            "match_mapping_type": "string"
+                        }
+                    }
+                ],
+                "properties": fields,
+            },
+            "order": 1,
+            "settings": {
+                "index": {
+                    "mapping": {
+                        "total_fields": {
+                            "limit": 10000
+                        }
+                    },
+                    "refresh_interval": "5s"
+                }
+            }
+        }
+
+    def render(self):
+        output_path = path.join(OUTPUT_DIRECTORY, "%s.json" % self.name)
+        properties = tweak(self.data)
+        rendered = json.dumps(self.__wrap(properties),
+                              indent=2, cls=FieldEncoder)
+        with open(output_path, "w") as output:
+            output.write(rendered)
+
+
+if __name__ == "__main__":
+    schema_files = [
+        path.join(SCHEMAS_DIRECTORY, "%s.yml" % f) for f in MODULES
+    ]
+    modules = [Module(f) for f in schema_files]
+    for module in modules:
+        module.render()

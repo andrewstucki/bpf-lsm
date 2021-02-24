@@ -1,5 +1,6 @@
 DIRECTORY := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 GENERATOR_SCRIPT = scripts/generate-structures
+SCHEMA_SCRIPT = scripts/generate-template
 CONTAINER := docker run --rm -v ${DIRECTORY}/.cargo:/cargo/registry -v ${DIRECTORY}/.cargo/git:/cargo/git -v ${DIRECTORY}:/src andrewstucki/bpf-lsm-builder:latest
 
 .DEFAULT_GOAL := build
@@ -41,3 +42,8 @@ generate: venv
 	@echo "Generating files"
 	@rm -rf libprobe/libprobe.a libprobe/.output target/*/build/probe-sys*
 	@$(CONTAINER) /bin/sh -c "source ./venv/bin/activate && $(GENERATOR_SCRIPT)"
+
+.PHONY: schema
+schema: venv
+	@echo "Generating Elasticsearch schema"
+	@$(CONTAINER) /bin/sh -c "source ./venv/bin/activate && $(SCHEMA_SCRIPT)"
