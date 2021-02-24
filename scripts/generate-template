@@ -13,10 +13,11 @@ MODULES = ["bprm_check_security", "inode_unlink"]
 
 
 class Field:
-    def __init__(self, field_type, ignore_above, properties):
+    def __init__(self, field_type, format, ignore_above, properties):
         self.type = field_type
         self.ignore_above = ignore_above
         self.properties = properties
+        self.format = format
 
 
 class FieldEncoder(JSONEncoder):
@@ -37,7 +38,10 @@ def tweak(data, override=None):
             name = override
         ignore_above = None
         properties = None
+        format = None
         field_type = f.get("type")
+        if field_type == "date":
+            format = "epoch_second"
         if field_type == "keyword":
             ignore_above = 1024
         if field_type == "group":
@@ -49,7 +53,7 @@ def tweak(data, override=None):
             rest = tokens[1]
             field_type = None
             properties = tweak([f], rest)
-        field = Field(field_type, ignore_above, properties)
+        field = Field(field_type, format, ignore_above, properties)
         fields[name] = field
     return fields
 

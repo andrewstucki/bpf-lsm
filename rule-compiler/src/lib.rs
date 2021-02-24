@@ -484,7 +484,7 @@ impl OrClause {
                 encoder.start_new_clause()?;
                 clause.encode(encoder)?
             }
-            if self.subclauses.is_empty() {
+            if !self.subclauses.is_empty() {
                 encoder.flush()?
             }
             Ok(())

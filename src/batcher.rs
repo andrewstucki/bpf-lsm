@@ -30,9 +30,9 @@ impl Batcher {
                     match rx.recv_timeout(flush_timeout) {
                         Ok((key, data)) => {
                             match transformer.transform(data) {
-                                Ok(json) => {
+                                Ok((index, json)) => {
                                     current_batch_bytes += json.chars().count() + 1; // 1 == newline
-                                    batch.push((key, json));
+                                    batch.push((key, (index, json)));
                                 }
                                 Err(e) => error!("worker {}: {:?}", i, e),
                             };
@@ -57,13 +57,13 @@ impl Batcher {
                         if !local {
                             match worker_client.send_batch(&batch) {
                                 Err(e) => error!("error sending batch: {}", e),
-                                _ => {},
+                                _ => {}
                             }
                         }
-                        for (k, v) in &batch {
+                        for (k, (_, v)) in &batch {
                             if local {
                                 println!("{}", v);
-                            } 
+                            }
                             match global_database().remove(k) {
                                 Ok(_) => debug!("worker {}: cleaned record", i),
                                 Err(e) => error!("worker {}: error removing record {:?}", i, e),

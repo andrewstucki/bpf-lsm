@@ -5,11 +5,11 @@ use backoff::backoff::Backoff;
 use backoff::{retry, ExponentialBackoff, SystemClock};
 use base64::encode;
 use instant::Instant;
+use sled::IVec;
 use std::format;
 use std::sync::Arc;
 use std::time::Duration;
 use ureq::{Agent, AgentBuilder, Error};
-use sled::IVec;
 
 pub struct SkipVerifier {}
 
@@ -40,6 +40,10 @@ pub struct Client {
 
 fn make_url(base: String, path: String) -> String {
     base.trim_end_matches('/').to_owned() + &path
+}
+
+fn make_batch_entry(index: &String, data: &String) -> String {
+    format!("{{\"create\":{{ \"_index\" : \"{}-1\"}}\n{}\n", index, data)
 }
 
 fn backoff() -> ExponentialBackoff {
@@ -162,8 +166,32 @@ impl Client {
         }
     }
 
-    pub fn send_batch(&self, _batch: &Vec<(IVec, String)>) -> Result<(), String> {
-        Ok(())
+    pub fn send_batch(&self, batch: &Vec<(IVec, (String, String))>) -> Result<(), String> {
+        if batch.is_empty() {
+            return Ok(())
+        }
+        let url = String::from("/_bulk");
+        let payload = batch
+            .iter()
+            .map(|(_, (index, data))| make_batch_entry(index, data))
+            .collect::<String>();
+        let response = retry(backoff(), || {
+            let resp = self.construct_bulk_request("POST", &url).send_bytes(payload.as_bytes());
+            match resp {
+                Ok(r) => Ok(r),
+                Err(Error::Status(_, r)) => Ok(r),
+                Err(e) => Err(backoff::Error::Transient(e)),
+            }
+        });
+        let response_text = response
+            .map_err(|e| e.to_string())?
+            .into_string()
+            .map_err(|e| e.to_string())?;
+        let error_message = ajson::get(&response_text, "error.reason");
+        match error_message {
+            Some(message) => Err(message.to_string()),
+            None => Ok(()),
+        }
     }
 }
 

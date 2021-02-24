@@ -20,14 +20,16 @@ impl<T: TransformationHandler> Transformer<T> {
         Self { handler: handler }
     }
 
-    pub fn transform(&self, data: Vec<u8>) -> SerializableResult<String> {
+    pub fn transform(&self, data: Vec<u8>) -> SerializableResult<(String, String)> {
         let e = Event::parse_from_bytes(&data).unwrap();
         match e.get_event_type() {
             event::EventType::BPRMCHECKSECURITYEVENT => {
-                self.handler.enrich_bprm_check_security((&mut e.bprm_check_security_event_t.unwrap()).enrich_common()?)?.to_json()
+                let json = self.handler.enrich_bprm_check_security((&mut e.bprm_check_security_event_t.unwrap()).enrich_common()?)?.to_json()?;
+                Ok((String::from("bprm_check_security"), json))
             },
             event::EventType::INODEUNLINKEVENT => {
-                self.handler.enrich_inode_unlink((&mut e.inode_unlink_event_t.unwrap()).enrich_common()?)?.to_json()
+                let json = self.handler.enrich_inode_unlink((&mut e.inode_unlink_event_t.unwrap()).enrich_common()?)?.to_json()?;
+                Ok((String::from("inode_unlink"), json))
             },
         }
     }
